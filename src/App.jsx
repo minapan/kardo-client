@@ -1,5 +1,5 @@
-import { Button } from "@mui/material";
-import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
+import { Button } from '@mui/material';
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 
 function App() {
   return (
