@@ -24,7 +24,7 @@ function AppBar() {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <AppsIcon sx={{ color: 'primary.main' }} />
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <SvgIcon component={Logo} inheritViewBox sx={{ color: 'primary.main' }} />
+            <SvgIcon component={Logo} fontSize='small' inheritViewBox sx={{ color: 'primary.main' }} />
             <Typography variant='span' sx={{ fontSize: '1rem', fontWeight: 'bold', color: 'primary.main', marginRight: 1 }}>
               Trello
             </Typography>
@@ -39,13 +39,13 @@ function AppBar() {
           <TextField id="outlined-search" label="Search..." type="search" size='small' />
           <SelectMode />
           <Tooltip title="Notifications">
-            <Badge color="secondary" variant="dot" sx={{ cursor: 'pointer' }}>
+            <Badge color="secondary" variant="dot" sx={{ cursor: 'pointer', color: 'primary.main' }}>
               <NotificationsNoneIcon fontSize='small' style={{ transform: 'rotate(45deg)' }} />
             </Badge>
           </Tooltip>
           <Tooltip title="Help">
-            <Badge color="secondary" sx={{ cursor: 'pointer' }}>
-              <HelpOutlineIcon fontSize='small'/>
+            <Badge color="secondary" sx={{ cursor: 'pointer', color: 'primary.main' }}>
+              <HelpOutlineIcon fontSize='small' />
             </Badge>
           </Tooltip>
           <Profile />
