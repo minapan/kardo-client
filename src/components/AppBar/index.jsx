@@ -19,7 +19,9 @@ function AppBar() {
         height: ({ trelloCustom }) => trelloCustom.appBarHeight,
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        gap: 2,
+        overflowX: 'auto'
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <AppsIcon sx={{ color: 'primary.main' }} />
@@ -28,15 +30,18 @@ function AppBar() {
             <Typography variant='span' sx={{ fontSize: '1rem', fontWeight: 'bold', color: 'primary.main', marginRight: 1 }}>
               Trello
             </Typography>
-            <Workspaces />
-            <Recent />
-            <Starred />
-            <Teamplates />
-            <Button variant='outlined'>Create</Button>
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
+              <Workspaces />
+              <Recent />
+              <Starred />
+              <Teamplates />
+              <Button variant='outlined'>Create</Button>
+            </Box>
           </Box>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <TextField id="outlined-search" label="Search..." type="search" size='small' />
+          <TextField id="outlined-search" label="Search..." type="search" size='small'
+            sx={{ minWidth: 120 }} />
           <SelectMode />
           <Tooltip title="Notifications">
             <Badge color="secondary" variant="dot" sx={{ cursor: 'pointer', color: 'primary.main' }}>
