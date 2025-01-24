@@ -4,6 +4,7 @@ function BoardBar() {
   return (
     <Box sx={{
       backgroundColor: 'primary.dark',
+      color: 'white',
       width: '100%',
       height: ({ trelloCustom }) => trelloCustom.boardBarHeight,
       display: 'flex',
