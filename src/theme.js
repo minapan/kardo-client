@@ -1,6 +1,6 @@
 // import { createTheme } from '@mui/material'
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
-import { blue, cyan, pink, purple } from '@mui/material/colors'
+import { cyan, pink, purple } from '@mui/material/colors'
 
 const theme = extendTheme({
   trelloCustom: {
@@ -10,7 +10,10 @@ const theme = extendTheme({
   colorSchemes: {
     light: {
       palette: {
-        primary: blue,
+        primary: {
+          // main: '#344850'
+          main: '#3063d9'
+        },
         secondary: cyan
       }
     },
