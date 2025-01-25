@@ -4,6 +4,7 @@ import Tooltip from '@mui/material/Tooltip'
 import AppsIcon from '@mui/icons-material/Apps'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
 import { ReactComponent as Logo } from '~/assets/trello-icon.svg'
 import Workspaces from './Menus/Workspaces'
 import Recent from './Menus/Recent'
@@ -35,7 +36,7 @@ function AppBar() {
               <Recent />
               <Starred />
               <Teamplates />
-              <Button variant='outlined'>Create</Button>
+              <Button variant='outlined' startIcon={<LibraryAddIcon />}>Create</Button>
             </Box>
           </Box>
         </Box>
