@@ -25,7 +25,7 @@ function Profile() {
       >
         <Avatar
           src='https://nhatphan.id.vn/assets/img/cat-coffee.jpg' alt="Avt"
-          sx={{ width: 32, height: 32 }} />
+          sx={{ width: 36, height: 36 }} />
       </IconButton>
     </Tooltip>
     <Menu

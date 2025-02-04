@@ -9,16 +9,18 @@ import AvatarGroup from '@mui/material/AvatarGroup'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 
 const MENU_STYLES = {
-  backgroundColor: 'white',
-  color: 'primary.main',
+  backgroundColor: 'transparent',
+  color: 'white',
+  fontWeight: 'bold',
   paddingX: '5px',
   border: 'none',
   borderRadius: 1,
   '& .MuiSvgIcon-root': {
-    color: 'primary.main'
+    color: 'white',
+    fontWeight: 'bold'
   },
   '&:hover': {
-    backgroundColor: 'primary.100'
+    backgroundColor: 'primary.50'
   }
 }
 
@@ -33,7 +35,8 @@ function BoardBar() {
       gap: 2,
       paddingX: 2,
       overflowX: 'auto',
-      borderTop: '2px solid #ccc'
+      borderTop: '2px solid #ccc',
+      backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#808e9b' : '#778beb'
     }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Chip
@@ -44,7 +47,7 @@ function BoardBar() {
           icon={<VpnLockIcon />} label="Public/Private" clickable />
         <Chip
           sx={MENU_STYLES}
-          icon={<AddToDriveIcon />} label="Public/Private" clickable />
+          icon={<AddToDriveIcon />} label="Add To Google Drive" clickable />
         <Chip
           sx={MENU_STYLES}
           icon={<BoltIcon />} label="Automation" clickable />
@@ -53,17 +56,25 @@ function BoardBar() {
           icon={<FilterListIcon />} label="Automation" clickable />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button variant='outlined' startIcon={<PersonAddIcon />}>Invite</Button>
-        <AvatarGroup max={6}
-          sx={
-            {
-              '& .MuiAvatar-root': {
-                width: 36,
-                height: 36,
-                fontSize: '1rem'
-              }
+        <Button
+          sx={{
+            color: 'white',
+            borderColor: 'white',
+            '&:hover': {
+              borderColor: 'white'
             }
-          }>
+          }}
+          variant='outlined' startIcon={<PersonAddIcon />}>Invite</Button>
+        <AvatarGroup max={6}
+          sx={{
+            gap: 1,
+            '& .MuiAvatar-root': {
+              width: 36,
+              height: 36,
+              fontSize: '1rem',
+              border: 'none'
+            }
+          }}>
           <Tooltip title="Avt">
             <Avatar
               src='https://nhatphan.id.vn/assets/img/cat-coffee.jpg' alt="Avt"
