@@ -17,6 +17,7 @@ function Teamplates() {
   }
   return (<>
     <Button
+      sx={{ color: 'white' }}
       id="basic-button-teamplates"
       aria-controls={open ? 'basic-menu-teamplates' : undefined}
       aria-haspopup="true"
