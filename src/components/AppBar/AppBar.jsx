@@ -1,4 +1,4 @@
-import SelectMode from '../SelectMode'
+import SelectMode from '../SelectMode/SelectMode'
 import { Badge, Box, Button, SvgIcon, TextField, Typography } from '@mui/material'
 import Tooltip from '@mui/material/Tooltip'
 import AppsIcon from '@mui/icons-material/Apps'
@@ -27,6 +27,7 @@ function AppBar() {
         alignItems: 'center',
         gap: 2,
         overflowX: 'auto',
+        '&::-webkit-scrollbar-track': { m: 2 },
         backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#485460' : '#546de5'
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

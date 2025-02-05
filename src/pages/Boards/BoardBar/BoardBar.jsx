@@ -35,7 +35,7 @@ function BoardBar() {
       gap: 2,
       paddingX: 2,
       overflowX: 'auto',
-      borderTop: '2px solid #ccc',
+      '&::-webkit-scrollbar-track': { m: 2 },
       backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#808e9b' : '#778beb'
     }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -72,7 +72,12 @@ function BoardBar() {
               width: 36,
               height: 36,
               fontSize: '1rem',
-              border: 'none'
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              '&:first-of-type': {
+                backgroundColor: '#786fa6'
+              }
             }
           }}>
           <Tooltip title="Avt">
