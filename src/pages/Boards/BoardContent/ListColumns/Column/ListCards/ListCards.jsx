@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import TrelloCard from './Card/Card'
-function ListCard() {
+function ListCard({ cards }) {
   return (
     <>
       <Box sx={{
@@ -21,11 +21,7 @@ function ListCard() {
         }
       }}
       >
-        <TrelloCard />
-        <TrelloCard />
-        <TrelloCard />
-        <TrelloCard />
-        <TrelloCard />
+        {cards?.map(card => (<TrelloCard key={card._id} card={card} />))}
       </Box>
     </>
   )
