@@ -12,9 +12,12 @@ import { AddCard, ContentCopy, ContentPaste } from '@mui/icons-material'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ListCard from './ListCards/ListCards'
 import { mapOrder } from '~/utils/sorts'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 function Columns({ column }) {
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -23,16 +26,36 @@ function Columns({ column }) {
   const handleClose = () => {
     setAnchorEl(null)
   }
+
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: column._id,
+    data: { ...column }
+  })
+
+  const dndKitColumnStyle = {
+    // touchAction: 'none', //for Pointer Events to prevent the default behaviour of the browser on touch devices
+    // bug stretch
+    // transform: CSS.Transform.toString(transform),
+    transform: CSS.Translate.toString(transform),
+    transition
+  }
   return (
     <>
-      <Box sx={{
-        width: '350px',
-        borderRadius: 2,
-        ml: 2,
-        height: 'fit-content',
-        maxHeight: (theme) => `calc(${theme.trelloCustom.boardContentHeight} - ${theme.spacing(5)})`,
-        backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#535c68' : '#fff'
-      }}>
+      <Box
+        ref={setNodeRef}
+        style={dndKitColumnStyle}
+        {...attributes}
+        {...listeners}
+        sx={{
+          minWidth: '350px',
+          maxWidth: '350px',
+          borderRadius: 2,
+          ml: 2,
+          height: 'fit-content',
+          maxHeight: (theme) => `calc(${theme.trelloCustom.boardContentHeight} - ${theme.spacing(5)})`,
+          backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#535c68' : '#fff'
+        }}
+      >
         {/* collumn header */}
         <Box sx={{
           height: (theme) => theme.trelloCustom.collumnHeaderHeight,
