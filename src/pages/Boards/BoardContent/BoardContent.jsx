@@ -72,8 +72,8 @@ function BoardContent({ board }) {
             <div
               style={{
                 transform: 'rotate(3deg)',
-                '-moz-transform': 'rotate(3deg)',
-                '-webkit-transform': 'rotate(3deg)',
+                MozTransform: 'rotate(3deg)',
+                WebkitTransform: 'rotate(3deg)',
                 maskImage: 'radial-gradient(circle, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%)',
                 WebkitMaskImage: 'radial-gradient(circle, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%)',
                 transition: 'all 0.2s ease-in-out'
@@ -87,8 +87,8 @@ function BoardContent({ board }) {
             <div
               style={{
                 transform: 'rotate(3deg)',
-                '-moz-transform': 'rotate(3deg)',
-                '-webkit-transform': 'rotate(3deg)',
+                MozTransform: 'rotate(3deg)',
+                WebkitTransform: 'rotate(3deg)',
                 maskImage: 'radial-gradient(circle, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%)',
                 WebkitMaskImage: 'radial-gradient(circle, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%)',
                 transition: 'all 0.2s ease-in-out'
