@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import Columns from './Column/Column'
+import Column from './Column/Column'
 import AddIcon from '@mui/icons-material/Add'
 import Button from '@mui/material/Button'
 import { horizontalListSortingStrategy, SortableContext } from '@dnd-kit/sortable'
@@ -9,16 +9,16 @@ function ListComlumns({ columns }) {
 
     All we need to do is map your items array to an array of strings that reflect each item's unique identification.
     */}
-    <SortableContext items={columns?.map(column => column._id)} strategy={horizontalListSortingStrategy}>
+    <SortableContext items={columns?.map(c => c._id)} strategy={horizontalListSortingStrategy}>
       <Box sx={{
-        bgcolor: 'inherit',
+        backgroundColor: 'inherit',
         width: '100%',
         height: '100%',
         overflowX: 'auto',
         display: 'flex',
         '&::-webkit-scrollbar-track': { m: 2 }
       }}>
-        {columns?.map(column => (<Columns key={column._id} column={column} />))}
+        {columns?.map(column => (<Column key={column._id} column={column} />))}
         <Box sx={{
           width: '200px',
           mx: 2,
