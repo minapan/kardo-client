@@ -24,8 +24,8 @@ function BoardContent({ board }) {
   const [activeDragItemId, setActiveDragItemId] = useState(null)
   const [activeDragItemType, setActiveDragItemType] = useState(null)
   const [activeDragItemData, setActiveDragItemData] = useState(null)
+  const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState(null)
 
-  // Effect to set the initial order of columns when the board data changes.
   useEffect(() => {
     // Map the board's columns based on the specified column order IDs.
     setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
@@ -35,26 +35,50 @@ function BoardContent({ board }) {
     return orderedColumns.find(column => column?.cards?.map(card => card._id).includes(cardId))
   }
 
-  const handleDragStart = (e) => {
-    setActiveDragItemId(e?.active?.id)
-    setActiveDragItemType(e?.active?.data?.current?.columnId ? ACTIVE_DRAG_ITEM_TYPE.CARD : ACTIVE_DRAG_ITEM_TYPE.COLUMN)
-    setActiveDragItemData(e?.active?.data?.current)
+  const moveCardBetweenColumns = ({
+    overCardId, overColumn, active, over, activeColumn, activeDraggingCardId, activeDraggingCardData }) => {
+    setOrderedColumns(prevColumns => {
+      const overCardIndex = overColumn?.cards?.findIndex(card => card._id === overCardId)
+      let newCardIndex
+      const isBelowOverCard = active.rect.current.translated &&
+        active.rect.current.translated.top > over.rect.top + over.rect.height
+      const modifier = isBelowOverCard ? 1 : 0
+      newCardIndex = overCardIndex >= 0 ? overCardIndex + modifier : overColumn?.cards?.length + 1
+
+      const nextColumns = cloneDeep(prevColumns)
+      const nextActiveColumn = nextColumns.find(column => column._id === activeColumn._id)
+      const nextOverColumn = nextColumns.find(column => column._id === overColumn._id)
+
+      if (nextActiveColumn) {
+        // Remove the dragged card from the source column.
+        nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
+        nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
+      }
+      if (nextOverColumn) {
+        // Remove the dragged card from the target column if it already exists.
+        nextOverColumn.cards = nextOverColumn.cards.filter(card => card._id !== activeDraggingCardId)
+        // Insert the dragged card into the target column at the correct position.
+        nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, { ...activeDraggingCardData, columnId: overColumn._id })
+        // Update the card order IDs of the target column.
+        nextOverColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
+      }
+      return nextColumns
+    })
   }
 
-  const handleDragEnd = (e) => {
-    const { active, over } = e
+  const handleDragStart = (e) => {
+    setActiveDragItemId(e?.active?.id)
+    setActiveDragItemType(
+      // If the dragged item is a card, its data contains a column ID
+      e?.active?.data?.current?.columnId
+        ? ACTIVE_DRAG_ITEM_TYPE.CARD
+        : ACTIVE_DRAG_ITEM_TYPE.COLUMN
+    )
+    setActiveDragItemData(e?.active?.data?.current)
 
-    if (!over) return
-
-    // If the dragged element is not dropped over itself, proceed with reordering.
-    if (active.id !== over.id) {
-      const oldIndex = orderedColumns.findIndex(column => column._id === active.id)
-      const newIndex = orderedColumns.findIndex(column => column._id === over.id)
-
-      // Reorder the columns based on the drag-and-drop operation.
-      const dndOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex)
-
-      setOrderedColumns(dndOrderedColumns)
+    // If the user is dragging a card, save the column that the card is in.
+    if (e?.active?.data?.current?.columnId) {
+      setOldColumnWhenDraggingCard(findColumnByCardId(e?.active?.id))
     }
   }
 
@@ -78,34 +102,72 @@ function BoardContent({ board }) {
 
     if (activeColumn._id !== overColumn._id) {
       // Update the state of the columns and cards based on the drag-and-drop operation.
-      setOrderedColumns(prevColumns => {
-        const overCardIndex = overColumn?.cards?.findIndex(card => card._id === overCardId)
-        let newCardIndex
-        const isBelowOverCard = active.rect.current.translated &&
-          active.rect.current.translated.top > over.rect.top + over.rect.height
-        const modifier = isBelowOverCard ? 1 : 0
-        newCardIndex = overCardIndex >= 0 ? overCardIndex + modifier : overColumn?.cards?.length + 1
-
-        const nextColumns = cloneDeep(prevColumns)
-        const nextActiveColumn = nextColumns.find(column => column._id === activeColumn._id)
-        const nextOverColumn = nextColumns.find(column => column._id === overColumn._id)
-
-        if (nextActiveColumn) {
-          // Remove the dragged card from the source column.
-          nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
-          nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
-        }
-        if (nextOverColumn) {
-          // Remove the dragged card from the target column if it already exists.
-          nextOverColumn.cards = nextOverColumn.cards.filter(card => card._id !== activeDraggingCardId)
-          // Insert the dragged card into the target column at the correct position.
-          nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, activeDraggingCardData)
-          // Update the card order IDs of the target column.
-          nextOverColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
-        }
-        return nextColumns
+      moveCardBetweenColumns({
+        overCardId, overColumn, active, over, activeColumn, activeDraggingCardId, activeDraggingCardData
       })
     }
+  }
+
+  const handleDragEnd = (e) => {
+    const { active, over } = e
+
+    if (!active || !over) return
+
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
+      const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
+      const { id: overCardId } = over
+
+      const activeColumn = findColumnByCardId(activeDraggingCardId)
+      const overColumn = findColumnByCardId(overCardId)
+      if (!activeColumn || !overColumn) return
+
+      // Dont use activeColumn._id because it will be the same as overColumn._id (handleDragOver function did update state)
+      if (oldColumnWhenDraggingCard._id !== overColumn._id) {
+        moveCardBetweenColumns({
+          overCardId, overColumn, active, over, activeColumn, activeDraggingCardId, activeDraggingCardData
+        })
+      } else {
+        // Find the index of the dragged card in the original column
+        const oldIndex = oldColumnWhenDraggingCard?.cards?.findIndex(card => card._id === activeDragItemId)
+        // Find the index of the card over which the dragged card is dropped
+        const newIndex = overColumn?.cards?.findIndex(card => card._id === overCardId)
+
+        // Reorder the cards in the old column by moving the dragged card to the new index
+        const dndOrderedCards = arrayMove(oldColumnWhenDraggingCard?.cards, oldIndex, newIndex)
+        // Update the state with the new order of columns and cards
+        setOrderedColumns(prevColumns => {
+          // Create a deep copy of the previous columns to avoid direct state mutation
+          const nextColumns = cloneDeep(prevColumns)
+          // Find the column where the card is dropped
+          const nextOverColumn = nextColumns.find(column => column._id === overColumn._id)
+          if (nextOverColumn) {
+            // Update the cards in the target column with the new order
+            nextOverColumn.cards = dndOrderedCards
+            // Update the card order IDs for proper tracking
+            nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
+          }
+          return nextColumns
+        })
+      }
+    }
+
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
+      // If the dragged element is not dropped over itself, proceed with reordering.
+      if (active.id !== over.id) {
+        const oldIndex = orderedColumns.findIndex(column => column._id === active.id)
+        const newIndex = orderedColumns.findIndex(column => column._id === over.id)
+
+        // Reorder the columns based on the drag-and-drop operation.
+        const dndOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex)
+
+        setOrderedColumns(dndOrderedColumns)
+      }
+    }
+
+    setActiveDragItemData(null)
+    setActiveDragItemId(null)
+    setActiveDragItemType(null)
+    setOldColumnWhenDraggingCard(null)
   }
 
   const dropAnimation = { sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: 0.7 } } }) }
