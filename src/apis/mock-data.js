@@ -6,7 +6,7 @@ export const mockData = {
     type: 'private',
     ownerIds: ['user-id-01', 'user-id-02'],
     memberIds: ['user-id-01', 'user-id-02', 'user-id-03'],
-    columnOrderIds: ['column-id-01', 'column-id-03', 'column-id-02'],
+    columnOrderIds: ['column-id-01', 'column-id-03', 'column-id-02', 'column-id-04'],
     columns: [
       {
         _id: 'column-id-01',
@@ -117,6 +117,21 @@ export const mockData = {
             memberIds: ['user-id-02'],
             comments: [],
             attachments: ['documentation.zip']
+          }
+        ]
+      },
+      //
+      {
+        _id: 'column-id-04',
+        boardId: 'board-id-02',
+        title: 'Empty Column 04',
+        cardOrderIds: ['column-id-04-placeholder-card'],
+        cards: [
+          {
+            _id: 'column-id-04-placeholder-card',
+            boardId: 'board-id-02',
+            columnId: 'column-id-04',
+            FE_Placeholder: true
           }
         ]
       }

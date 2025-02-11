@@ -1,12 +1,15 @@
 import Box from '@mui/material/Box'
 import ListComlumns from './ListColumns/ListComlumns'
 import { mapOrder } from '~/utils/sorts'
-import { closestCenter, defaultDropAnimationSideEffects, DndContext, DragOverlay, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { closestCorners, defaultDropAnimationSideEffects, DndContext, DragOverlay, getFirstCollision, MouseSensor, pointerWithin, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { useEffect, useState } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column'
 import TrelloCard from './ListColumns/Column/ListCards/Card/Card'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
+import { useCallback } from 'react'
+import { useRef } from 'react'
+import { generatePlaceholderCard } from '~/utils/fomatters'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_COLUMN',
@@ -25,6 +28,9 @@ function BoardContent({ board }) {
   const [activeDragItemType, setActiveDragItemType] = useState(null)
   const [activeDragItemData, setActiveDragItemData] = useState(null)
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState(null)
+
+  // The final collision point (processing algorithms detect collisions)
+  const lastOverId = useRef(null)
 
   useEffect(() => {
     // Map the board's columns based on the specified column order IDs.
@@ -52,6 +58,12 @@ function BoardContent({ board }) {
       if (nextActiveColumn) {
         // Remove the dragged card from the source column.
         nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
+
+        // Insert Pthe placeholder card if there is no card in the column
+        if (isEmpty(nextActiveColumn.cards)) {
+          nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)]
+        }
+
         nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
       }
       if (nextOverColumn) {
@@ -59,6 +71,10 @@ function BoardContent({ board }) {
         nextOverColumn.cards = nextOverColumn.cards.filter(card => card._id !== activeDraggingCardId)
         // Insert the dragged card into the target column at the correct position.
         nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, { ...activeDraggingCardData, columnId: overColumn._id })
+
+        // Remove the placeholder card if it exists.
+        nextOverColumn.cards = nextOverColumn.cards.filter(card => !card.FE_Placeholder)
+
         // Update the card order IDs of the target column.
         nextOverColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
       }
@@ -170,6 +186,39 @@ function BoardContent({ board }) {
     setOldColumnWhenDraggingCard(null)
   }
 
+  const collisionDetectionStrategy = useCallback((args) => {
+    // Find all the points where the pointer intersects with a droppable area
+    // This is done by using the pointerWithin function from @dnd-kit/core
+    // The pointerWithin function takes the following arguments:
+    //  - args: The arguments passed to the collisionDetection function
+    //  - It returns an array of points that the pointer intersects with
+    const pointerIntersections = pointerWithin(args)
+    if (!pointerIntersections?.length) return
+    // const intersections = pointerIntersections?.length > 0
+    //   ? pointerIntersections
+    //   : rectIntersection(args)
+
+    let overId = getFirstCollision(pointerIntersections, 'id')
+    if (overId) {
+      const checkColumn = orderedColumns.find(column => column._id === overId)
+      // console.log('overId before', overId)
+
+      if (checkColumn) overId = closestCorners({
+        ...args,
+        droppableContainers: args.droppableContainers.filter(container =>
+          container.id !== overId && checkColumn?.cardOrderIds?.includes(container.id)
+        )
+      })[0]?.id
+      // console.log('overId after', overId)
+
+      lastOverId.current = overId
+      return [{ id: overId }]
+    }
+
+    // If overID is null, return the empty array, avoid crash pages
+    return lastOverId.current ? [{ id: lastOverId.current }] : []
+  }, [])
+
   const dropAnimation = { sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: 0.7 } } }) }
   return (
     <DndContext
@@ -177,7 +226,9 @@ function BoardContent({ board }) {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       sensors={sensors}
-      collisionDetection={closestCenter} // use closestCenter for the most accurate drag-and-drop behavior
+      collisionDetection={activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN ? undefined : collisionDetectionStrategy}
+    // bug flickering and wrong data
+    // collisionDetection={closestCorners} // use closestCorners for the most accurate drag-and-drop behavior
     >
       <Box sx={{
         width: '100%',
