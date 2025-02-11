@@ -40,7 +40,8 @@ function Column({ column }) {
     transition,
     // fix bug dragging the column short through the long column (Must combine with {...listeners} in the Box to avoid pulling into the empty area of the column)
     height: '100%',
-    opacity: isDragging ? 0.5 : 1
+    opacity: isDragging ? 0.5 : 1,
+    border: 'none'
   }
   return (
     // fix height column bug
@@ -48,12 +49,13 @@ function Column({ column }) {
       <Box
         {...listeners}
         sx={{
-          minWidth: '320px',
-          maxWidth: '320px',
+          minWidth: '272px',
+          maxWidth: '272px',
           borderRadius: 2,
           ml: 2,
           zIndex: 10,
           height: 'fit-content',
+          position: 'relative',
           maxHeight: (theme) => `calc(${theme.trelloCustom.boardContentHeight} - ${theme.spacing(5)})`,
           backgroundColor: isDragging ? ((theme) => theme.palette.mode === 'dark' ? '#dff9fb' : '#535c68') : ((theme) => theme.palette.mode === 'dark' ? '#535c68' : '#fff')
         }}
