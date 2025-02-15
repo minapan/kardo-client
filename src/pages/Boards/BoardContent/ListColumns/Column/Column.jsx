@@ -1,10 +1,11 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, TextField, Typography } from '@mui/material'
 import { Tooltip, Menu, MenuItem } from '@mui/material'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ContentCut from '@mui/icons-material/ContentCut'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Divider from '@mui/material/Divider'
+import CloseIcon from '@mui/icons-material/Close'
 import Cloud from '@mui/icons-material/Cloud'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import { useState } from 'react'
@@ -14,9 +15,24 @@ import ListCard from './ListCards/ListCards'
 import { mapOrder } from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { Check } from '@mui/icons-material'
 
 function Column({ column }) {
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  const [openNewCardForm, setOpenNewCardForm] = useState(false)
+  const toggleOpenNewCardForm = () => {
+    setOpenNewCardForm(!openNewCardForm)
+    setNewCardTitle('')
+  }
+  const [newCardTitle, setNewCardTitle] = useState('')
+  const addNewCard = () => {
+    if (!newCardTitle) {
+      alert('Please enter card title!')
+      return
+    }
+
+    toggleOpenNewCardForm()
+  }
 
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -135,16 +151,46 @@ function Column({ column }) {
           {/* collumn footer */}
           <Box sx={{
             height: (theme) => theme.trelloCustom.collumnFooterHeight,
-            p: 2,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
+            p: 2
           }}
           >
-            <Button startIcon={<AddCard />}>Add Card</Button>
-            <Tooltip title="Drag to move">
-              <DragHandleIcon sx={{ cursor: 'pointer' }} />
-            </Tooltip>
+            {!openNewCardForm ? (
+              <Box
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}>
+                <Button onClick={toggleOpenNewCardForm} startIcon={<AddCard />}>Add Card</Button>
+                <Tooltip title="Drag to move">
+                  <DragHandleIcon sx={{ cursor: 'pointer' }} />
+                </Tooltip>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  height: '100%',
+                  gap: 2,
+                  display: 'flex',
+                  alignItems: 'center'
+                }}>
+                <TextField
+                  label="Enter title..."
+                  variant='outlined'
+                  autoFocus
+                  type="text"
+                  size='small'
+                  onChange={(e) => setNewCardTitle(e.target.value)} value={newCardTitle}
+                />
+                <Check fontSize='small'
+                  onClick={addNewCard}
+                  sx={{ cursor: 'pointer', color: (theme) => theme.palette.success.light }} />
+                <CloseIcon fontSize='small'
+                  onClick={toggleOpenNewCardForm}
+                  sx={{ cursor: 'pointer', color: (theme) => theme.palette.warning.light }} />
+              </Box>
+            )}
           </Box>
         </Box>
       </Box>

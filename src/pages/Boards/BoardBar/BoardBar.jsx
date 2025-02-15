@@ -40,9 +40,11 @@ function BoardBar({ board }) {
       backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#808e9b' : '#778beb'
     }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Chip
-          sx={MENU_STYLES}
-          icon={<DashboardCustomizeIcon />} label={board?.title} clickable />
+        <Tooltip title={board?.description}>
+          <Chip
+            sx={MENU_STYLES}
+            icon={<DashboardCustomizeIcon />} label={board?.title} clickable />
+        </Tooltip>
         <Chip
           sx={MENU_STYLES}
           icon={<VpnLockIcon />} label={capitalizeFirstLetter(board?.type)} clickable />
