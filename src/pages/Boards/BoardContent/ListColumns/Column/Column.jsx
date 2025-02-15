@@ -169,6 +169,7 @@ function Column({ column }) {
               </Box>
             ) : (
               <Box
+                data-no-dnd='true'
                 sx={{
                   height: '100%',
                   gap: 2,

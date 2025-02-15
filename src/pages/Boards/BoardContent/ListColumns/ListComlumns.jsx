@@ -23,7 +23,7 @@ function ListComlumns({ columns }) {
     toggleOpenNewColForm()
   }
   return (<>
-    {/* The <SortableContext> component expects a sorted array of unique identifiers associated with each sortable item via the items attribute. This array should be ["1", "2", "3"] rather than [{id: "1"}, {id: "2}, {id: "3}].
+    {/* The <SortableContext> component expects a sorted array of unique identifiers associated with each sortable item via the items attribute. This array should be ['1', '2', '3'] rather than [{id: '1'}, {id: '2}, {id: '3}].
 
     All we need to do is map your items array to an array of strings that reflect each item's unique identification.
     */}
@@ -62,10 +62,10 @@ function ListComlumns({ columns }) {
               backgroundColor: '#ffffff3d'
             }}>
             <TextField
-              label="Enter title..."
+              label='Enter title...'
               variant='outlined'
               autoFocus
-              type="text"
+              type='text'
               size='small'
               onChange={(e) => setNewColTitle(e.target.value)} value={newColTitle}
               sx={{

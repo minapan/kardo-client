@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import ListComlumns from './ListColumns/ListComlumns'
 import { mapOrder } from '~/utils/sorts'
-import { closestCorners, defaultDropAnimationSideEffects, DndContext, DragOverlay, getFirstCollision, MouseSensor, pointerWithin, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { closestCorners, defaultDropAnimationSideEffects, DndContext, DragOverlay, getFirstCollision, pointerWithin, useSensor, useSensors } from '@dnd-kit/core'
 import { useEffect, useState } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column'
@@ -10,6 +10,7 @@ import { cloneDeep, isEmpty } from 'lodash'
 import { useCallback } from 'react'
 import { useRef } from 'react'
 import { generatePlaceholderCard } from '~/utils/fomatters'
+import { MouseSensor, TouchSensor } from '~/customLibs/DndKitSensors'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_COLUMN',
