@@ -18,7 +18,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { Check } from '@mui/icons-material'
 import { toast } from 'react-toastify'
 
-function Column({ column }) {
+function Column({ column, createNewCard }) {
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const toggleOpenNewCardForm = () => {
@@ -26,11 +26,14 @@ function Column({ column }) {
     setNewCardTitle('')
   }
   const [newCardTitle, setNewCardTitle] = useState('')
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter card title!')
       return
     }
+
+    const newCardData = { title: newCardTitle, columnId: column._id }
+    await createNewCard(newCardData)
 
     toggleOpenNewCardForm()
   }
