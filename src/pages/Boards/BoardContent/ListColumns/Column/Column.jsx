@@ -16,6 +16,7 @@ import { mapOrder } from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Check } from '@mui/icons-material'
+import { toast } from 'react-toastify'
 
 function Column({ column }) {
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
@@ -27,7 +28,7 @@ function Column({ column }) {
   const [newCardTitle, setNewCardTitle] = useState('')
   const addNewCard = () => {
     if (!newCardTitle) {
-      alert('Please enter card title!')
+      toast.error('Please enter card title!')
       return
     }
 

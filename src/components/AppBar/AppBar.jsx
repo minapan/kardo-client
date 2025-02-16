@@ -7,7 +7,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
-import { ReactComponent as Logo } from '~/assets/trello-icon.svg'
+import { ReactComponent as Logo } from '~/assets/trello.svg'
 import Workspaces from './Menus/Workspaces'
 import Recent from './Menus/Recent'
 import Starred from './Menus/Starred'
@@ -33,7 +33,7 @@ function AppBar() {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <AppsIcon sx={{ color: 'white' }} />
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <SvgIcon component={Logo} fontSize='small' inheritViewBox sx={{ color: 'white' }} />
+            <SvgIcon component={Logo} fontSize='medium' inheritViewBox/>
             <Typography variant='span' sx={{ fontSize: '1rem', fontWeight: 'bold', color: 'white', marginRight: 1 }}>
               Trello
             </Typography>

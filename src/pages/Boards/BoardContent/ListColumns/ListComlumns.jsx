@@ -6,6 +6,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { horizontalListSortingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { useState } from 'react'
 import TextField from '@mui/material/TextField'
+import { toast } from 'react-toastify'
 function ListComlumns({ columns }) {
   const [openNewColForm, setOpenNewColForm] = useState(false)
   const toggleOpenNewColForm = () => {
@@ -16,7 +17,7 @@ function ListComlumns({ columns }) {
 
   const addNewCol = () => {
     if (!newColTitle) {
-      alert('Please enter column title!')
+      toast.error('Please enter column title!')
       return
     }
 
@@ -86,14 +87,15 @@ function ListComlumns({ columns }) {
                 justifyContent: 'space-between',
                 mt: 2
               }}>
-              <Button variant='contained' color='success' size='small'
+              <Button variant='contained' size='small'
                 onClick={addNewCol}
                 sx={{
                   color: 'white',
                   boxShadow: 'none',
                   border: '0.2px solid',
-                  borderColor: (theme) => theme.palette.success.main,
-                  '&:hover': { backgroundColor: (theme) => theme.palette.success.main }
+                  backgroundColor: (theme) => theme.palette.primary.dark,
+                  borderColor: (theme) => theme.palette.primary.main,
+                  '&:hover': { backgroundColor: (theme) => theme.palette.primary.dark }
                 }}>
                 Add Column
               </Button>
