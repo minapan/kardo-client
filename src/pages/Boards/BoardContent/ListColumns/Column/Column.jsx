@@ -16,8 +16,9 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Check } from '@mui/icons-material'
 import { toast } from 'react-toastify'
+import { useConfirm } from 'material-ui-confirm'
 
-function Column({ column, createNewCard }) {
+function Column({ column, createNewCard, deleteColDetails }) {
   const orderedCards = column.cards
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const toggleOpenNewCardForm = () => {
@@ -44,6 +45,19 @@ function Column({ column, createNewCard }) {
   }
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const confirm = useConfirm()
+  const handleDeleteColumn = () => {
+    confirm({
+      title: 'DELETE COLUMN ?',
+      description: 'This action is permanently delete your column and its cards! Are you sure?',
+      confirmationText: 'Confirm'
+    })
+      .then(() => {
+        deleteColDetails(column._id)
+      })
+      .catch(() => { })
   }
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -113,14 +127,23 @@ function Column({ column, createNewCard }) {
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
+                onClick={handleClose}
                 MenuListProps={{
                   'aria-labelledby': 'basic-button'
                 }}
               >
-                <MenuItem>
-                  <ListItemIcon><AddCard fontSize="small" /></ListItemIcon>
+                <MenuItem
+                  onClick={toggleOpenNewCardForm}
+                  sx={{
+                    '&:hover': {
+                      color: 'primary.dark',
+                      '& .add-card, & .ctrl-n': { color: 'primary.dark' }
+                    }
+                  }}
+                >
+                  <ListItemIcon><AddCard className='add-card' fontSize="small" /></ListItemIcon>
                   <ListItemText>Add Card</ListItemText>
-                  <Typography variant="body2" color="text.secondary"> ⌘N</Typography>
+                  <Typography variant="body2" className='ctrl-n' color="text.secondary"> ⌘N</Typography>
                 </MenuItem>
                 <MenuItem>
                   <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
@@ -138,13 +161,21 @@ function Column({ column, createNewCard }) {
                   <Typography variant="body2" color="text.secondary"> ⌘V</Typography>
                 </MenuItem>
                 <Divider />
-                <MenuItem>
-                  <ListItemIcon><DeleteIcon fontSize="small" /></ListItemIcon>
-                  <ListItemText>Archive this column</ListItemText>
+                <MenuItem
+                  onClick={handleDeleteColumn}
+                  sx={{
+                    '&:hover': {
+                      color: 'warning.dark',
+                      '& .delete-icon': { color: 'warning.dark' }
+                    }
+                  }}
+                >
+                  <ListItemIcon><DeleteIcon className='delete-icon' fontSize="small" /></ListItemIcon>
+                  <ListItemText>Remove this column</ListItemText>
                 </MenuItem>
                 <MenuItem>
                   <ListItemIcon><Cloud fontSize="small" /></ListItemIcon>
-                  <ListItemText>Remove this column</ListItemText>
+                  <ListItemText>Archive this column</ListItemText>
                 </MenuItem>
               </Menu>
             </Box>

@@ -7,7 +7,7 @@ import { horizontalListSortingStrategy, SortableContext } from '@dnd-kit/sortabl
 import { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { toast } from 'react-toastify'
-function ListComlumns({ columns, createNewCol, createNewCard }) {
+function ListComlumns({ columns, createNewCol, createNewCard, deleteColDetails }) {
   const [openNewColForm, setOpenNewColForm] = useState(false)
   const toggleOpenNewColForm = () => {
     setOpenNewColForm(!openNewColForm)
@@ -40,7 +40,13 @@ function ListComlumns({ columns, createNewCol, createNewCard }) {
         display: 'flex',
         '&::-webkit-scrollbar-track': { m: 2 }
       }}>
-        {columns?.map(column => (<Column key={column._id} column={column} createNewCard={createNewCard} />))}
+        {columns?.map(column => (
+          <Column key={column._id}
+            column={column}
+            createNewCard={createNewCard}
+            deleteColDetails={deleteColDetails}
+          />
+        ))}
         {!openNewColForm ? (
           <Box
             onClick={toggleOpenNewColForm}

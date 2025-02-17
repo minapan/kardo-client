@@ -22,7 +22,8 @@ function BoardContent({
   createNewCard,
   moveColumns,
   moveCardInSameCol,
-  moveCardToDiffCol }) {
+  moveCardToDiffCol,
+  deleteColDetails }) {
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
   const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
@@ -264,7 +265,7 @@ function BoardContent({
   const dropAnimation = { sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: 0.7 } } }) }
   return (
     <DndContext
-      onDragStart={handleDragStart} 
+      onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       sensors={sensors}
@@ -282,7 +283,8 @@ function BoardContent({
         <ListComlumns
           columns={orderedColumns}
           createNewCol={createNewCol}
-          createNewCard={createNewCard} />
+          createNewCard={createNewCard}
+          deleteColDetails={deleteColDetails} />
         <DragOverlay dropAnimation={dropAnimation}>
           {(!activeDragItemType) && null}
           {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (

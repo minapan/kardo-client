@@ -3,10 +3,11 @@ import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 import { useEffect, useState } from 'react'
-import { createNewCardAPI, createNewColAPI, fetchBoardDetailsAPI, moveCardToDiffColAPI, updateBoardDetailsAPI, updateColDetailsAPI } from '~/apis'
+import { createNewCardAPI, createNewColAPI, deleteColDetailsAPI, fetchBoardDetailsAPI, moveCardToDiffColAPI, updateBoardDetailsAPI, updateColDetailsAPI } from '~/apis'
 import { isEmpty } from 'lodash'
 import { generatePlaceholderCard } from '~/utils/fomatters'
 import { mapOrder } from '~/utils/sorts'
+import { toast } from 'react-toastify'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -46,8 +47,7 @@ function Board() {
     const columnToUpdate = newBoard.columns.find(col => col._id === createdCard.columnId)
     if (columnToUpdate) {
       // Insert the new card and remove the placeholder card
-      if (columnToUpdate.some(card => card.FE_Placeholder))
-      {
+      if (columnToUpdate.cards.some(card => card.FE_Placeholder)) {
         columnToUpdate.cards = [createdCard]
         columnToUpdate.cardOrderIds = [createdCard._id]
       }
@@ -105,6 +105,17 @@ function Board() {
     })
   }
 
+  const deleteColDetails = (id) => {
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.filter(col => col._id !== id)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== id)
+    setBoard(newBoard)
+
+    deleteColDetailsAPI(id).then(res => {
+      toast.success(res?.deleteResult)
+    })
+  }
+
   if (!board) {
     return (
       <Box sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -119,11 +130,13 @@ function Board() {
       <BoardBar board={board} />
       <BoardContent
         board={board}
+
         createNewCol={createNewCol}
         createNewCard={createNewCard}
         moveColumns={moveColumns}
         moveCardInSameCol={moveCardInSameCol}
-        moveCardToDiffCol={moveCardToDiffCol} />
+        moveCardToDiffCol={moveCardToDiffCol}
+        deleteColDetails={deleteColDetails} />
     </Container>
   )
 }
