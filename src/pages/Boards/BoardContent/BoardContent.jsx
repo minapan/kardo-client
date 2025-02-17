@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import ListComlumns from './ListColumns/ListComlumns'
-import { mapOrder } from '~/utils/sorts'
 import { closestCorners, defaultDropAnimationSideEffects, DndContext, DragOverlay, getFirstCollision, pointerWithin, useSensor, useSensors } from '@dnd-kit/core'
 import { useEffect, useState } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
@@ -17,7 +16,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_CARD'
 }
 
-function BoardContent({ board, createNewCol, createNewCard, moveColumns }) {
+function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCardInSameCol }) {
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
   const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
@@ -34,8 +33,7 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns }) {
   const lastOverId = useRef(null)
 
   useEffect(() => {
-    // Map the board's columns based on the specified column order IDs.
-    setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
+    setOrderedColumns(board.columns)
   }, [board])
 
   const findColumnByCardId = (cardId) => {
@@ -151,6 +149,8 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns }) {
 
         // Reorder the cards in the old column by moving the dragged card to the new index
         const dndOrderedCards = arrayMove(oldColumnWhenDraggingCard?.cards, oldIndex, newIndex)
+        const dndOrderedCardIDs = dndOrderedCards.map(card => card._id)
+
         // Update the state with the new order of columns and cards
         setOrderedColumns(prevColumns => {
           // Create a deep copy of the previous columns to avoid direct state mutation
@@ -161,10 +161,12 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns }) {
             // Update the cards in the target column with the new order
             nextOverColumn.cards = dndOrderedCards
             // Update the card order IDs for proper tracking
-            nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
+            nextOverColumn.cardOrderIds = dndOrderedCardIDs
           }
           return nextColumns
         })
+
+        moveCardInSameCol(dndOrderedCards, dndOrderedCardIDs, oldColumnWhenDraggingCard._id)
       }
     }
 
@@ -177,9 +179,9 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns }) {
         // Reorder the columns based on the drag-and-drop operation.
         const dndOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex)
 
-        moveColumns(dndOrderedColumns)
-
         setOrderedColumns(dndOrderedColumns)
+
+        moveColumns(dndOrderedColumns)
       }
     }
 
@@ -240,7 +242,10 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns }) {
         height: (theme) => theme.trelloCustom.boardContentHeight,
         backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#808e9b' : '#778beb'
       }}>
-        <ListComlumns columns={orderedColumns} createNewCol={createNewCol} createNewCard={createNewCard} />
+        <ListComlumns
+          columns={orderedColumns}
+          createNewCol={createNewCol}
+          createNewCard={createNewCard} />
         <DragOverlay dropAnimation={dropAnimation}>
           {(!activeDragItemType) && null}
           {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (

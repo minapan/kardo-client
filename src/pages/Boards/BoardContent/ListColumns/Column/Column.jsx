@@ -12,28 +12,27 @@ import { useState } from 'react'
 import { AddCard, ContentCopy, ContentPaste } from '@mui/icons-material'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ListCard from './ListCards/ListCards'
-import { mapOrder } from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Check } from '@mui/icons-material'
 import { toast } from 'react-toastify'
 
 function Column({ column, createNewCard }) {
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  const orderedCards = column.cards
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const toggleOpenNewCardForm = () => {
     setOpenNewCardForm(!openNewCardForm)
     setNewCardTitle('')
   }
   const [newCardTitle, setNewCardTitle] = useState('')
-  const addNewCard = async () => {
+  const addNewCard = () => {
     if (!newCardTitle) {
       toast.error('Please enter card title!')
       return
     }
 
     const newCardData = { title: newCardTitle, columnId: column._id }
-    await createNewCard(newCardData)
+    createNewCard(newCardData)
 
     toggleOpenNewCardForm()
   }

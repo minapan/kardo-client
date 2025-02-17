@@ -15,14 +15,14 @@ function ListComlumns({ columns, createNewCol, createNewCard }) {
   }
   const [newColTitle, setNewColTitle] = useState('')
 
-  const addNewCol = async () => {
+  const addNewCol = () => {
     if (!newColTitle) {
       toast.error('Please enter column title!')
       return
     }
 
     const newColData = { title: newColTitle }
-    await createNewCol(newColData)
+    createNewCol(newColData)
 
     toggleOpenNewColForm()
   }
