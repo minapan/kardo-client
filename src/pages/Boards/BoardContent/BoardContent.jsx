@@ -17,7 +17,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_CARD'
 }
 
-function BoardContent({ board, createNewCol, createNewCard }) {
+function BoardContent({ board, createNewCol, createNewCard, moveColumns }) {
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
   const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
@@ -176,6 +176,8 @@ function BoardContent({ board, createNewCol, createNewCard }) {
 
         // Reorder the columns based on the drag-and-drop operation.
         const dndOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex)
+
+        moveColumns(dndOrderedColumns)
 
         setOrderedColumns(dndOrderedColumns)
       }

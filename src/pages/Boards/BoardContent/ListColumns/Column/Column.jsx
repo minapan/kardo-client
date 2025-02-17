@@ -176,7 +176,7 @@ function Column({ column, createNewCard }) {
                 data-no-dnd='true'
                 sx={{
                   height: '100%',
-                  gap: 2,
+                  gap: 1.5,
                   display: 'flex',
                   alignItems: 'center'
                 }}>
@@ -188,12 +188,12 @@ function Column({ column, createNewCard }) {
                   size='small'
                   onChange={(e) => setNewCardTitle(e.target.value)} value={newCardTitle}
                 />
-                <Check fontSize='small'
+                <Check fontSize='medium'
                   onClick={addNewCard}
-                  sx={{ cursor: 'pointer', color: (theme) => theme.palette.success.light }} />
-                <CloseIcon fontSize='small'
+                  sx={{ color: 'white', borderRadius: 2, cursor: 'pointer', bgcolor: (theme) => theme.palette.success.light }} />
+                <CloseIcon fontSize='medium'
                   onClick={toggleOpenNewCardForm}
-                  sx={{ cursor: 'pointer', color: (theme) => theme.palette.warning.light }} />
+                  sx={{ color: 'white', borderRadius: 2, cursor: 'pointer', bgcolor: (theme) => theme.palette.warning.light }} />
               </Box>
             )}
           </Box>
