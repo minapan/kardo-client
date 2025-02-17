@@ -16,7 +16,13 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_CARD'
 }
 
-function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCardInSameCol }) {
+function BoardContent({
+  board,
+  createNewCol,
+  createNewCard,
+  moveColumns,
+  moveCardInSameCol,
+  moveCardToDiffCol }) {
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
   const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
@@ -40,8 +46,16 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
     return orderedColumns.find(column => column?.cards?.map(card => card._id).includes(cardId))
   }
 
-  const moveCardBetweenColumns = ({
-    overCardId, overColumn, active, over, activeColumn, activeDraggingCardId, activeDraggingCardData }) => {
+  const moveCardBetweenColumns = (
+    overCardId,
+    overColumn,
+    active,
+    over,
+    activeColumn,
+    activeDraggingCardId,
+    activeDraggingCardData,
+    triggerFrom
+  ) => {
     setOrderedColumns(prevColumns => {
       const overCardIndex = overColumn?.cards?.findIndex(card => card._id === overCardId)
       let newCardIndex
@@ -76,6 +90,15 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
 
         // Update the card order IDs of the target column.
         nextOverColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
+      }
+
+      if (triggerFrom === 'handleDragEnd') {
+        moveCardToDiffCol(
+          activeDraggingCardId,
+          oldColumnWhenDraggingCard._id,
+          nextOverColumn._id,
+          nextColumns
+        )
       }
       return nextColumns
     })
@@ -117,9 +140,16 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
 
     if (activeColumn._id !== overColumn._id) {
       // Update the state of the columns and cards based on the drag-and-drop operation.
-      moveCardBetweenColumns({
-        overCardId, overColumn, active, over, activeColumn, activeDraggingCardId, activeDraggingCardData
-      })
+      moveCardBetweenColumns(
+        overCardId,
+        overColumn,
+        active,
+        over,
+        activeColumn,
+        activeDraggingCardId,
+        activeDraggingCardData,
+        'handleDragOver'
+      )
     }
   }
 
@@ -138,9 +168,16 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
 
       // Dont use activeColumn._id because it will be the same as overColumn._id (handleDragOver function did update state)
       if (oldColumnWhenDraggingCard._id !== overColumn._id) {
-        moveCardBetweenColumns({
-          overCardId, overColumn, active, over, activeColumn, activeDraggingCardId, activeDraggingCardData
-        })
+        moveCardBetweenColumns(
+          overCardId,
+          overColumn,
+          active,
+          over,
+          activeColumn,
+          activeDraggingCardId,
+          activeDraggingCardData,
+          'handleDragEnd'
+        )
       } else {
         // Find the index of the dragged card in the original column
         const oldIndex = oldColumnWhenDraggingCard?.cards?.findIndex(card => card._id === activeDragItemId)
@@ -227,7 +264,7 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
   const dropAnimation = { sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: 0.7 } } }) }
   return (
     <DndContext
-      onDragStart={handleDragStart}
+      onDragStart={handleDragStart} 
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       sensors={sensors}

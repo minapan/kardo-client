@@ -3,7 +3,7 @@ import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 import { useEffect, useState } from 'react'
-import { createNewCardAPI, createNewColAPI, fetchBoardDetailsAPI, updateBoardDetailsAPI, updateColDetailsAPI } from '~/apis'
+import { createNewCardAPI, createNewColAPI, fetchBoardDetailsAPI, moveCardToDiffColAPI, updateBoardDetailsAPI, updateColDetailsAPI } from '~/apis'
 import { isEmpty } from 'lodash'
 import { generatePlaceholderCard } from '~/utils/fomatters'
 import { mapOrder } from '~/utils/sorts'
@@ -75,6 +75,23 @@ function Board() {
     updateColDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIDs })
   }
 
+  const moveCardToDiffCol = (currCardId, prevColId, nextColId, dndOrderedColumns) => {
+    const dndOrderedColumnIds = dndOrderedColumns.map(c => c._id)
+
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumns
+    newBoard.columnOrderIds = dndOrderedColumnIds
+    setBoard(newBoard)
+
+    moveCardToDiffColAPI({
+      currCardId,
+      prevColId,
+      prevCardOrderIds: dndOrderedColumns.find(col => col._id === prevColId)?.cardOrderIds,
+      nextColId,
+      nextCardOrderIds: dndOrderedColumns.find(col => col._id === nextColId)?.cardOrderIds
+    })
+  }
+
   if (!board) {
     return (
       <Box sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -92,7 +109,8 @@ function Board() {
         createNewCol={createNewCol}
         createNewCard={createNewCard}
         moveColumns={moveColumns}
-        moveCardInSameCol={moveCardInSameCol} />
+        moveCardInSameCol={moveCardInSameCol}
+        moveCardToDiffCol={moveCardToDiffCol} />
     </Container>
   )
 }
