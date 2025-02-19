@@ -7,7 +7,16 @@ import { horizontalListSortingStrategy, SortableContext } from '@dnd-kit/sortabl
 import { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { toast } from 'react-toastify'
-function ListComlumns({ columns, createNewCol, createNewCard, deleteColDetails }) {
+import { createNewColAPI } from '~/apis'
+import { generatePlaceholderCard } from '~/utils/fomatters'
+import { cloneDeep } from 'lodash'
+import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { selectCurrActiveBoard, updateCurrActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+function ListComlumns({ columns }) {
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrActiveBoard)
+
   const [openNewColForm, setOpenNewColForm] = useState(false)
   const toggleOpenNewColForm = () => {
     setOpenNewColForm(!openNewColForm)
@@ -15,14 +24,27 @@ function ListComlumns({ columns, createNewCol, createNewCard, deleteColDetails }
   }
   const [newColTitle, setNewColTitle] = useState('')
 
-  const addNewCol = () => {
+  const addNewCol = async () => {
     if (!newColTitle) {
       toast.error('Please enter column title!')
       return
     }
 
     const newColData = { title: newColTitle }
-    createNewCol(newColData)
+
+    // createNewCol(newColData)
+    // Call API
+    const createdCol = await createNewColAPI({ ...newColData, boardId: board._id })
+
+    createdCol.cards = [generatePlaceholderCard(createdCol)]
+    createdCol.cardOrderIds = [generatePlaceholderCard(createdCol)._id]
+
+    // const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
+    newBoard.columns.push(createdCol)
+    newBoard.columnOrderIds.push(createdCol._id)
+    // setBoard(newBoard)
+    dispatch(updateCurrActiveBoard(newBoard))
 
     toggleOpenNewColForm()
   }
@@ -41,11 +63,7 @@ function ListComlumns({ columns, createNewCol, createNewCard, deleteColDetails }
         '&::-webkit-scrollbar-track': { m: 2 }
       }}>
         {columns?.map(column => (
-          <Column key={column._id}
-            column={column}
-            createNewCard={createNewCard}
-            deleteColDetails={deleteColDetails}
-          />
+          <Column key={column._id} column={column}/>
         ))}
         {!openNewColForm ? (
           <Box
