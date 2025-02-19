@@ -18,12 +18,10 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 
 function BoardContent({
   board,
-  createNewCol,
-  createNewCard,
   moveColumns,
   moveCardInSameCol,
-  moveCardToDiffCol,
-  deleteColDetails }) {
+  moveCardToDiffCol
+}) {
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
   const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
@@ -262,7 +260,7 @@ function BoardContent({
     return lastOverId.current ? [{ id: lastOverId.current }] : []
   }, [])
 
-  const dropAnimation = { sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: 0.7 } } }) }
+  // const dropAnimation = { sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: 0.7 } } }) }
   return (
     <DndContext
       onDragStart={handleDragStart}
@@ -280,12 +278,10 @@ function BoardContent({
         height: (theme) => theme.trelloCustom.boardContentHeight,
         backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#808e9b' : '#778beb'
       }}>
-        <ListComlumns
-          columns={orderedColumns}
-          createNewCol={createNewCol}
-          createNewCard={createNewCard}
-          deleteColDetails={deleteColDetails} />
-        <DragOverlay dropAnimation={dropAnimation}>
+        <ListComlumns columns={orderedColumns} />
+        <DragOverlay
+        //  dropAnimation={dropAnimation}
+        >
           {(!activeDragItemType) && null}
           {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (
             <div
