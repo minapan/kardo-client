@@ -8,16 +8,16 @@ import { useDispatch } from 'react-redux'
 import { fetchBoardDetailsAPI, selectCurrActiveBoard, updateCurrActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { useSelector } from 'react-redux'
 import { cloneDeep } from 'lodash'
+import { useParams } from 'react-router-dom'
 
 function Board() {
   const dispatch = useDispatch()
   // const [board, setBoard] = useState(null)
   const board = useSelector(selectCurrActiveBoard)
+  const { boardId } = useParams()
   useEffect(() => {
-    const boardId = '67b00953f56e9e6b62486467'
-
     dispatch(fetchBoardDetailsAPI(boardId))
-  }, [dispatch])
+  }, [dispatch, boardId])
 
   // const createNewCol = async (newColData) => {}
 
