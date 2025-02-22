@@ -256,7 +256,9 @@ function Column({ column }) {
                   size='small'
                   onChange={(e) => setNewCardTitle(e.target.value)} value={newCardTitle}
                 />
-                <Check fontSize='medium'
+                <Check
+                  className='interceptor-loading'
+                  fontSize='medium'
                   onClick={addNewCard}
                   sx={{ color: 'white', borderRadius: 2, cursor: 'pointer', bgcolor: (theme) => theme.palette.success.light }} />
                 <CloseIcon fontSize='medium'

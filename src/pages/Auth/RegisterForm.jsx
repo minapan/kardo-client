@@ -52,7 +52,7 @@ function RegisterForm() {
                   }
                 })}
               />
-              <FieldErrorAlert errors={errors} fieldName={'email'}/>
+              <FieldErrorAlert errors={errors} fieldName={'email'} />
             </Box>
             <Box sx={{ marginTop: '1em' }}>
               <TextField
@@ -69,7 +69,7 @@ function RegisterForm() {
                   }
                 })}
               />
-              <FieldErrorAlert errors={errors} fieldName={'password'}/>
+              <FieldErrorAlert errors={errors} fieldName={'password'} />
             </Box>
             <Box sx={{ marginTop: '1em' }}>
               <TextField
@@ -83,11 +83,12 @@ function RegisterForm() {
                   validate: (value) => value === watch('password') || PASSWORD_CONFIRMATION_MESSAGE
                 })}
               />
-              <FieldErrorAlert errors={errors} fieldName={'password_confirmation'}/>
+              <FieldErrorAlert errors={errors} fieldName={'password_confirmation'} />
             </Box>
           </Box>
           <CardActions sx={{ padding: '0 1em 1em 1em' }}>
             <Button
+              className='interceptor-loading'
               type="submit"
               variant="contained"
               color="primary"

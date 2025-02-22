@@ -8,7 +8,7 @@ import { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { toast } from 'react-toastify'
 import { createNewColAPI } from '~/apis'
-import { generatePlaceholderCard } from '~/utils/fomatters'
+import { generatePlaceholderCard } from '~/utils/formatters'
 import { cloneDeep } from 'lodash'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
@@ -63,7 +63,7 @@ function ListComlumns({ columns }) {
         '&::-webkit-scrollbar-track': { m: 2 }
       }}>
         {columns?.map(column => (
-          <Column key={column._id} column={column}/>
+          <Column key={column._id} column={column} />
         ))}
         {!openNewColForm ? (
           <Box
@@ -76,7 +76,11 @@ function ListComlumns({ columns }) {
               height: 'fit-content',
               backgroundColor: '#ffffff3d'
             }}>
-            <Button sx={{ color: 'white', p: 2, width: '100%', justifyContent: 'flex-start' }} startIcon={<AddIcon />}>Add New Column</Button>
+            <Button
+              sx={{ color: 'white', p: 2, width: '100%', justifyContent: 'flex-start' }}
+              startIcon={<AddIcon />}>
+              Add New Column
+            </Button>
           </Box>
         ) : (
           <Box
@@ -115,6 +119,7 @@ function ListComlumns({ columns }) {
                 mt: 2
               }}>
               <Button variant='contained' size='small'
+                className='interceptor-loading'
                 onClick={addNewCol}
                 sx={{
                   color: 'white',

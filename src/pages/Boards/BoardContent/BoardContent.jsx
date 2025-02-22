@@ -8,7 +8,7 @@ import TrelloCard from './ListColumns/Column/ListCards/Card/Card'
 import { cloneDeep, isEmpty } from 'lodash'
 import { useCallback } from 'react'
 import { useRef } from 'react'
-import { generatePlaceholderCard } from '~/utils/fomatters'
+import { generatePlaceholderCard } from '~/utils/formatters'
 import { MouseSensor, TouchSensor } from '~/customLibs/DndKitSensors'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
