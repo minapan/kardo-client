@@ -25,7 +25,7 @@ function RegisterForm() {
       registerUserAPI({ email, password }),
       { pending: 'Registering is in progress...' }
     ).then(user => {
-      navigate(`/login?registered=${email}`)
+      navigate(`/login?registered=${user.email}`)
     })
   }
   return (
