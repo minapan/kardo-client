@@ -13,9 +13,13 @@ import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
 import { EMAIL_RULE, EMAIL_RULE_MESSAGE, FIELD_REQUIRED_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
+import { useSearchParams } from 'react-router-dom'
 
 function LoginForm() {
   const { register, handleSubmit, formState: { errors } } = useForm()
+  let [searchParams] = useSearchParams()
+  const registeredEmail = searchParams.get('registered')
+  const verifiedEmail = searchParams.get('verified')
 
   const submitLogIn = (data) => {
 
@@ -37,16 +41,20 @@ function LoginForm() {
             Trello Clone
           </Box>
           <Box sx={{ marginTop: '1em', display: 'flex', justifyContent: 'center', flexDirection: 'column', padding: '0 1em' }}>
-            {/* <Alert severity="success" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
-              Your email&nbsp;
-              <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>trungquandev@gmail.com</Typography>
-              &nbsp;has been verified.<br />Now you can login to enjoy our services! Have a good day!
-            </Alert>
-            <Alert severity="info" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
-              An email has been sent to&nbsp;
-              <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>trungquandev@gmail.com</Typography>
-              <br />Please check and verify your account before logging in!
-            </Alert> */}
+            {verifiedEmail &&
+              <Alert Alert severity="success" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
+                Your email
+                <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}> {verifiedEmail} </Typography>
+                has been verified.<br />Now you can login to enjoy our services! Have a good day!
+              </Alert>
+            }
+            {registeredEmail &&
+              <Alert severity="info" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
+                An email has been sent to
+                <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}> {registeredEmail}</Typography>
+                <br />Please check and verify your account before logging in!
+              </Alert>
+            }
           </Box>
           <Box sx={{ padding: '0 1em 1em 1em' }}>
             <Box sx={{ marginTop: '1em' }}>
@@ -106,8 +114,9 @@ function LoginForm() {
           </Box>
         </Card>
       </Zoom>
-    </form>
+    </form >
   )
 }
+
 
 export default LoginForm

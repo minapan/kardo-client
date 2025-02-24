@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Container, Typography } from '@mui/material'
+import { Container } from '@mui/material'
 import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
@@ -9,6 +9,7 @@ import { fetchBoardDetailsAPI, selectCurrActiveBoard, updateCurrActiveBoard } fr
 import { useSelector } from 'react-redux'
 import { cloneDeep } from 'lodash'
 import { useParams } from 'react-router-dom'
+import LoadingSpinner from '~/components/Loading/LoadingSpinner'
 
 function Board() {
   const dispatch = useDispatch()
@@ -73,14 +74,7 @@ function Board() {
 
   // const deleteColDetails = (id) => {}
 
-  if (!board) {
-    return (
-      <Box sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <CircularProgress />
-        <Typography sx={{ ml: 2 }}>Loading...</Typography>
-      </Box>
-    )
-  }
+  if (!board) return <LoadingSpinner caption='Loading Board...' />
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar />

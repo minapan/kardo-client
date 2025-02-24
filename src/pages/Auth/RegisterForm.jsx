@@ -12,11 +12,21 @@ import Zoom from '@mui/material/Zoom'
 import { useForm } from 'react-hook-form'
 import { EMAIL_RULE, EMAIL_RULE_MESSAGE, FIELD_REQUIRED_MESSAGE, PASSWORD_CONFIRMATION_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
+import { toast } from 'react-toastify'
+import { registerUserAPI } from '~/apis'
+import { useNavigate } from 'react-router-dom'
 
 function RegisterForm() {
   const { register, handleSubmit, watch, formState: { errors } } = useForm()
+  const navigate = useNavigate()
   const submitRegister = (data) => {
-
+    const { email, password } = data
+    toast.promise(
+      registerUserAPI({ email, password }),
+      { pending: 'Registering is in progress...' }
+    ).then(user => {
+      navigate(`/login?registered=${email}`)
+    })
   }
   return (
     <form onSubmit={handleSubmit(submitRegister)}>
