@@ -81,7 +81,7 @@ function Column({ column }) {
     confirm({
       title: 'DELETE COLUMN ?',
       description: 'This action is permanently delete your column and its cards! Are you sure?',
-      confirmationText: 'Confirm'
+      confirmationText: 'Yes'
     })
       .then(() => {
         // deleteColDetails(column._id)
