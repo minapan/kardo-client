@@ -9,3 +9,6 @@ if (process.env.BUILD_MODE === 'dev') {
 }
 
 export const API_ROOT = apiRoot
+
+export const DEFAULT_PAGE = 1
+export const DEFAULT_LIMIT = 12

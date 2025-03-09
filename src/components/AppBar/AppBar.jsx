@@ -32,30 +32,37 @@ function AppBar() {
         backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#485460' : '#546de5'
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <AppsIcon sx={{ color: 'white' }} />
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Link to='/' style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <Link to='/boards'>
+            <Tooltip title="Board List">
+              <AppsIcon sx={{ color: 'white', verticalAlign: 'middle' }} />
+            </Tooltip>
+          </Link>
+
+          <Link to='/'>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <SvgIcon component={Logo} fontSize='medium' inheritViewBox />
               <Typography variant='span' sx={{ fontSize: '1rem', fontWeight: 'bold', color: 'white', marginRight: 1 }}>
                 Trello
               </Typography>
-            </Link>
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
-              <Workspaces />
-              <Recent />
-              <Starred />
-              <Teamplates />
-              <Button
-                sx={{
-                  color: 'white',
-                  borderColor: 'white',
-                  '&:hover': {
-                    borderColor: 'white'
-                  }
-                }}
-                variant='outlined' startIcon={<LibraryAddIcon />}>Create</Button>
             </Box>
+          </Link>
+
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
+            <Workspaces />
+            <Recent />
+            <Starred />
+            <Teamplates />
+            <Button
+              sx={{
+                color: 'white',
+                borderColor: 'white',
+                '&:hover': {
+                  borderColor: 'white'
+                }
+              }}
+              variant='outlined' startIcon={<LibraryAddIcon />}>Create</Button>
           </Box>
+
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <TextField id="outlined-search" placeholder="Search..." type="text" size='small' onChange={(e) => setSearch(e.target.value)} value={search}

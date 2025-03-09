@@ -58,7 +58,6 @@ function AccountTab() {
   }
 
   const uploadAvatar = (e) => {
-    console.log('e.target?.files[0]: ', e.target?.files[0])
     const error = singleFileValidator(e.target?.files[0])
     if (error) {
       toast.error(error)
@@ -67,11 +66,18 @@ function AccountTab() {
 
     let reqData = new FormData()
     reqData.append('avatar', e.target?.files[0])
-    console.log('reqData: ', reqData)
-    for (const value of reqData.values()) {
-      console.log('reqData Value: ', value)
-    }
+    // console.log('reqData: ', reqData)
+    // for (const value of reqData.values()) {
+    //   console.log('reqData Value: ', value)
+    // }
 
+    toast.promise(
+      dispatch(updateUserAPI(reqData)),
+      { pending: 'Updating is in progress...' }
+    ).then(res => {
+      if (!res.error) toast.success('Updated successfully.')
+      e.target.value = ''
+    })
   }
 
   return (

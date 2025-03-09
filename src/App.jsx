@@ -9,6 +9,7 @@ import { Outlet } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectCurrUser } from './redux/user/userSlice'
 import Settings from './pages/Settings/Settings'
+import Boards from './pages/Boards'
 
 const ProtectedRoute = ({ user }) => {
   if (!user) return <Navigate to='/login' replace={true} />
@@ -21,13 +22,13 @@ function App() {
   return (
     <Routes>
       <Route path='/' element={
-        <div>
-          <h1>Home Page</h1>
-        </div>}
+        <Navigate to={currUser ? '/boards' : '/login'} replace={true} />
+      }
       />
 
       <Route element={<ProtectedRoute user={currUser} />}>
         <Route path='/b/:boardId' element={<Board />} />
+        <Route path='/boards' element={<Boards />} />
         <Route path='/settings/account' element={<Settings />} />
         <Route path='/settings/security' element={<Settings />} />
       </Route>
