@@ -14,6 +14,7 @@ import Starred from './Menus/Starred'
 import Teamplates from './Menus/Teamplates'
 import Profile from './Menus/Profile'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 function AppBar() {
   const [search, setSearch] = useState('')
@@ -33,10 +34,12 @@ function AppBar() {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <AppsIcon sx={{ color: 'white' }} />
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <SvgIcon component={Logo} fontSize='medium' inheritViewBox/>
-            <Typography variant='span' sx={{ fontSize: '1rem', fontWeight: 'bold', color: 'white', marginRight: 1 }}>
-              Trello
-            </Typography>
+            <Link to='/' style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <SvgIcon component={Logo} fontSize='medium' inheritViewBox />
+              <Typography variant='span' sx={{ fontSize: '1rem', fontWeight: 'bold', color: 'white', marginRight: 1 }}>
+                Trello
+              </Typography>
+            </Link>
             <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
               <Workspaces />
               <Recent />

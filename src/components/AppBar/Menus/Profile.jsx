@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
+import { Avatar, Box, IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import Divider from '@mui/material/Divider'
 import { useState } from 'react'
@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { logoutUserAPI, selectCurrUser } from '~/redux/user/userSlice'
 import { useConfirm } from 'material-ui-confirm'
+import { Link } from 'react-router-dom'
 
 function Profile() {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -24,7 +25,9 @@ function Profile() {
   const confirmLogout = useConfirm()
   const handleLogout = () => {
     confirmLogout({
-      title: 'LOGOUT ?',
+      title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Logout sx={{ color: 'warning.dark' }} /> LOGOUT ?
+      </Box>,
       description: 'Are you sure you want to logout?',
       confirmationText: 'Yes'
     })
@@ -56,11 +59,13 @@ function Profile() {
         'aria-labelledby': 'basic-button'
       }}
     >
-      <MenuItem sx={{
-        '&:hover': { color: 'success.light' }
-      }}>
-        <Avatar sx={{ mr: 2, width: 32, height: 32 }} src={currUser?.avatar} /> Profile
-      </MenuItem>
+      <Link to="/settings/account" style={{ color: 'inherit' }}>
+        <MenuItem sx={{
+          '&:hover': { color: 'success.light' }
+        }}>
+          <Avatar sx={{ mr: 2, width: 32, height: 32 }} src={currUser?.avatar} /> Profile
+        </MenuItem>
+      </Link>
       <Divider />
       <MenuItem>
         <ListItemIcon>

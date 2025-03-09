@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import App from '~/App.jsx'
 import '~/index.css'
-import { CssBaseline } from '@mui/material'
+import { CssBaseline, GlobalStyles } from '@mui/material'
 // import { ThemeProvider } from '@mui/material/styles'
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles'
 import theme from '~/theme'
@@ -25,6 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <ConfirmProvider
             defaultOptions={{ confirmationButtonProps: { color: 'secondary', variant: 'outlined' } }}
           >
+            <GlobalStyles styles={{ a: { textDecoration: 'none' } }} />
             <CssBaseline />
             <App />
             <ToastContainer

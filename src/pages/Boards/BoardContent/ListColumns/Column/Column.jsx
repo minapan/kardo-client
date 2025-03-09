@@ -79,7 +79,9 @@ function Column({ column }) {
   const confirm = useConfirm()
   const handleDeleteColumn = () => {
     confirm({
-      title: 'DELETE COLUMN ?',
+      title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <DeleteIcon sx={{ color: 'warning.dark' }} /> DELETE COLUMN ?
+      </Box>,
       description: 'This action is permanently delete your column and its cards! Are you sure?',
       confirmationText: 'Yes'
     })
