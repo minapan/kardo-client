@@ -53,6 +53,11 @@ function Boards() {
   // Get the current page number from the query params (default to 1)
   const page = parseInt(query.get('page') || '1', 10)
 
+  const updateState = (res) => {
+    setBoards(res.boards || [])
+    setTotalBoards(res.total || 0)
+  }
+
   useEffect(() => {
     // Temporarily generate 16 board items for testing
     // [0, 1, 2, 3, ..., 15]
@@ -60,15 +65,21 @@ function Boards() {
     // Simulating a total of 100 boards in the database
     // setTotalBoards(100)
 
-    fetchBoardsAPI(location.search).then((res) => {
-      setBoards(res.boards || [])
-      setTotalBoards(res.total || 0)
-    })
+    // fetchBoardsAPI(location.search).then((res) => {
+    //   setBoards(res.boards || [])
+    //   setTotalBoards(res.total || 0)
+    // })
+    fetchBoardsAPI(location.search).then(updateState)
   }, [location.search])
 
   // Show a loading state while fetching data
   if (!boards) {
     return <LoadingSpinner caption="Loading Boards..." />
+  }
+
+  const afterCreateBoard = () => {
+    // Refresh the boards list after creating a new board
+    fetchBoardsAPI(location.search).then(updateState)
   }
 
   return (
@@ -93,7 +104,7 @@ function Boards() {
             </Stack>
             <Divider sx={{ my: 1 }} />
             <Stack direction="column" spacing={1}>
-              <SidebarCreateBoardModal />
+              <SidebarCreateBoardModal afterCreate={afterCreateBoard} />
             </Stack>
           </Grid>
 

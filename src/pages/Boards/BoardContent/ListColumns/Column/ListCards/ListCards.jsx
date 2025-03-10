@@ -7,7 +7,7 @@ function ListCard({ cards }) {
       <SortableContext items={cards?.map(c => c._id)} strategy={verticalListSortingStrategy}>
         <Box sx={{
           maxHeight: (theme) => `calc(${theme.trelloCustom.boardContentHeight} - ${theme.trelloCustom.collumnHeaderHeight} - ${theme.trelloCustom.collumnFooterHeight} - ${theme.spacing(5)})`,
-          gap: 0.5,
+          gap: 0.8,
           p: '0 5px 5px 5px',
           m: '0 5px',
           display: 'flex',

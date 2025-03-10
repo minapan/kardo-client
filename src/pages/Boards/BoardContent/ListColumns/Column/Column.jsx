@@ -17,11 +17,12 @@ import { CSS } from '@dnd-kit/utilities'
 import { Check } from '@mui/icons-material'
 import { toast } from 'react-toastify'
 import { useConfirm } from 'material-ui-confirm'
-import { createNewCardAPI, deleteColDetailsAPI } from '~/apis'
+import { createNewCardAPI, deleteColDetailsAPI, updateColDetailsAPI } from '~/apis'
 import { cloneDeep } from 'lodash'
 import { selectCurrActiveBoard, updateCurrActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
+import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 
 function Column({ column }) {
   const dispatch = useDispatch()
@@ -100,6 +101,17 @@ function Column({ column }) {
       .catch(() => { })
   }
 
+  const onUpdateColumnTitle = (newTitle) => {
+    updateColDetailsAPI(column._id, { title: newTitle }).then(() => {
+      const newBoard = cloneDeep(board)
+      const columnToUpdate = newBoard.columns.find(col => col._id === column._id)
+      if (columnToUpdate) {
+        columnToUpdate.title = newTitle
+      }
+      dispatch(updateCurrActiveBoard(newBoard))
+    })
+  }
+
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data: { ...column }
@@ -124,7 +136,7 @@ function Column({ column }) {
         sx={{
           minWidth: '272px',
           maxWidth: '272px',
-          borderRadius: 2,
+          borderRadius: 3,
           ml: 2,
           zIndex: 10,
           height: 'fit-content',
@@ -142,18 +154,27 @@ function Column({ column }) {
             justifyContent: 'space-between'
           }}
           >
-            <Typography
+            {/* <Typography
               variant="h6"
               sx={{
                 fontSize: '1rem',
                 fontWeight: 'bold',
                 cursor: 'pointer'
               }}
-            >{column?.title}</Typography>
+            >
+              {column?.title}
+            </Typography> */}
+            <ToggleFocusInput data-no-dnd='true' value={column?.title} onChangedValue={onUpdateColumnTitle} />
             <Box>
               <Tooltip title="More options">
                 <MoreHorizIcon
-                  sx={{ cursor: 'pointer' }}
+                  sx={{
+                    cursor: 'pointer',
+                    p: 0.5,
+                    borderRadius: 2,
+                    verticalAlign: 'middle',
+                    '&:hover': { backgroundColor: 'rgba(0,0,0,0.15)' }
+                  }}
                   id="basic-column-dropdown"
                   aria-controls={open ? 'basic-menu-column-dropdown' : undefined}
                   aria-haspopup="true"
@@ -238,7 +259,12 @@ function Column({ column }) {
                 }}>
                 <Button onClick={toggleOpenNewCardForm} startIcon={<AddCard />}>Add Card</Button>
                 <Tooltip title="Drag to move">
-                  <DragHandleIcon sx={{ cursor: 'pointer' }} />
+                  <DragHandleIcon sx={{
+                    cursor: 'pointer',
+                    p: 0.5,
+                    borderRadius: 2,
+                    '&:hover': { backgroundColor: 'rgba(0,0,0,0.15)' }
+                  }} />
                 </Tooltip>
               </Box>
             ) : (

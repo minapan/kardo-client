@@ -17,6 +17,7 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 
 import { styled } from '@mui/material/styles'
+import { createNewBoardAPI } from '~/apis'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -39,7 +40,7 @@ const BOARD_TYPES = {
   PRIVATE: 'private'
 }
 
-function SidebarCreateBoardModal() {
+function SidebarCreateBoardModal({afterCreate}) {
   const { control, register, handleSubmit, reset, formState: { errors } } = useForm()
 
   const [isOpen, setIsOpen] = useState(false)
@@ -52,10 +53,12 @@ function SidebarCreateBoardModal() {
   }
 
   const submitCreateNewBoard = (data) => {
-    const { title, description, type } = data
-    console.log('Board title: ', title)
-    console.log('Board description: ', description)
-    console.log('Board type: ', type)
+    // const { title, description, type } = data
+
+    createNewBoardAPI(data).then(() => {
+      handleCloseModal()
+      afterCreate()
+    })
   }
 
   return (
