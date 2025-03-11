@@ -6,10 +6,18 @@ import CardMedia from '@mui/material/CardMedia'
 import { Attachment, Comment, Group } from '@mui/icons-material'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useDispatch } from 'react-redux'
+import { updateCurrActiveCard } from '~/redux/activeCard/activeCardSlice'
 
 function TrelloCard({ card }) {
+  const dispatch = useDispatch()
+
   const showCardAction = () => {
     return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
+  }
+
+  const setActiveCard = () => {
+    dispatch(updateCurrActiveCard(card))
   }
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -27,7 +35,9 @@ function TrelloCard({ card }) {
   }
   return (
     <>
-      <Card ref={setNodeRef} style={dndKitCardStyle} {...attributes} {...listeners}
+      <Card
+        onClick={setActiveCard}
+        ref={setNodeRef} style={dndKitCardStyle} {...attributes} {...listeners}
         sx={{
           cursor: 'pointer',
           boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px',
@@ -44,7 +54,7 @@ function TrelloCard({ card }) {
           backgroundColor: card.FE_Placeholder ? 'transparent' : isDragging ? ((theme) => theme.palette.mode === 'dark' ? '#dff9fb' : '#535c68') : ((theme) => theme.palette.mode === 'dark' ? '#535c68' : '#fff')
         }}>
         <div style={{ opacity: isDragging ? '0' : '1' }}>
-          {card?.cover && (<CardMedia sx={{ height: '140px' }} image={card?.cover} />)}
+          {card?.cover && (<CardMedia sx={{ height: '140px', borderRadius: '8px 8px 0 0' }} image={card?.cover} />)}
           <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
             <Typography>{card?.title}</Typography>
           </CardContent>

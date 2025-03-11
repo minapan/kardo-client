@@ -40,7 +40,7 @@ const BOARD_TYPES = {
   PRIVATE: 'private'
 }
 
-function SidebarCreateBoardModal({afterCreate}) {
+function SidebarCreateBoardModal({ afterCreate }) {
   const { control, register, handleSubmit, reset, formState: { errors } } = useForm()
 
   const [isOpen, setIsOpen] = useState(false)
@@ -82,7 +82,7 @@ function SidebarCreateBoardModal({afterCreate}) {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 600,
+            width: { xs: '80%', md: '500px' },
             bgcolor: 'white',
             boxShadow: 24,
             borderRadius: '8px',

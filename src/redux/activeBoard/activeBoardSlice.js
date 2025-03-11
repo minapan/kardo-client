@@ -29,6 +29,22 @@ export const activeBoardSlice = createSlice({
       const board = action.payload
 
       state.currActiveBoard = board
+    },
+    updateCardInBoard: (state, action) => {
+      // Update nested data
+      const incomingCard = action.payload
+
+      // find board > column > card
+      const board = state.currActiveBoard
+      const column = board.columns.find(col => col._id === incomingCard.columnId)
+      if (column) {
+        const card = column.cards.find(card => card._id === incomingCard._id)
+        if (card) {
+          Object.keys(incomingCard).forEach(key => {
+            card[key] = incomingCard[key]
+          })
+        }
+      }
     }
   },
   // ExtraReducers: Handle data from async actions
@@ -55,7 +71,7 @@ export const activeBoardSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { updateCurrActiveBoard } = activeBoardSlice.actions
+export const { updateCurrActiveBoard, updateCardInBoard } = activeBoardSlice.actions
 
 // Selectors:
 export const selectCurrActiveBoard = state => state.activeBoard.currActiveBoard

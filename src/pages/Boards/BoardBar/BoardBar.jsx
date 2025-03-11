@@ -8,6 +8,7 @@ import Avatar from '@mui/material/Avatar'
 import AvatarGroup from '@mui/material/AvatarGroup'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { capitalizeFirstLetter } from '~/utils/formatters'
+import BoardUserGroup from './BoardUserGroup'
 
 const MENU_STYLES = {
   backgroundColor: 'transparent',
@@ -67,8 +68,13 @@ function BoardBar({ board }) {
               borderColor: 'white'
             }
           }}
-          variant='outlined' startIcon={<PersonAddIcon />}>Invite</Button>
-        <AvatarGroup max={6}
+          variant='outlined' startIcon={<PersonAddIcon />}>
+          Invite
+        </Button>
+
+        <BoardUserGroup />
+
+        {/* <AvatarGroup max={6}
           sx={{
             gap: 1,
             '& .MuiAvatar-root': {
@@ -128,7 +134,7 @@ function BoardBar({ board }) {
               src='https://nhatphan.id.vn/assets/img/cat-coffee.jpg' alt="Avt"
             />
           </Tooltip>
-        </AvatarGroup>
+        </AvatarGroup> */}
       </Box>
     </Box>
   )

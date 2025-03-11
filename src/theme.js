@@ -51,7 +51,8 @@ const theme = extendTheme({
       styleOverrides: {
         root: {
           textTransform: 'none',
-          padding: '0.5rem 1rem'
+          padding: '0.5rem 1rem',
+          userSelect: 'none'
         }
       }
     },

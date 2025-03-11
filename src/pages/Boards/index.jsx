@@ -120,8 +120,8 @@ function Boards() {
             {boards?.length > 0 &&
               <Grid container spacing={2}>
                 {boards.map(b =>
-                  <Grid xs={2} sm={3} md={4} key={b._id} sx={{ m: { xs: '0 auto', lg: '0' } }}>
-                    <Card sx={{ width: { xs: '100%', sm: '350px', md: '265px' } }}>
+                  <Grid xs={2} sm={3} md={4} key={b._id} sx={{ m: '0 auto' }}>
+                    <Card sx={{ width: 325 }}>
                       {/* Future feature: Adding a cover image for the board */}
                       {/* <CardMedia component="img" height="100" image="https://picsum.photos/100" /> */}
                       <Box sx={{ height: '50px', backgroundColor: randomColor() }}></Box>
