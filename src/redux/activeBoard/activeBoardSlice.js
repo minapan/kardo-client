@@ -52,6 +52,9 @@ export const activeBoardSlice = createSlice({
     builder.addCase(fetchBoardDetailsAPI.fulfilled, (state, action) => {
       let board = action.payload // action.payload = the data returned by the API (response.data)
 
+      // Combine 2 arr into one
+      board.FE_allUsers = board.owners.concat(board.members)
+
       // Handle data from API
       board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
 

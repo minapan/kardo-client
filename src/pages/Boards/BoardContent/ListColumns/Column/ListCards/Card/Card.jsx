@@ -7,7 +7,7 @@ import { Attachment, Comment, Group } from '@mui/icons-material'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useDispatch } from 'react-redux'
-import { updateCurrActiveCard } from '~/redux/activeCard/activeCardSlice'
+import { showModal, updateCurrActiveCard } from '~/redux/activeCard/activeCardSlice'
 
 function TrelloCard({ card }) {
   const dispatch = useDispatch()
@@ -18,6 +18,7 @@ function TrelloCard({ card }) {
 
   const setActiveCard = () => {
     dispatch(updateCurrActiveCard(card))
+    dispatch(showModal())
   }
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -56,18 +57,18 @@ function TrelloCard({ card }) {
         <div style={{ opacity: isDragging ? '0' : '1' }}>
           {card?.cover && (<CardMedia sx={{ height: '140px', borderRadius: '8px 8px 0 0' }} image={card?.cover} />)}
           <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
-            <Typography>{card?.title}</Typography>
+            <Typography sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>{card?.title}</Typography>
           </CardContent>
           {showCardAction() && (
             <CardActions sx={{ display: 'flex', justifyContent: 'space-between', p: '0 4px 8px 4px' }}>
               {!!card?.memberIds?.length &&
-                <Button startIcon={<Group />} size="small">{card?.memberIds?.length}</Button>
+                <Button sx={{ py: 0 }} startIcon={<Group />} size="small">{card?.memberIds?.length}</Button>
               }
               {!!card?.comments?.length &&
-                <Button startIcon={<Comment />} size="small">{card?.comments?.length}</Button>
+                <Button sx={{ py: 0 }} startIcon={<Comment />} size="small">{card?.comments?.length}</Button>
               }
               {!!card?.attachments?.length &&
-                <Button startIcon={<Attachment />} size="small">{card?.attachments?.length}</Button>
+                <Button sx={{ py: 0 }} startIcon={<Attachment />} size="small">{card?.attachments?.length}</Button>
               }
             </CardActions>
           )}

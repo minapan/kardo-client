@@ -32,10 +32,9 @@ import CardUserGroup from './CardUserGroup'
 import CardDescriptionMdEditor from './CardDescriptionMdEditor'
 import CardActivitySection from './CardActivitySection'
 
-
 import { styled } from '@mui/material/styles'
 import { useDispatch } from 'react-redux'
-import { clearCurrActiveCard, selectCurrActiveCard, updateCurrActiveCard } from '~/redux/activeCard/activeCardSlice'
+import { clearAndHideCurrActiveCard, selectCurrActiveCard, selectIsShowModal, updateCurrActiveCard } from '~/redux/activeCard/activeCardSlice'
 import { useSelector } from 'react-redux'
 import { updateCardDetailsAPI } from '~/apis'
 import { updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice'
@@ -62,11 +61,12 @@ const SidebarItem = styled(Box)(({ theme }) => ({
 function ActiveCard() {
   const dispatch = useDispatch()
   const activeCard = useSelector(selectCurrActiveCard)
+  const isShowModal = useSelector(selectIsShowModal)
 
   // const [isOpen, setIsOpen] = useState(true)
   // const handleOpenModal = () => setIsOpen(true)
   const handleCloseModal = () => {
-    dispatch(clearCurrActiveCard())
+    dispatch(clearAndHideCurrActiveCard())
   }
 
   const callApiUpdateCard = async (updateData) => {
@@ -101,17 +101,19 @@ function ActiveCard() {
     )
   }
 
+  const onAddCardComment = async (commentToAdd) => {
+    await callApiUpdateCard({ commentToAdd })
+  }
+
   return (
     <Modal
       disableScrollLock
-      // open={isOpen}
-      open={true}
+      open={isShowModal}
       onClose={handleCloseModal} // Sử dụng onClose trong trường hợp muốn đóng Modal bằng nút ESC hoặc click ra ngoài Modal
       sx={{ overflowY: 'auto' }}>
       <Box sx={{
         position: 'relative',
-        width: 900,
-        maxWidth: 900,
+        maxWidth: 1000,
         bgcolor: 'white',
         boxShadow: 24,
         borderRadius: '8px',
@@ -131,7 +133,7 @@ function ActiveCard() {
         </Box>
 
         {activeCard?.cover &&
-          <Box sx={{ mb: 4 }}>
+          <Box sx={{ my: 2 }}>
             <img
               style={{ width: '100%', height: '320px', borderRadius: '6px', objectFit: 'cover' }}
               src={activeCard?.cover}
@@ -140,7 +142,7 @@ function ActiveCard() {
           </Box>
         }
 
-        <Box sx={{ mb: 1, mt: -3, pr: 2.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ mt: -3, pr: 2.5, display: 'flex', alignItems: 'center', gap: 1 }}>
           <CreditCardIcon />
 
           {/* Feature 01: Xử lý tiêu đề của Card */}
@@ -180,7 +182,10 @@ function ActiveCard() {
               </Box>
 
               {/* Feature 04: Xử lý các hành động, ví dụ comment vào Card */}
-              <CardActivitySection />
+              <CardActivitySection
+                cardComments={activeCard?.comments}
+                onAddCardComment={onAddCardComment}
+              />
             </Box>
           </Grid>
 
