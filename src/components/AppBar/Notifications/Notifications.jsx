@@ -14,9 +14,12 @@ import DoneIcon from '@mui/icons-material/Done'
 import NotInterestedIcon from '@mui/icons-material/NotInterested'
 import { Badge } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { fetchInvitationsAPI, selectCurrNotifications, updateBoardInvitationAPI } from '~/redux/notifications/notificationsSlice'
+import { addNotification, fetchInvitationsAPI, selectCurrNotifications, updateBoardInvitationAPI } from '~/redux/notifications/notificationsSlice'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
+import { socketIo } from '~/main'
+import { selectCurrUser } from '~/redux/user/userSlice'
+import { useNavigate } from 'react-router-dom'
 
 const BOARD_INVITATION_STATUS = {
   PENDING: 'PENDING',
@@ -29,20 +32,45 @@ function Notifications() {
   const open = Boolean(anchorEl)
   const handleClickNotificationIcon = (event) => {
     setAnchorEl(event.currentTarget)
+    setNewNotification(false)
   }
   const handleClose = () => {
     setAnchorEl(null)
   }
 
+  const [newNotification, setNewNotification] = useState(false)
+  const navigate = useNavigate()
+
   const notifications = useSelector(selectCurrNotifications)
   const dispatch = useDispatch()
+  const currUser = useSelector(selectCurrUser)
 
   useEffect(() => {
     dispatch(fetchInvitationsAPI())
-  }, [dispatch])
+
+    const onReceiveNewInvitation = (invitation) => {
+      if (invitation.inviteeId === currUser._id) {
+        // Add new notification record into redux store
+        dispatch(addNotification(invitation))
+        // Update new notification badge
+        setNewNotification(true)
+      }
+    }
+    socketIo.on('BE_USER_INVITED_TO_BOARD', onReceiveNewInvitation)
+
+    // Cleanup event through unmount to avoid memory leak
+    return () => {
+      socketIo.off('BE_USER_INVITED_TO_BOARD', onReceiveNewInvitation)
+    }
+  }, [dispatch, currUser._id])
 
   const updateBoardInvitation = (status, invitationId) => {
     dispatch(updateBoardInvitationAPI({ status, invitationId }))
+      .then((res) => {
+        if (res.payload.boardInvitation.status === BOARD_INVITATION_STATUS.ACCEPTED) {
+          navigate(`/b/${res.payload.boardInvitation.boardId}`)
+        }
+      })
   }
 
   return (
@@ -50,7 +78,7 @@ function Notifications() {
       <Tooltip title="Notifications">
         <Badge
           color="warning"
-          variant="dot"
+          variant={newNotification ? 'dot' : 'standard'}
           sx={{ cursor: 'pointer' }}
           id="basic-button-open-notification"
           aria-controls={open ? 'basic-notification-drop-down' : undefined}
@@ -59,8 +87,7 @@ function Notifications() {
           onClick={handleClickNotificationIcon}
         >
           <NotificationsNoneIcon sx={{
-            color: 'white'
-            // color: 'yellow'
+            color: newNotification ? 'yellow' : 'white'
           }} fontSize='small' style={{ transform: 'rotate(45deg)' }} />
         </Badge>
       </Tooltip>

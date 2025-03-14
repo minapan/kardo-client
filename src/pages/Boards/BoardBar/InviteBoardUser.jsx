@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form'
 import { EMAIL_RULE, FIELD_REQUIRED_MESSAGE, EMAIL_RULE_MESSAGE } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { inviteUserToBoardAPI } from '~/apis'
+import { socketIo } from '~/main'
 
 function InviteBoardUser({ boardId }) {
   // https://mui.com/material-ui/react-popover
@@ -25,10 +26,12 @@ function InviteBoardUser({ boardId }) {
   const submitInviteUserToBoard = (data) => {
     const { inviteeEmail } = data
 
-    inviteUserToBoardAPI({ inviteeEmail, boardId }).then(() => {
+    inviteUserToBoardAPI({ inviteeEmail, boardId }).then((invitation) => {
       // Clear input cards use React -hook-Form with Setvalue
       setValue('inviteeEmail', null)
       setAnchorPopoverElement(null)
+
+      socketIo.emit('FE_USER_INVITED_TO_BOARD', invitation)
     })
   }
 
