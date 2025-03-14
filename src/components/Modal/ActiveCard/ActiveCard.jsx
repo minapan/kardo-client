@@ -31,8 +31,8 @@ import { toast } from 'react-toastify'
 import CardUserGroup from './CardUserGroup'
 import CardDescriptionMdEditor from './CardDescriptionMdEditor'
 import CardActivitySection from './CardActivitySection'
-
 import { styled } from '@mui/material/styles'
+
 import { useDispatch } from 'react-redux'
 import { clearAndHideCurrActiveCard, selectCurrActiveCard, selectIsShowModal, updateCurrActiveCard } from '~/redux/activeCard/activeCardSlice'
 import { useSelector } from 'react-redux'
@@ -109,7 +109,7 @@ function ActiveCard() {
     <Modal
       disableScrollLock
       open={isShowModal}
-      onClose={handleCloseModal} // Sử dụng onClose trong trường hợp muốn đóng Modal bằng nút ESC hoặc click ra ngoài Modal
+      onClose={handleCloseModal} // Use onClose when you want to close the Modal with the ESC key or by clicking outside the Modal
       sx={{ overflowY: 'auto' }}>
       <Box sx={{
         position: 'relative',
@@ -145,7 +145,7 @@ function ActiveCard() {
         <Box sx={{ mt: -3, pr: 2.5, display: 'flex', alignItems: 'center', gap: 1 }}>
           <CreditCardIcon />
 
-          {/* Feature 01: Xử lý tiêu đề của Card */}
+          {/* Feature 01: Handle the Card title */}
           <ToggleFocusInput
             inputFontSize='22px'
             value={activeCard?.title || ''}
@@ -158,7 +158,7 @@ function ActiveCard() {
             <Box sx={{ mb: 3 }}>
               <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Members</Typography>
 
-              {/* Feature 02: Xử lý các thành viên của Card */}
+              {/* Feature 02: Manage Card members */}
               <CardUserGroup />
             </Box>
 
@@ -168,7 +168,7 @@ function ActiveCard() {
                 <Typography variant="span" sx={{ fontWeight: '600', fontSize: '20px' }}>Description</Typography>
               </Box>
 
-              {/* Feature 03: Xử lý mô tả của Card */}
+              {/* Feature 03: Handle the Card description */}
               <CardDescriptionMdEditor
                 cardDescriptionProp={activeCard?.description || ''}
                 handleUpdateCardDescription={onUpdateCardDescription}
@@ -181,7 +181,7 @@ function ActiveCard() {
                 <Typography variant="span" sx={{ fontWeight: '600', fontSize: '20px' }}>Activity</Typography>
               </Box>
 
-              {/* Feature 04: Xử lý các hành động, ví dụ comment vào Card */}
+              {/* Feature 04: Handle actions such as adding comments to the Card */}
               <CardActivitySection
                 cardComments={activeCard?.comments}
                 onAddCardComment={onAddCardComment}
@@ -193,12 +193,12 @@ function ActiveCard() {
           <Grid xs={12} sm={3}>
             <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Add To Card</Typography>
             <Stack direction="column" spacing={1}>
-              {/* Feature 05: Xử lý hành động bản thân user tự join vào card */}
+              {/* Feature 05: Allow the user to join the Card themselves */}
               <SidebarItem className="active">
                 <PersonOutlineOutlinedIcon fontSize="small" />
                 Join
               </SidebarItem>
-              {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
+              {/* Feature 06: Update the Card Cover image */}
               <SidebarItem className="active" component="label">
                 <ImageOutlinedIcon fontSize="small" />
                 Cover

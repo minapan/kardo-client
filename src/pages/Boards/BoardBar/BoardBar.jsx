@@ -1,12 +1,12 @@
-import { Box, Button, Chip, Tooltip } from '@mui/material'
+import { Box, Chip, Tooltip } from '@mui/material'
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize'
 import VpnLockIcon from '@mui/icons-material/VpnLock'
 import AddToDriveIcon from '@mui/icons-material/AddToDrive'
 import BoltIcon from '@mui/icons-material/Bolt'
 import FilterListIcon from '@mui/icons-material/FilterList'
-import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { capitalizeFirstLetter } from '~/utils/formatters'
 import BoardUserGroup from './BoardUserGroup'
+import InviteBoardUser from './InviteBoardUser'
 
 const MENU_STYLES = {
   backgroundColor: 'transparent',
@@ -58,7 +58,8 @@ function BoardBar({ board }) {
           icon={<FilterListIcon />} label="Automation" clickable />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button
+        <InviteBoardUser boardId={board?._id} />
+        {/* <Button>
           sx={{
             color: 'white',
             borderColor: 'white',
@@ -68,7 +69,7 @@ function BoardBar({ board }) {
           }}
           variant='outlined' startIcon={<PersonAddIcon />}>
           Invite
-        </Button>
+        </Button> */}
 
         <BoardUserGroup boardUsers={board?.FE_allUsers} />
 

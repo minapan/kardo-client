@@ -6,7 +6,7 @@ function LoadingSpinner({ caption }) {
       <CircularProgress />
       <Typography sx={{ ml: 2 }}>{caption}</Typography>
     </Box>
-  );
+  )
 }
 
-export default LoadingSpinner;
+export default LoadingSpinner

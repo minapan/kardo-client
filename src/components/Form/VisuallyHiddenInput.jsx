@@ -1,22 +1,23 @@
 import { styled } from '@mui/material/styles'
 
 /**
- * Ví dụ xử lý custom đẹp cái input file ở đây:
- * Lưu ý thành phần bọc cái VisuallyHiddenInput này phải có chứa component="label" như docs hướng dẫn:
+ * Example of customizing a file input beautifully:
+ * Note that the wrapper component of this `VisuallyHiddenInput` must contain `component="label"`
+ * as instructed in the MUI docs:
  * https://mui.com/material-ui/react-button/#file-upload
  * ...
- * Ngoài ra note thêm lib này từ docs của MUI nó recommend nếu cần dùng:
+ * Additionally, MUI recommends this library for file inputs if needed:
  * https://github.com/viclafouch/mui-file-input
  */
 const HiddenInputStyles = styled('input')({
-  display: 'none' // Docs ở trên làm css dài quá, chỉ cần display none để ẩn thẻ input file đi là đủ rồi :))
+  display: 'none' // The MUI docs use long CSS rules, but just setting `display: none` is enough to hide the file input :)
 
   // clip: 'rect(0 0 0 0)',
   // clipPath: 'inset(50%)',
   // height: 1,
   // overflow: 'hidden',
   // position: 'absolute',
-  // // bottom: 0, // Nếu dùng bottom: 0 như docs thì sẽ phát sinh lỗi ở Modal ActiveCard mỗi lần click là scroll bị nhảy xuống bottom
+  // // Using `bottom: 0` as in the docs can cause an issue where clicking on `Modal ActiveCard` makes the page scroll to the bottom
   // left: 0,
   // whiteSpace: 'nowrap',
   // width: 1

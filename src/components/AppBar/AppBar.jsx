@@ -2,7 +2,6 @@ import SelectMode from '../SelectMode/SelectMode'
 import { Badge, Box, Button, SvgIcon, TextField, Typography } from '@mui/material'
 import Tooltip from '@mui/material/Tooltip'
 import AppsIcon from '@mui/icons-material/Apps'
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
 import SearchIcon from '@mui/icons-material/Search'
@@ -15,6 +14,7 @@ import Teamplates from './Menus/Teamplates'
 import Profile from './Menus/Profile'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import Notifications from './Notifications/Notifications'
 
 function AppBar() {
   const [search, setSearch] = useState('')
@@ -84,11 +84,13 @@ function AppBar() {
               }
             }} />
           <SelectMode />
-          <Tooltip title="Notifications">
+          {/* <Tooltip title="Notifications">
             <Badge color="warning" variant="dot" sx={{ cursor: 'pointer', color: 'white' }}>
               <NotificationsNoneIcon fontSize='small' style={{ transform: 'rotate(45deg)' }} />
             </Badge>
-          </Tooltip>
+          </Tooltip> */}
+          <Notifications />
+
           <Tooltip title="Help">
             <Badge color="secondary" sx={{ cursor: 'pointer', color: 'white' }}>
               <HelpOutlineIcon fontSize='small' />

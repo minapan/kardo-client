@@ -19,8 +19,8 @@ import PaginationItem from '@mui/material/PaginationItem'
 import { Link, useLocation } from 'react-router-dom'
 import randomColor from 'randomcolor'
 import SidebarCreateBoardModal from './create'
-
 import { styled } from '@mui/material/styles'
+
 import LoadingSpinner from '~/components/Loading/LoadingSpinner'
 import { fetchBoardsAPI } from '~/apis'
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from '~/utils/constants'

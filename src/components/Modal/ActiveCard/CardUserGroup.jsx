@@ -4,12 +4,13 @@ import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import Popover from '@mui/material/Popover'
 import AddIcon from '@mui/icons-material/Add'
-import Badge from '@mui/material/Badge'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import { Badge } from '@mui/material'
 
 function CardUserGroup({ cardMemberIds = [] }) {
   /**
-   * Xử lý Popover để ẩn hoặc hiện toàn bộ user trên một cái popup, tương tự docs để tham khảo ở đây:
+   * Handle Popover to show or hide all users in a popup.
+   * Reference the documentation here:
    * https://mui.com/material-ui/react-popover/
    */
   const [anchorPopoverElement, setAnchorPopoverElement] = useState(null)
@@ -20,10 +21,12 @@ function CardUserGroup({ cardMemberIds = [] }) {
     else setAnchorPopoverElement(null)
   }
 
-  // Lưu ý ở đây chúng ta không dùng Component AvatarGroup của MUI bởi nó không hỗ trợ tốt trong việc chúng ta cần custom & trigger xử lý phần tử tính toán cuối, đơn giản là cứ dùng Box và CSS - Style đám Avatar cho chuẩn kết hợp tính toán một chút thôi.
+  // Note: We do not use MUI's AvatarGroup component here because it does not offer good support for customization
+  // and triggering calculations for the last element. Instead, we use Box and CSS to style the avatars properly,
+  // combined with some calculations.
   return (
     <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-      {/* Hiển thị các user là thành viên của card */}
+      {/* Display users who are members of the card */}
       {[...Array(8)].map((_, index) =>
         <Tooltip title="avt" key={index}>
           <Avatar
@@ -34,7 +37,7 @@ function CardUserGroup({ cardMemberIds = [] }) {
         </Tooltip>
       )}
 
-      {/* Nút này để mở popover thêm member */}
+      {/* This button opens the popover to add members */}
       <Tooltip title="Add new member">
         <Box
           aria-describedby={popoverId}
@@ -61,7 +64,8 @@ function CardUserGroup({ cardMemberIds = [] }) {
         </Box>
       </Tooltip>
 
-      {/* Khi Click vào + ở trên thì sẽ mở popover hiện toàn bộ users trong board để người dùng Click chọn thêm vào card  */}
+      {/* When clicking the "+" button above, the popover opens to display all users in the board,
+          allowing the user to click and add them to the card */}
       <Popover
         id={popoverId}
         open={isOpenPopover}
@@ -72,7 +76,7 @@ function CardUserGroup({ cardMemberIds = [] }) {
         <Box sx={{ p: 2, maxWidth: '260px', display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
           {[...Array(16)].map((_, index) =>
             <Tooltip title="avt" key={index}>
-              {/* Cách làm Avatar kèm badge icon: https://mui.com/material-ui/react-avatar/#with-badge */}
+              {/* Avatar with a badge icon: https://mui.com/material-ui/react-avatar/#with-badge */}
               <Badge
                 sx={{ cursor: 'pointer' }}
                 overlap="rectangular"

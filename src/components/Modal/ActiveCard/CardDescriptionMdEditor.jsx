@@ -7,13 +7,13 @@ import Button from '@mui/material/Button'
 import EditNoteIcon from '@mui/icons-material/EditNote'
 
 function CardDescriptionMdEditor({ cardDescriptionProp, handleUpdateCardDescription }) {
-  // Lấy giá trị 'dark', 'light' hoặc 'system' mode từ MUI để support phần Markdown bên dưới: data-color-mode={mode}
+  // Retrieve 'dark', 'light', or 'system' mode from MUI to support the Markdown section below: data-color-mode={mode}
   // https://www.npmjs.com/package/@uiw/react-md-editor#support-dark-modenight-mode
   const { mode } = useColorScheme()
 
-  // State xử lý chế độ Edit và chế độ View
+  // State to handle Edit mode and View mode
   const [markdownEditMode, setMarkdownEditMode] = useState(false)
-  // State xử lý giá trị markdown khi chỉnh sửa
+  // State to manage markdown value when editing
   const [cardDescription, setCardDescription] = useState(cardDescriptionProp)
 
   const updateCardDescription = () => {
@@ -31,8 +31,8 @@ function CardDescriptionMdEditor({ cardDescriptionProp, handleUpdateCardDescript
               onChange={setCardDescription}
               previewOptions={{ rehypePlugins: [[rehypeSanitize]] }} // https://www.npmjs.com/package/@uiw/react-md-editor#security
               height={400}
-              preview="live" // Có 3 giá trị để set tùy nhu cầu ['edit', 'live', 'preview']
-              // hideToolbar={true}
+              preview="live" // ['edit', 'live', 'preview']
+            // hideToolbar={true}
             />
           </Box>
           <Button
@@ -63,7 +63,7 @@ function CardDescriptionMdEditor({ cardDescriptionProp, handleUpdateCardDescript
               style={{
                 whiteSpace: 'pre-wrap',
                 padding: cardDescription ? '10px' : '0px',
-                border:  cardDescription ? '0.5px solid rgba(0, 0, 0, 0.2)' : 'none',
+                border: cardDescription ? '0.5px solid rgba(0, 0, 0, 0.2)' : 'none',
                 borderRadius: '8px'
               }}
             />

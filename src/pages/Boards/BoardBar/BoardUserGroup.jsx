@@ -6,7 +6,7 @@ import Popover from '@mui/material/Popover'
 
 function BoardUserGroup({ boardUsers = [], limit = 6 }) {
   /**
-   * Xử lý Popover để ẩn hoặc hiện toàn bộ user trên một cái popup, tương tự docs để tham khảo ở đây:
+   * Handle Popover to show or hide all users in a popup, similar to the documentation here:
    * https://mui.com/material-ui/react-popover/
    */
   const [anchorPopoverElement, setAnchorPopoverElement] = useState(null)
@@ -17,10 +17,12 @@ function BoardUserGroup({ boardUsers = [], limit = 6 }) {
     else setAnchorPopoverElement(null)
   }
 
-  // Lưu ý ở đây chúng ta không dùng Component AvatarGroup của MUI bởi nó không hỗ trợ tốt trong việc chúng ta cần custom & trigger xử lý phần tử tính toán cuối, đơn giản là cứ dùng Box và CSS - Style đám Avatar cho chuẩn kết hợp tính toán một chút thôi.
+  // Note: We are not using MUI's AvatarGroup component here because it does not support
+  // the level of customization and triggering we need for the last calculated element.
+  // Instead, we simply use Box and CSS to style the Avatar group properly with a bit of calculation.
   return (
     <Box sx={{ display: 'flex', gap: '4px' }}>
-      {/* Hiển thị giới hạn số lượng user theo số limit */}
+      {/* Display a limited number of users based on the limit value */}
       {boardUsers.map((user, index) => {
         if (index < limit) {
           return (
@@ -35,9 +37,9 @@ function BoardUserGroup({ boardUsers = [], limit = 6 }) {
         }
       })}
 
-      {/* Nếu số lượng users nhiều hơn limit thì hiện thêm +number */}
+      {/* If the number of users exceeds the limit, show a "+number" indicator */}
       {boardUsers.length > limit &&
-        <Tooltip title="Show more">
+        <Tooltip title="Show all">
           <Box
             aria-describedby={popoverId}
             onClick={handleTogglePopover}
@@ -60,7 +62,7 @@ function BoardUserGroup({ boardUsers = [], limit = 6 }) {
         </Tooltip>
       }
 
-      {/* Khi Click vào +number ở trên thì sẽ mở popover hiện toàn bộ users, sẽ không limit nữa */}
+      {/* Clicking on the "+number" indicator above will open a popover showing all users without a limit */}
       <Popover
         id={popoverId}
         open={isOpenPopover}
