@@ -38,6 +38,9 @@ import { clearAndHideCurrActiveCard, selectCurrActiveCard, selectIsShowModal, up
 import { useSelector } from 'react-redux'
 import { updateCardDetailsAPI } from '~/apis'
 import { updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { selectCurrUser } from '~/redux/user/userSlice'
+import { CARD_MEMBER_ACTIONS } from '~/utils/constants'
+import { PersonRemoveOutlined } from '@mui/icons-material'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -60,6 +63,7 @@ const SidebarItem = styled(Box)(({ theme }) => ({
 
 function ActiveCard() {
   const dispatch = useDispatch()
+  const currUser = useSelector(selectCurrUser)
   const activeCard = useSelector(selectCurrActiveCard)
   const isShowModal = useSelector(selectIsShowModal)
 
@@ -103,6 +107,10 @@ function ActiveCard() {
 
   const onAddCardComment = async (commentToAdd) => {
     await callApiUpdateCard({ commentToAdd })
+  }
+
+  const onUpdateCardMembers = (memberInfo) => {
+    callApiUpdateCard({ memberInfo })
   }
 
   return (
@@ -159,7 +167,10 @@ function ActiveCard() {
               <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Members</Typography>
 
               {/* Feature 02: Manage Card members */}
-              <CardUserGroup />
+              <CardUserGroup
+                cardMemberIds={activeCard?.memberIds}
+                onUpdateCardMembers={onUpdateCardMembers}
+              />
             </Box>
 
             <Box sx={{ mb: 3 }}>
@@ -194,10 +205,25 @@ function ActiveCard() {
             <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Add To Card</Typography>
             <Stack direction="column" spacing={1}>
               {/* Feature 05: Allow the user to join the Card themselves */}
-              <SidebarItem className="active">
-                <PersonOutlineOutlinedIcon fontSize="small" />
-                Join
-              </SidebarItem>
+              {!activeCard?.memberIds?.includes(currUser?._id)
+                ? (
+                  <SidebarItem className="active" onClick={() => onUpdateCardMembers({
+                    userId: currUser._id,
+                    action: CARD_MEMBER_ACTIONS.ADD
+                  })}>
+                    <PersonOutlineOutlinedIcon fontSize="small" />
+                    Join
+                  </SidebarItem>
+                )
+                : (
+                  <SidebarItem onClick={() => onUpdateCardMembers({
+                    userId: currUser._id,
+                    action: CARD_MEMBER_ACTIONS.REMOVE
+                  })}>
+                    <PersonRemoveOutlined fontSize="small" />
+                    Leave
+                  </SidebarItem>
+                )}
               {/* Feature 06: Update the Card Cover image */}
               <SidebarItem className="active" component="label">
                 <ImageOutlinedIcon fontSize="small" />

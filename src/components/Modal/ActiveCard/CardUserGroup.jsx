@@ -4,10 +4,14 @@ import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import Popover from '@mui/material/Popover'
 import AddIcon from '@mui/icons-material/Add'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { Badge } from '@mui/material'
+import { useSelector } from 'react-redux'
+import { selectCurrActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { AddCircle } from '@mui/icons-material'
+import { RemoveCircle } from '@mui/icons-material'
+import { CARD_MEMBER_ACTIONS } from '~/utils/constants'
 
-function CardUserGroup({ cardMemberIds = [] }) {
+function CardUserGroup({ cardMemberIds = [], onUpdateCardMembers }) {
   /**
    * Handle Popover to show or hide all users in a popup.
    * Reference the documentation here:
@@ -21,18 +25,32 @@ function CardUserGroup({ cardMemberIds = [] }) {
     else setAnchorPopoverElement(null)
   }
 
+  const board = useSelector(selectCurrActiveBoard)
+  // const FE_CardMembers = board?.FE_allUsers?.filter(user => cardMemberIds.includes(user._id))
+  const FE_CardMembers = cardMemberIds.map(
+    userId => board?.FE_allUsers?.find(user => user._id === userId)
+  )
+
+  const handleUpdateCardMembers = (user) => {
+    const memberInfo = {
+      userId: user._id,
+      action: cardMemberIds.includes(user._id) ? CARD_MEMBER_ACTIONS.REMOVE : CARD_MEMBER_ACTIONS.ADD
+    }
+    onUpdateCardMembers(memberInfo)
+  }
+
   // Note: We do not use MUI's AvatarGroup component here because it does not offer good support for customization
   // and triggering calculations for the last element. Instead, we use Box and CSS to style the avatars properly,
   // combined with some calculations.
   return (
     <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
       {/* Display users who are members of the card */}
-      {[...Array(8)].map((_, index) =>
-        <Tooltip title="avt" key={index}>
+      {FE_CardMembers.map((user, index) =>
+        <Tooltip title={user?.displayName} key={index}>
           <Avatar
             sx={{ width: 34, height: 34, cursor: 'pointer' }}
-            alt="avt"
-            src="https://nhatphan.id.vn/assets/img/cat-coffee.jpg"
+            alt={user?.displayName}
+            src={user?.avatar}
           />
         </Tooltip>
       )}
@@ -74,19 +92,23 @@ function CardUserGroup({ cardMemberIds = [] }) {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
         <Box sx={{ p: 2, maxWidth: '260px', display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
-          {[...Array(16)].map((_, index) =>
-            <Tooltip title="avt" key={index}>
+          {board?.FE_allUsers.map((user, index) =>
+            <Tooltip title={user?.displayName} key={index}>
               {/* Avatar with a badge icon: https://mui.com/material-ui/react-avatar/#with-badge */}
               <Badge
                 sx={{ cursor: 'pointer' }}
                 overlap="rectangular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                badgeContent={<CheckCircleIcon fontSize="small" sx={{ color: '#27ae60' }} />}
+                badgeContent={cardMemberIds.includes(user?._id)
+                  ? <RemoveCircle fontSize="small" sx={{ color: '#e74c3c' }} />
+                  : <AddCircle fontSize="small" sx={{ color: '#27ae60' }} />
+                }
+                onClick={() => handleUpdateCardMembers(user)}
               >
                 <Avatar
                   sx={{ width: 34, height: 34 }}
-                  alt="avt"
-                  src="https://nhatphan.id.vn/assets/img/cat-coffee.jpg"
+                  alt={user?.displayName}
+                  src={user?.avatar}
                 />
               </Badge>
             </Tooltip>

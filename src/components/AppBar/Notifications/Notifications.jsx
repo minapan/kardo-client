@@ -17,7 +17,7 @@ import { useSelector } from 'react-redux'
 import { addNotification, fetchInvitationsAPI, selectCurrNotifications, updateBoardInvitationAPI } from '~/redux/notifications/notificationsSlice'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
-import { socketIo } from '~/main'
+import { socketIo } from '~/socketClient'
 import { selectCurrUser } from '~/redux/user/userSlice'
 import { useNavigate } from 'react-router-dom'
 
