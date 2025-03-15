@@ -1,23 +1,21 @@
 import SelectMode from '../SelectMode/SelectMode'
-import { Badge, Box, Button, SvgIcon, TextField, Typography } from '@mui/material'
+import { Badge, Box, Button, SvgIcon, Typography } from '@mui/material'
 import Tooltip from '@mui/material/Tooltip'
 import AppsIcon from '@mui/icons-material/Apps'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
-import SearchIcon from '@mui/icons-material/Search'
-import CloseIcon from '@mui/icons-material/Close'
 import { ReactComponent as Logo } from '~/assets/trello.svg'
 import Workspaces from './Menus/Workspaces'
 import Recent from './Menus/Recent'
 import Starred from './Menus/Starred'
 import Teamplates from './Menus/Teamplates'
 import Profile from './Menus/Profile'
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Notifications from './Notifications/Notifications'
+import AutoCompleteSearchBoard from './SearchBoards/AutoCompleteSearchBoard'
 
 function AppBar() {
-  const [search, setSearch] = useState('')
+  // const [search, setSearch] = useState('')
   return (
     <>
       <Box px={2} sx={{
@@ -65,7 +63,7 @@ function AppBar() {
 
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <TextField id="outlined-search" placeholder="Search..." type="text" size='small' onChange={(e) => setSearch(e.target.value)} value={search}
+          {/* <TextField id="outlined-search" placeholder="Search..." type="text" size='small' onChange={(e) => setSearch(e.target.value)} value={search}
             InputProps={{
               startAdornment: <SearchIcon sx={{ color: 'white' }} />,
               endAdornment: <CloseIcon fontSize='small'
@@ -82,7 +80,9 @@ function AppBar() {
                 '&:hover fieldset': { borderColor: 'white' },
                 '&.Mui-focused fieldset': { borderColor: 'white' }
               }
-            }} />
+            }} /> */}
+          <AutoCompleteSearchBoard />
+
           <SelectMode />
           {/* <Tooltip title="Notifications">
             <Badge color="warning" variant="dot" sx={{ cursor: 'pointer', color: 'white' }}>
