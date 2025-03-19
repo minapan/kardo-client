@@ -4,7 +4,7 @@ import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
 import LockIcon from '@mui/icons-material/Lock'
 import Typography from '@mui/material/Typography'
-import { Card } from '@mui/material'
+import { Card, IconButton, InputAdornment } from '@mui/material'
 import { ReactComponent as TrelloIcon } from '~/assets/trello.svg'
 import CardActions from '@mui/material/CardActions'
 import TextField from '@mui/material/TextField'
@@ -18,6 +18,9 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { loginUserAPI } from '~/redux/user/userSlice'
+import { useState } from 'react'
+import { Visibility } from '@mui/icons-material'
+import { VisibilityOff } from '@mui/icons-material'
 
 function LoginForm() {
   const dispatch = useDispatch()
@@ -26,6 +29,9 @@ function LoginForm() {
   let [searchParams] = useSearchParams()
   const registeredEmail = searchParams.get('registered')
   const verifiedEmail = searchParams.get('verified')
+
+  const [showPassword, setShowPassword] = useState(false)
+  const handleClickShowPassword = () => setShowPassword((show) => !show)
 
   const submitLogIn = (data) => {
     const { email, password } = data
@@ -92,7 +98,7 @@ function LoginForm() {
               <TextField
                 fullWidth
                 label="Enter Password..."
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 variant="outlined"
                 error={!!errors.password}
                 {...register('password', {
@@ -102,6 +108,19 @@ function LoginForm() {
                     message: PASSWORD_RULE_MESSAGE
                   }
                 })}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
               />
               <FieldErrorAlert errors={errors} fieldName={'password'} />
             </Box>

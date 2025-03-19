@@ -4,7 +4,7 @@ import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
 import LockIcon from '@mui/icons-material/Lock'
 import Typography from '@mui/material/Typography'
-import { Card as MuiCard } from '@mui/material'
+import { IconButton, InputAdornment, Card as MuiCard } from '@mui/material'
 import { ReactComponent as TrelloIcon } from '~/assets/trello.svg'
 import CardActions from '@mui/material/CardActions'
 import TextField from '@mui/material/TextField'
@@ -15,8 +15,16 @@ import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { toast } from 'react-toastify'
 import { registerUserAPI } from '~/apis'
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { Visibility } from '@mui/icons-material'
+import { VisibilityOff } from '@mui/icons-material'
 
 function RegisterForm() {
+  const [showPassword, setShowPassword] = useState(false)
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
+  const handleClickShowPassword = () => setShowPassword((show) => !show)
+  const handleClickShowPasswordComfirm = () => setShowPasswordConfirm((show) => !show)
+
   const { register, handleSubmit, watch, formState: { errors } } = useForm()
   const navigate = useNavigate()
   const submitRegister = (data) => {
@@ -68,7 +76,7 @@ function RegisterForm() {
               <TextField
                 fullWidth
                 label="Enter Password..."
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 variant="outlined"
                 error={!!errors.password}
                 {...register('password', {
@@ -78,6 +86,19 @@ function RegisterForm() {
                     message: PASSWORD_RULE_MESSAGE
                   }
                 })}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
               />
               <FieldErrorAlert errors={errors} fieldName={'password'} />
             </Box>
@@ -85,13 +106,26 @@ function RegisterForm() {
               <TextField
                 fullWidth
                 label="Enter Password Confirmation..."
-                type="password"
+                type={showPasswordConfirm ? 'text' : 'password'}
                 variant="outlined"
                 error={!!errors.password_confirmation}
                 {...register('password_confirmation', {
                   required: FIELD_REQUIRED_MESSAGE,
                   validate: (value) => value === watch('password') || PASSWORD_CONFIRMATION_MESSAGE
                 })}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPasswordComfirm}
+                        edge="end"
+                      >
+                        {showPasswordConfirm ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
               />
               <FieldErrorAlert errors={errors} fieldName={'password_confirmation'} />
             </Box>

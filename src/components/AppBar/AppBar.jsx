@@ -45,7 +45,7 @@ function AppBar() {
             </Box>
           </Link>
 
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
+          {/* <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
             <Workspaces />
             <Recent />
             <Starred />
@@ -59,7 +59,7 @@ function AppBar() {
                 }
               }}
               variant='outlined' startIcon={<LibraryAddIcon />}>Create</Button>
-          </Box>
+          </Box> */}
 
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

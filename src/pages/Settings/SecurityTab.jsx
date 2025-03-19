@@ -14,8 +14,19 @@ import { useConfirm } from 'material-ui-confirm'
 import { toast } from 'react-toastify'
 import { useDispatch } from 'react-redux'
 import { logoutUserAPI, updateUserAPI } from '~/redux/user/userSlice'
+import { useState } from 'react'
+import { IconButton } from '@mui/material'
+import { Visibility } from '@mui/icons-material'
+import { VisibilityOff } from '@mui/icons-material'
 
 function SecurityTab() {
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
+  const handleClickShowCurrentPassword = () => setShowCurrentPassword((show) => !show)
+  const handleClickShowNewPassword = () => setShowNewPassword((show) => !show)
+  const handleClickShowPasswordComfirm = () => setShowPasswordConfirm((show) => !show)
+
   const dispatch = useDispatch()
   const { register, handleSubmit, watch, formState: { errors } } = useForm()
 
@@ -74,12 +85,23 @@ function SecurityTab() {
               <TextField
                 fullWidth
                 label="Current Password"
-                type="password"
+                type={showCurrentPassword ? 'text' : 'password'}
                 variant="outlined"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <PasswordIcon fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowCurrentPassword}
+                        edge="end"
+                      >
+                        {showCurrentPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
                     </InputAdornment>
                   )
                 }}
@@ -99,12 +121,23 @@ function SecurityTab() {
               <TextField
                 fullWidth
                 label="New Password"
-                type="password"
+                type={showNewPassword ? 'text' : 'password'}
                 variant="outlined"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <LockIcon fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowNewPassword}
+                        edge="end"
+                      >
+                        {showNewPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
                     </InputAdornment>
                   )
                 }}
@@ -124,12 +157,23 @@ function SecurityTab() {
               <TextField
                 fullWidth
                 label="New Password Confirmation"
-                type="password"
+                type={showPasswordConfirm ? 'text' : 'password'}
                 variant="outlined"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <LockResetIcon fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPasswordComfirm}
+                        edge="end"
+                      >
+                        {showPasswordConfirm ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
                     </InputAdornment>
                   )
                 }}
