@@ -15,9 +15,9 @@ import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { useSelector } from 'react-redux'
 import { selectCurrUser, updateUserAPI } from '~/redux/user/userSlice'
 import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
 import { useDispatch } from 'react-redux'
 import VisuallyHiddenInput from '~/components/Form/VisuallyHiddenInput'
+import toast from 'react-hot-toast'
 
 function AccountTab() {
   const dispatch = useDispatch()
@@ -37,10 +37,15 @@ function AccountTab() {
 
     toast.promise(
       dispatch(updateUserAPI({ displayName })),
-      { pending: 'Updating is in progress...' }
-    ).then(res => {
-      if (!res.error) toast.success('Updated successfully.')
-    })
+      {
+        loading: 'Updating...',
+        success: 'Updated successfully!',
+        error: 'Could not update!'
+      }
+    )
+    // .then(res => {
+    //   if (!res.error) toast.success('Updated successfully.')
+    // })
   }
 
   const uploadAvatar = (e) => {

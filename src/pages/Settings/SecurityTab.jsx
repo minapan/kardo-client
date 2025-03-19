@@ -11,13 +11,13 @@ import { FIELD_REQUIRED_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE } from '~/
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { useForm } from 'react-hook-form'
 import { useConfirm } from 'material-ui-confirm'
-import { toast } from 'react-toastify'
 import { useDispatch } from 'react-redux'
 import { logoutUserAPI, updateUserAPI } from '~/redux/user/userSlice'
 import { useState } from 'react'
 import { IconButton } from '@mui/material'
 import { Visibility } from '@mui/icons-material'
 import { VisibilityOff } from '@mui/icons-material'
+import toast from 'react-hot-toast'
 
 function SecurityTab() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
@@ -43,19 +43,23 @@ function SecurityTab() {
       const { current_password, new_password } = data
 
       if (current_password === new_password) {
-        toast.warn('New password should be different from your current password.')
+        toast('New password should be different from your current password.', { icon: '⚠️' })
         return
       }
 
       toast.promise(
         dispatch(updateUserAPI({ current_password, new_password })),
-        { pending: 'Updating is in progress...' }
-      ).then(res => {
-        if (!res.error) {
-          toast.success('Change password successfully. Please login again.')
-          dispatch(logoutUserAPI(false))
+        {
+          loading: 'Updating...',
+          error: 'Could not change password!'
         }
-      })
+      )
+        .then(res => {
+          if (!res.error) {
+            toast.success('Change password successfully. Please login again.')
+            dispatch(logoutUserAPI(false))
+          }
+        })
 
     }).catch(() => { })
   }

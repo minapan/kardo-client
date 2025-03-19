@@ -6,13 +6,13 @@ import CloseIcon from '@mui/icons-material/Close'
 import { horizontalListSortingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { useState } from 'react'
 import TextField from '@mui/material/TextField'
-import { toast } from 'react-toastify'
 import { createNewColAPI } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { cloneDeep } from 'lodash'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { selectCurrActiveBoard, updateCurrActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import toast from 'react-hot-toast'
 function ListComlumns({ columns }) {
   const dispatch = useDispatch()
   const board = useSelector(selectCurrActiveBoard)

@@ -16,11 +16,11 @@ import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { useSearchParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { toast } from 'react-toastify'
 import { loginUserAPI } from '~/redux/user/userSlice'
 import { useState } from 'react'
 import { Visibility } from '@mui/icons-material'
 import { VisibilityOff } from '@mui/icons-material'
+import toast from 'react-hot-toast'
 
 function LoginForm() {
   const dispatch = useDispatch()
@@ -37,7 +37,7 @@ function LoginForm() {
     const { email, password } = data
     toast.promise(
       dispatch(loginUserAPI({ email, password })),
-      { pending: 'Logging is in progress...' }
+      { loading: 'Logging...' }
     ).then(res => {
       if (!res.error) navigate('/')
     })

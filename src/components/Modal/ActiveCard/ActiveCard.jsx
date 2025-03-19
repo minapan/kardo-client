@@ -27,7 +27,6 @@ import DvrOutlinedIcon from '@mui/icons-material/DvrOutlined'
 import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 import VisuallyHiddenInput from '~/components/Form/VisuallyHiddenInput'
 import { singleFileValidator } from '~/utils/validators'
-import { toast } from 'react-toastify'
 import CardUserGroup from './CardUserGroup'
 import CardDescriptionMdEditor from './CardDescriptionMdEditor'
 import CardActivitySection from './CardActivitySection'
@@ -41,6 +40,7 @@ import { updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { selectCurrUser } from '~/redux/user/userSlice'
 import { CARD_MEMBER_ACTIONS } from '~/utils/constants'
 import { PersonRemoveOutlined } from '@mui/icons-material'
+import toast from 'react-hot-toast'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -101,7 +101,10 @@ function ActiveCard() {
 
     toast.promise(
       callApiUpdateCard(reqData).finally(() => event.target.value = ''),
-      { pending: 'Updating is in progress...' }
+      {
+        loading: 'Updating...',
+        success: 'Updated successfully'
+      }
     )
   }
 

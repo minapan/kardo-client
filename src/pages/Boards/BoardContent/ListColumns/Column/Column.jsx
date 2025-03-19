@@ -15,7 +15,6 @@ import ListCard from './ListCards/ListCards'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Check } from '@mui/icons-material'
-import { toast } from 'react-toastify'
 import { useConfirm } from 'material-ui-confirm'
 import { createNewCardAPI, deleteColDetailsAPI, updateColDetailsAPI } from '~/apis'
 import { cloneDeep } from 'lodash'
@@ -23,6 +22,7 @@ import { selectCurrActiveBoard, updateCurrActiveBoard } from '~/redux/activeBoar
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
+import toast from 'react-hot-toast'
 
 function Column({ column }) {
   const dispatch = useDispatch()

@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { toast } from 'react-toastify'
 import { interceptorLoadingElements } from './formatters'
 import { logoutUserAPI } from '~/redux/user/userSlice'
 import { refreshTokenAPI } from '~/apis'
+import toast from 'react-hot-toast'
 
 let axiosreduxStore
 export const injectStore = (mainStore) => { axiosreduxStore = mainStore }

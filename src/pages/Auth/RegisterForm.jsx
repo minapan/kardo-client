@@ -12,12 +12,12 @@ import Zoom from '@mui/material/Zoom'
 import { useForm } from 'react-hook-form'
 import { EMAIL_RULE, EMAIL_RULE_MESSAGE, FIELD_REQUIRED_MESSAGE, PASSWORD_CONFIRMATION_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
-import { toast } from 'react-toastify'
 import { registerUserAPI } from '~/apis'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { Visibility } from '@mui/icons-material'
 import { VisibilityOff } from '@mui/icons-material'
+import toast from 'react-hot-toast'
 
 function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -31,7 +31,7 @@ function RegisterForm() {
     const { email, password } = data
     toast.promise(
       registerUserAPI({ email, password }),
-      { pending: 'Registering is in progress...' }
+      { loading: 'Signing...' }
     ).then(user => {
       navigate(`/login?registered=${user.email}`)
     })
