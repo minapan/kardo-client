@@ -28,7 +28,6 @@ import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 import VisuallyHiddenInput from '~/components/Form/VisuallyHiddenInput'
 import { singleFileValidator } from '~/utils/validators'
 import CardUserGroup from './CardUserGroup'
-import CardDescriptionMdEditor from './CardDescriptionMdEditor'
 import CardActivitySection from './CardActivitySection'
 import { styled } from '@mui/material/styles'
 
@@ -41,6 +40,7 @@ import { selectCurrUser } from '~/redux/user/userSlice'
 import { CARD_MEMBER_ACTIONS } from '~/utils/constants'
 import { PersonRemoveOutlined } from '@mui/icons-material'
 import toast from 'react-hot-toast'
+import CardDescriptionEditor from './CardDescriptionEditor'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -183,7 +183,7 @@ function ActiveCard() {
               </Box>
 
               {/* Feature 03: Handle the Card description */}
-              <CardDescriptionMdEditor
+              <CardDescriptionEditor
                 cardDescriptionProp={activeCard?.description || ''}
                 handleUpdateCardDescription={onUpdateCardDescription}
               />
