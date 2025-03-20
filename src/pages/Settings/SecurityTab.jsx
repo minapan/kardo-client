@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
 import Button from '@mui/material/Button'
+import Alert from '@mui/material/Alert'
 import PasswordIcon from '@mui/icons-material/Password'
 import LockResetIcon from '@mui/icons-material/LockReset'
 import LockIcon from '@mui/icons-material/Lock'
@@ -12,14 +13,19 @@ import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { useForm } from 'react-hook-form'
 import { useConfirm } from 'material-ui-confirm'
 import { useDispatch } from 'react-redux'
-import { logoutUserAPI, updateUserAPI } from '~/redux/user/userSlice'
 import { useState } from 'react'
 import { IconButton } from '@mui/material'
 import { Visibility } from '@mui/icons-material'
 import { VisibilityOff } from '@mui/icons-material'
 import toast from 'react-hot-toast'
+import Setup2FA from '~/components/Modal/2FA/Setup2FA'
+import { useSelector } from 'react-redux'
+import { logoutUserAPI, selectCurrUser, updateUserAPI } from '~/redux/user/userSlice'
 
 function SecurityTab() {
+  const dispatch = useDispatch()
+  const user = useSelector(selectCurrUser)
+
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
@@ -27,7 +33,10 @@ function SecurityTab() {
   const handleClickShowNewPassword = () => setShowNewPassword((show) => !show)
   const handleClickShowPasswordComfirm = () => setShowPasswordConfirm((show) => !show)
 
-  const dispatch = useDispatch()
+  const [openSetup2FA, setOpenSetup2FA] = useState(false)
+  const handleSuccessSetup2FA = () => {
+    setOpenSetup2FA(false)
+  }
   const { register, handleSubmit, watch, formState: { errors } } = useForm()
 
   const confirmChangePassword = useConfirm()
@@ -80,8 +89,34 @@ function SecurityTab() {
         justifyContent: 'center',
         gap: 3
       }}>
+        <Setup2FA
+          isOpen={openSetup2FA}
+          toggleOpen={setOpenSetup2FA}
+          handleSuccessSetup2FA={handleSuccessSetup2FA}
+        />
+        <Alert
+          severity={`${user.require_2fa ? 'success' : 'warning'}`}
+          action={
+            !user.require_2fa &&
+            <Button
+              color="warning" size="small"
+              sx={{ p: .5 }}
+              onClick={() => setOpenSetup2FA(true)}
+            >
+              Enable 2FA
+            </Button>
+          }
+        >
+          Account security status:&nbsp;
+          <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#e67e22' } }}>
+            Two-Factor Authentication (2FA) {user.require_2fa ? 'enabled.' : 'not enabled.'}
+          </Typography>
+        </Alert>
         <Box>
-          <Typography variant="h5">Security Dashboard</Typography>
+
+        </Box>
+        <Box>
+          <Typography variant="h5">Change Password</Typography>
         </Box>
         <form onSubmit={handleSubmit(submitChangePassword)}>
           <Box sx={{ width: '400px', display: 'flex', flexDirection: 'column', gap: 2 }}>

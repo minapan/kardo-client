@@ -39,7 +39,7 @@ function LoginForm() {
       dispatch(loginUserAPI({ email, password })),
       { loading: 'Logging...' }
     ).then(res => {
-      if (!res.error) navigate('/')
+      if (!res.error) navigate('/boards')
     })
   }
   return (
@@ -125,7 +125,7 @@ function LoginForm() {
               <FieldErrorAlert errors={errors} fieldName={'password'} />
             </Box>
           </Box>
-          <CardActions sx={{ padding: '0 1em 1em 1em' }}>
+          <CardActions sx={{ padding: '0 1em 0.5em 1em', flexDirection: 'column', gap: 1 }}>
             <Button
               className='interceptor-loading'
               type="submit"
@@ -136,6 +136,9 @@ function LoginForm() {
             >
               Login
             </Button>
+            {/* <Link to="/forgot-password" style={{ textDecoration: 'none', alignSelf: 'flex-start' }}>
+              <Typography sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}>Forgot password?</Typography>
+            </Link> */}
           </CardActions>
           <Box sx={{ padding: '0 1em 1em 1em', textAlign: 'center' }}>
             <Typography>New to Trello Minapan?</Typography>
@@ -148,6 +151,5 @@ function LoginForm() {
     </form >
   )
 }
-
 
 export default LoginForm

@@ -10,6 +10,7 @@ function Auth() {
   const location = useLocation()
   const isLogin = location.pathname === '/login'
   const isRegister = location.pathname === '/register'
+  // const isForgot = location.pathname === '/forgot-password'
 
   const currUser = useSelector(selectCurrUser)
   if (currUser) {
@@ -23,7 +24,7 @@ function Auth() {
       minHeight: '100vh',
       alignItems: 'center',
       justifyContent: 'flex-start',
-      background: 'url("/login-register-bg.jpg")',
+      background: 'url("https://picsum.photos/1920/1080")',
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -31,6 +32,7 @@ function Auth() {
     }}>
       {isLogin && <LoginForm />}
       {isRegister && <RegisterForm />}
+      {/* {isForgot && <ForgotPasswordForm />} */}
     </Box>
   )
 }

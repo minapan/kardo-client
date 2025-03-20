@@ -24,6 +24,9 @@ import { styled } from '@mui/material/styles'
 import LoadingSpinner from '~/components/Loading/LoadingSpinner'
 import { fetchBoardsAPI } from '~/apis'
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from '~/utils/constants'
+import { useSelector } from 'react-redux'
+import { selectCurrUser } from '~/redux/user/userSlice'
+import Require2FA from '~/components/Modal/2FA/Require2FA'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -44,6 +47,7 @@ const SidebarItem = styled(Box)(({ theme }) => ({
 function Boards() {
   const [boards, setBoards] = useState(null)
   const [totalBoards, setTotalBoards] = useState(null)
+  const user = useSelector(selectCurrUser)
 
   // Get the current URL location
   const location = useLocation()

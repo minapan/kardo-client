@@ -55,6 +55,11 @@ export const refreshTokenAPI = async () => {
   return response.data
 }
 
+export const get2FaQrCodeAPI = async () => {
+  const res = await authorizeAxiosInstance.get(`${API_ROOT}/v1/users/get_2fa_qr_code`)
+  return res.data
+}
+
 export const fetchBoardsAPI = async (searchPath) => {
   const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/boards${searchPath}`)
   return response.data

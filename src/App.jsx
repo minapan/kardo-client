@@ -10,10 +10,20 @@ import { useSelector } from 'react-redux'
 import { selectCurrUser } from './redux/user/userSlice'
 import Settings from './pages/Settings/Settings'
 import Boards from './pages/Boards'
+import Require2FA from './components/Modal/2FA/Require2FA'
+
+const Require2FALayout = ({ user, children }) => {
+  if (user?.require_2fa && !user?.is_2fa_verified) return <Require2FA />
+  return children
+}
 
 const ProtectedRoute = ({ user }) => {
   if (!user) return <Navigate to='/login' replace={true} />
-  return <Outlet />
+  return (
+    <Require2FALayout user={user}>
+      <Outlet />
+    </Require2FALayout>
+  )
 }
 
 function App() {
@@ -35,6 +45,7 @@ function App() {
 
       <Route path='/login' element={<Auth />} />
       <Route path='/register' element={<Auth />} />
+      {/* <Route path='/forgot-password' element={<Auth />} /> */}
       <Route path='/account/verify' element={<AccountVerification />} />
 
       <Route path='*' element={<NotFound />} />
