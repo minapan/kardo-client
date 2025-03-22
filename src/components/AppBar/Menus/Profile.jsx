@@ -63,11 +63,12 @@ function Profile() {
         <MenuItem sx={{
           '&:hover': { color: 'success.light' }
         }}>
-          <Avatar sx={{ mr: 2, width: 32, height: 32 }} src={currUser?.avatar} /> Profile
+          <Avatar sx={{ mr: 1, width: 26, height: 26 }} src={currUser?.avatar} />
+          Profile
         </MenuItem>
       </Link>
       <Divider />
-      <MenuItem>
+      {/* <MenuItem>
         <ListItemIcon>
           <PersonAdd fontSize="small" />
         </ListItemIcon>
@@ -78,7 +79,7 @@ function Profile() {
           <Settings fontSize="small" />
         </ListItemIcon>
         Settings
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem onClick={handleLogout} sx={{
         '&:hover': {
           color: 'warning.dark',

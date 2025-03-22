@@ -59,16 +59,14 @@ function SecurityTab() {
       toast.promise(
         dispatch(updateUserAPI({ current_password, new_password })),
         {
-          loading: 'Updating...',
-          error: 'Could not change password!'
+          loading: 'Updating...'
         }
-      )
-        .then(res => {
-          if (!res.error) {
-            toast.success('Change password successfully. Please login again.')
-            dispatch(logoutUserAPI(false))
-          }
-        })
+      ).then(res => {
+        if (!res.error) {
+          toast.success('Change password successfully. Please login again.')
+          dispatch(logoutUserAPI(false))
+        }
+      })
 
     }).catch(() => { })
   }

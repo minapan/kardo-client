@@ -47,7 +47,7 @@ function BoardBar({ board }) {
         <Chip
           sx={MENU_STYLES}
           icon={<VpnLockIcon />} label={capitalizeFirstLetter(board?.type)} clickable />
-        <Chip
+        {/* <Chip
           sx={MENU_STYLES}
           icon={<AddToDriveIcon />} label="Add To Google Drive" clickable />
         <Chip
@@ -55,7 +55,7 @@ function BoardBar({ board }) {
           icon={<BoltIcon />} label="Automation" clickable />
         <Chip
           sx={MENU_STYLES}
-          icon={<FilterListIcon />} label="Automation" clickable />
+          icon={<FilterListIcon />} label="Automation" clickable /> */}
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <InviteBoardUser boardId={board?._id} />

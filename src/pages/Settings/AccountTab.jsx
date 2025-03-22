@@ -8,7 +8,6 @@ import Button from '@mui/material/Button'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import MailIcon from '@mui/icons-material/Mail'
 import AccountBoxIcon from '@mui/icons-material/AccountBox'
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
 
 import { FIELD_REQUIRED_MESSAGE, singleFileValidator } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
@@ -24,28 +23,32 @@ function AccountTab() {
   const currentUser = useSelector(selectCurrUser)
 
   const initialGeneralForm = {
-    displayName: currentUser?.displayName
+    displayName: currentUser?.displayName || '',
+    bio: currentUser?.bio || ''
   }
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: initialGeneralForm
   })
 
   const submitChangeGeneralInformation = (data) => {
-    const { displayName } = data
+    const { displayName, bio } = data
 
-    if (displayName === currentUser?.displayName) return
+    if (displayName === currentUser?.displayName && bio === currentUser?.bio) return
 
     toast.promise(
-      dispatch(updateUserAPI({ displayName })),
+      dispatch(updateUserAPI({ displayName, bio })),
       {
-        loading: 'Updating...',
-        success: 'Updated successfully!',
-        error: 'Could not update!'
+        loading: 'Updating...'
       }
-    )
-    // .then(res => {
-    //   if (!res.error) toast.success('Updated successfully.')
-    // })
+    ).then(res => {
+      if (!res.error) {
+        toast.success('Updated successfully.')
+        reset({
+          displayName: res.payload.displayName,
+          bio: res.payload.bio
+        })
+      }
+    })
   }
 
   const uploadAvatar = (e) => {
@@ -64,7 +67,7 @@ function AccountTab() {
 
     toast.promise(
       dispatch(updateUserAPI(reqData)),
-      { pending: 'Updating is in progress...' }
+      { loading: 'Updating...' }
     ).then(res => {
       if (!res.error) toast.success('Updated successfully.')
       e.target.value = ''
@@ -155,13 +158,6 @@ function AccountTab() {
                 label="Your Display Name"
                 type="text"
                 variant="outlined"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AssignmentIndIcon fontSize="small" />
-                    </InputAdornment>
-                  )
-                }}
                 {...register('displayName', {
                   required: FIELD_REQUIRED_MESSAGE
                 })}
@@ -170,6 +166,17 @@ function AccountTab() {
               <FieldErrorAlert errors={errors} fieldName={'displayName'} />
             </Box>
 
+            <Box>
+              <TextField
+                fullWidth
+                label='Your bio'
+                type="text"
+                variant="outlined"
+                multiline
+                rows={4}
+                {...register('bio')}
+              />
+            </Box>
             <Box>
               <Button
                 className="interceptor-loading"

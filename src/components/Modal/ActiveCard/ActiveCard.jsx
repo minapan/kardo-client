@@ -48,6 +48,7 @@ const SidebarItem = styled(Box)(({ theme }) => ({
   cursor: 'pointer',
   fontSize: '14px',
   fontWeight: '600',
+  userSelect: 'none',
   color: theme.palette.mode === 'dark' ? '#90caf9' : '#172b4d',
   backgroundColor: theme.palette.mode === 'dark' ? '#2f3542' : '#091e420f',
   padding: '10px',
@@ -219,7 +220,7 @@ function ActiveCard() {
                   </SidebarItem>
                 )
                 : (
-                  <SidebarItem onClick={() => onUpdateCardMembers({
+                  <SidebarItem className="active" onClick={() => onUpdateCardMembers({
                     userId: currUser._id,
                     action: CARD_MEMBER_ACTIONS.REMOVE
                   })}>
@@ -234,16 +235,16 @@ function ActiveCard() {
                 <VisuallyHiddenInput type="file" onChange={onUploadCardCover} />
               </SidebarItem>
 
-              <SidebarItem><AttachFileOutlinedIcon fontSize="small" />Attachment</SidebarItem>
+              {/* <SidebarItem><AttachFileOutlinedIcon fontSize="small" />Attachment</SidebarItem>
               <SidebarItem><LocalOfferOutlinedIcon fontSize="small" />Labels</SidebarItem>
               <SidebarItem><TaskAltOutlinedIcon fontSize="small" />Checklist</SidebarItem>
               <SidebarItem><WatchLaterOutlinedIcon fontSize="small" />Dates</SidebarItem>
-              <SidebarItem><AutoFixHighOutlinedIcon fontSize="small" />Custom Fields</SidebarItem>
+              <SidebarItem><AutoFixHighOutlinedIcon fontSize="small" />Custom Fields</SidebarItem> */}
             </Stack>
 
             <Divider sx={{ my: 2 }} />
 
-            <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Power-Ups</Typography>
+            {/* <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Power-Ups</Typography>
             <Stack direction="column" spacing={1}>
               <SidebarItem><AspectRatioOutlinedIcon fontSize="small" />Card Size</SidebarItem>
               <SidebarItem><AddToDriveOutlinedIcon fontSize="small" />Google Drive</SidebarItem>
@@ -259,7 +260,7 @@ function ActiveCard() {
               <SidebarItem><AutoAwesomeOutlinedIcon fontSize="small" />Make Template</SidebarItem>
               <SidebarItem><ArchiveOutlinedIcon fontSize="small" />Archive</SidebarItem>
               <SidebarItem><ShareOutlinedIcon fontSize="small" />Share</SidebarItem>
-            </Stack>
+            </Stack> */}
           </Grid>
         </Grid>
       </Box>

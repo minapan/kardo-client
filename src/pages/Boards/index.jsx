@@ -97,14 +97,14 @@ function Boards() {
                 <SpaceDashboardIcon fontSize="small" />
                 Boards
               </SidebarItem>
-              <SidebarItem>
+              {/* <SidebarItem>
                 <ListAltIcon fontSize="small" />
                 Templates
               </SidebarItem>
               <SidebarItem>
                 <HomeIcon fontSize="small" />
                 Home
-              </SidebarItem>
+              </SidebarItem> */}
             </Stack>
             <Divider sx={{ my: 1 }} />
             <Stack direction="column" spacing={1}>

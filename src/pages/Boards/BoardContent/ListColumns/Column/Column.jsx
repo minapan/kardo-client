@@ -101,14 +101,15 @@ function Column({ column }) {
       .catch(() => { })
   }
 
-  const onUpdateColumnTitle = (newTitle) => {
-    updateColDetailsAPI(column._id, { title: newTitle }).then(() => {
+  const onUpdateColumnTitle = async (newTitle) => {
+    await updateColDetailsAPI(column._id, { title: newTitle }).then((res) => {
       const newBoard = cloneDeep(board)
       const columnToUpdate = newBoard.columns.find(col => col._id === column._id)
       if (columnToUpdate) {
         columnToUpdate.title = newTitle
       }
       dispatch(updateCurrActiveBoard(newBoard))
+      column.title = res?.title
     })
   }
 
@@ -204,9 +205,9 @@ function Column({ column }) {
                 >
                   <ListItemIcon><AddCard className='add-card' fontSize="small" /></ListItemIcon>
                   <ListItemText>Add Card</ListItemText>
-                  <Typography variant="body2" className='ctrl-n' color="text.secondary"> ⌘N</Typography>
+                  {/* <Typography variant="body2" className='ctrl-n' color="text.secondary"> ⌘N</Typography> */}
                 </MenuItem>
-                <MenuItem>
+                {/* <MenuItem>
                   <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
                   <ListItemText>Cut</ListItemText>
                   <Typography variant="body2" color="text.secondary"> ⌘X</Typography>
@@ -220,7 +221,7 @@ function Column({ column }) {
                   <ListItemIcon><ContentPaste fontSize="small" /></ListItemIcon>
                   <ListItemText>Paste</ListItemText>
                   <Typography variant="body2" color="text.secondary"> ⌘V</Typography>
-                </MenuItem>
+                </MenuItem> */}
                 <Divider />
                 <MenuItem
                   onClick={handleDeleteColumn}
@@ -234,10 +235,10 @@ function Column({ column }) {
                   <ListItemIcon><DeleteIcon className='delete-icon' fontSize="small" /></ListItemIcon>
                   <ListItemText>Remove this column</ListItemText>
                 </MenuItem>
-                <MenuItem>
+                {/* <MenuItem>
                   <ListItemIcon><Cloud fontSize="small" /></ListItemIcon>
                   <ListItemText>Archive this column</ListItemText>
-                </MenuItem>
+                </MenuItem> */}
               </Menu>
             </Box>
           </Box>

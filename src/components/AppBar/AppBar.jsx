@@ -91,11 +91,11 @@ function AppBar() {
           </Tooltip> */}
           <Notifications />
 
-          <Tooltip title="Help">
+          {/* <Tooltip title="Help">
             <Badge color="secondary" sx={{ cursor: 'pointer', color: 'white' }}>
               <HelpOutlineIcon fontSize='small' />
             </Badge>
-          </Tooltip>
+          </Tooltip> */}
           <Profile />
         </Box>
       </Box>

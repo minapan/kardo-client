@@ -56,11 +56,13 @@ function CardDescriptionEditor({ cardDescriptionProp, handleUpdateCardDescriptio
             startIcon={<EditNoteIcon />}>
             Edit
           </Button>
-          {cardDescription !== '<p><br></p>' ? (
-            <Box sx={{ overflow: 'auto', maxHeight: 500 }}>
+          {(cardDescription !== '<p><br></p>' && cardDescription) ? (
+            <Box sx={{ overflow: 'auto', maxHeight: 400 }}>
               <Box
                 dangerouslySetInnerHTML={{ __html: cardDescription }}
-                sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                sx={{
+                  whiteSpace: 'pre-wrap', wordBreak: 'break-word', backgroundColor: theme => theme.palette.mode === 'dark' ? '#33485D' : theme.palette.grey[100], px: 2, py: 1, borderRadius: 4, scrollbarWidth: 'thin', '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#e9f2ff' }
+                }}
               />
             </Box>
           ) : (
