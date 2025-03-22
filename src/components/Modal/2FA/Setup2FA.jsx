@@ -11,6 +11,7 @@ import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { get2FaQrCodeAPI } from '~/apis'
 import { setup2FaAPI } from '~/redux/user/userSlice'
+import { MuiOtpInput } from 'mui-one-time-password-input'
 
 function Setup2FA({ isOpen, toggleOpen, handleSuccessSetup2FA }) {
   const [otpToken, setConfirmOtpToken] = useState('')
@@ -100,38 +101,16 @@ function Setup2FA({ isOpen, toggleOpen, handleSuccessSetup2FA }) {
             Then enter the 6-digit code and click <strong>Confirm</strong> to verify.
           </Box>
 
-          <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, my: 1 }}>
-            <TextField
-              autoFocus
-              autoComplete='nope'
-              label="Enter your code..."
-              type="text"
-              variant="outlined"
-              sx={{ minWidth: '280px' }}
-              value={otpToken}
-              onChange={(e) => setConfirmOtpToken(e.target.value)}
-              error={!!error && !otpToken}
-            />
+          <MuiOtpInput
+            autoFocus
+            value={otpToken}
+            validateChar={(char) => char >= '0' && char <= '9'}
+            onChange={setConfirmOtpToken}
+            onComplete={handleConfirmSetup2FA}
+            length={6}
+            error={!!error && !otpToken}
+          />
 
-            <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              size='large'
-              sx={{ textTransform: 'none', minWidth: '120px', height: '55px', fontSize: '1em' }}
-              onClick={handleConfirmSetup2FA}
-            >
-              Confirm
-            </Button>
-          </Box>
-
-          {/* <Box>
-            <Typography variant="span" sx={{ fontWeight: 'bold', fontSize: '0.9em', color: '#8395a7', '&:hover': { color: '#fdba26' } }}>
-              <a style={{ color: 'inherit', textDecoration: 'none' }} target='_blank' rel='noreferrer'>
-
-              </a>
-            </Typography>
-          </Box> */}
         </Box>
       </Box>
     </Modal>

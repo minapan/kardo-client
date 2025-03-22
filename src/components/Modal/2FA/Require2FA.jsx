@@ -3,11 +3,13 @@ import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Typography from '@mui/material/Typography'
 import SecurityIcon from '@mui/icons-material/Security'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
 import { useDispatch } from 'react-redux'
-import { verify2FaAPI } from '~/redux/user/userSlice'
+import { logoutUserAPI, verify2FaAPI } from '~/redux/user/userSlice'
 import toast from 'react-hot-toast'
+import { MuiOtpInput } from 'mui-one-time-password-input'
+import { Link } from '@mui/material'
+import { useConfirm } from 'material-ui-confirm'
+import { Logout } from '@mui/icons-material'
 
 function Require2FA() {
   const [otpToken, setConfirmOtpToken] = useState('')
@@ -31,6 +33,18 @@ function Require2FA() {
         setError(null)
       }
     })
+  }
+  const confirmLogout = useConfirm()
+  const handleLogout = () => {
+    confirmLogout({
+      title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Logout sx={{ color: 'warning.dark' }} /> LOGOUT ?
+      </Box>,
+      description: 'Are you sure you want to logout?',
+      confirmationText: 'Yes'
+    })
+      .then(() => dispatch(logoutUserAPI()))
+      .catch(() => { })
   }
 
   return (
@@ -58,34 +72,29 @@ function Require2FA() {
         <Typography sx={{ mb: 2 }}>
           Enter the 6-digit code from your authentication app and click <strong>Confirm</strong> to verify.
         </Typography>
-
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <TextField
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 2 }}>
+          <MuiOtpInput
             autoFocus
-            autoComplete="off"
-            label="Enter your code..."
-            type="text"
-            variant="outlined"
-            fullWidth
             value={otpToken}
-            onChange={(e) => setConfirmOtpToken(e.target.value)}
+            validateChar={(char) => char >= '0' && char <= '9'}
+            onChange={setConfirmOtpToken}
+            onComplete={handleRequire2FA}
+            length={6}
             error={!!error && !otpToken}
           />
 
-          <Button
-            type="button"
-            variant="contained"
-            color="primary"
-            size="large"
-            sx={{ textTransform: 'none' }}
-            fullWidth
-            onClick={handleRequire2FA}
+          <Link
+            underline="none"
+            component="button"
+            variant="body2"
+            onClick={handleLogout}
           >
-            Confirm
-          </Button>
+            Want to logout?
+          </Link>
         </Box>
+
       </Box>
-    </Modal>
+    </Modal >
   )
 }
 

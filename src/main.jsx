@@ -1,5 +1,5 @@
-import CssBaseline from '@mui/material/CssBaseline' // on top to fix error in v5
-import { GlobalStyles } from '@mui/material'
+import { CssBaseline } from '@mui/material'
+import GlobalStyles from '@mui/material/GlobalStyles'
 import ReactDOM from 'react-dom/client'
 import App from '~/App.jsx'
 import '~/index.css'
