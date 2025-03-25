@@ -255,10 +255,10 @@ function CardLabelGroup({ cardLabelIds = [], onUpdateCardLabels }) {
               </Box>
               <Divider sx={{ mb: 2, borderColor: '#e0e0e0' }} />
               <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-                <Button variant="contained" size="small" onClick={handleSaveLabel}>
+                <Button variant="outlined" size="small" onClick={handleSaveLabel}>
                   Save
                 </Button>
-                <Button variant="outlined" size="small" onClick={handleCancel}>
+                <Button variant="text" size="small" onClick={handleCancel} sx={{ color: (theme) => (theme.palette.mode === 'dark' ? '#dfe1e6' : '#172b4d') }} >
                   Cancel
                 </Button>
               </Box>

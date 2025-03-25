@@ -81,7 +81,7 @@ function InviteBoardUser({ boardId }) {
               <Button
                 className="interceptor-loading"
                 type="submit"
-                variant="contained"
+                variant="text"
                 color="info"
               >
                 Invite

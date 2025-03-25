@@ -25,45 +25,39 @@ export const initLabels = [
 ]
 
 export const predefinedColors = [
-  // Hàng 1
-  '#C1E1C5', // Xanh lá nhạt
-  '#F5E050', // Vàng nhạt
-  '#F4A261', // Cam nhạt
-  '#F28C82', // Đỏ nhạt
-  '#D4B9DA', // Tím nhạt
+  '#C1E1C5',
+  '#F5E050',
+  '#F4A261',
+  '#F28C82',
+  '#D4B9DA',
 
-  // Hàng 2
-  '#9FD8CB', // Xanh lá trung bình
-  '#FFD700', // Vàng trung bình
-  '#FF8C00', // Cam trung bình
-  '#FF4040', // Đỏ trung bình
-  '#B19CD9', // Tím trung bình
+  '#9FD8CB',
+  '#FFD700',
+  '#FF8C00',
+  '#FF4040',
+  '#B19CD9',
 
-  // Hàng 3
-  '#5CB85C', // Xanh lá đậm
-  '#DAA520', // Vàng đậm (nâu vàng)
-  '#E95420', // Cam đậm (được viền xanh trong ảnh)
-  '#FF0000', // Đỏ đậm
-  '#8A2BE2', // Tím đậm
+  '#5CB85C',
+  '#DAA520',
+  '#E95420',
+  '#FF0000',
+  '#8A2BE2',
 
-  // Hàng 4
-  '#cce0ff', // Xanh dương nhạt
-  '#98FF98', // Xanh lá nhạt (hơi khác nhóm trên)
-  '#FFB6C1', // Hồng nhạt
-  '#D3D3D3', // Xám nhạt
-  '#ADD8E6', // Xanh dương nhạt (hơi khác)
+  '#cce0ff',
+  '#98FF98',
+  '#FFB6C1',
+  '#D3D3D3',
+  '#ADD8E6',
 
-  // Hàng 5
-  '#87CEEB', // Xanh dương trung bình
-  '#00FF7F', // Xanh lá sáng
-  '#FF69B4', // Hồng đậm
-  '#A9A9A9', // Xám trung bình
-  '#4682B4', // Xanh dương đậm
+  '#87CEEB',
+  '#00FF7F',
+  '#FF69B4',
+  '#A9A9A9',
+  '#4682B4',
 
-  // Hàng 6
-  '#4169E1', // Xanh dương đậm
-  '#228B22', // Xanh lá đậm
-  '#C71585', // Hồng đậm (hơi tím)
-  '#696969', // Xám đậm
-  '#2F4F4F' // Xám xanh đậm
+  '#4169E1',
+  '#228B22',
+  '#C71585',
+  '#696969',
+  '#2F4F4F'
 ]

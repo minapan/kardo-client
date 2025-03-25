@@ -4,8 +4,6 @@ import Modal from '@mui/material/Modal'
 import Typography from '@mui/material/Typography'
 import SecurityIcon from '@mui/icons-material/Security'
 import CancelIcon from '@mui/icons-material/Cancel'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
 import { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
@@ -29,25 +27,21 @@ function Setup2FA({ isOpen, toggleOpen, handleSuccessSetup2FA }) {
 
   const handleCloseModal = () => {
     toggleOpen(!isOpen)
+    setError(null)
+    setConfirmOtpToken('')
   }
 
   const handleConfirmSetup2FA = () => {
-    if (!otpToken) {
-      const errMsg = 'Please enter your otp token.'
-      setError(errMsg)
-      toast.error(errMsg)
-      return
-    }
-    // console.log('handleConfirmSetup2FA > otpToken: ', otpToken)
-
     toast.promise(
       dispatch(setup2FaAPI(otpToken)),
       { loading: 'Setting up...' }
     ).then((res) => {
-      if (!res.error) {
+      if (res.error) {
+        setError(res.error)
+      }
+      else {
         toast.success('Setup 2FA successfully!')
         handleSuccessSetup2FA()
-        setError(null)
       }
     })
   }
@@ -105,10 +99,27 @@ function Setup2FA({ isOpen, toggleOpen, handleSuccessSetup2FA }) {
             autoFocus
             value={otpToken}
             validateChar={(char) => char >= '0' && char <= '9'}
-            onChange={setConfirmOtpToken}
+            onChange={(value) => {
+              setConfirmOtpToken(value)
+              if (error) setError(null)
+            }}
             onComplete={handleConfirmSetup2FA}
             length={6}
-            error={!!error && !otpToken}
+            TextFieldProps={{
+              error: !!error
+            }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderColor: error ? 'red' : 'inherit',
+                color: error ? 'red' : 'inherit',
+                '& fieldset': {
+                  borderColor: error ? 'red !important' : 'inherit'
+                },
+                '&:hover fieldset': {
+                  borderColor: error ? 'darkred !important' : 'inherit'
+                }
+              }
+            }}
           />
 
         </Box>

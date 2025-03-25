@@ -17,23 +17,19 @@ function Require2FA() {
   const dispatch = useDispatch()
 
   const handleRequire2FA = () => {
-    if (!otpToken) {
-      const errMsg = 'Please enter your code.'
-      setError(errMsg)
-      toast.error(errMsg)
-      return
-    }
-    // console.log('handleRequire2FA > otpToken: ', otpToken)
     toast.promise(
       dispatch(verify2FaAPI(otpToken)),
       { loading: 'Setting up...' }
     ).then((res) => {
-      if (!res.error) {
+      if (res.error) {
+        setError(res.error)
+      }
+      else {
         toast.success('Setup 2FA successfully!')
-        setError(null)
       }
     })
   }
+
   const confirmLogout = useConfirm()
   const handleLogout = () => {
     confirmLogout({
@@ -77,10 +73,27 @@ function Require2FA() {
             autoFocus
             value={otpToken}
             validateChar={(char) => char >= '0' && char <= '9'}
-            onChange={setConfirmOtpToken}
+            onChange={(value) => {
+              setConfirmOtpToken(value)
+              if (error) setError(null)
+            }}
             onComplete={handleRequire2FA}
             length={6}
-            error={!!error && !otpToken}
+            TextFieldProps={{
+              error: !!error
+            }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderColor: error ? 'red' : 'inherit',
+                color: error ? 'red' : 'inherit',
+                '& fieldset': {
+                  borderColor: error ? 'red !important' : 'inherit'
+                },
+                '&:hover fieldset': {
+                  borderColor: error ? 'darkred !important' : 'inherit'
+                }
+              }
+            }}
           />
 
           <Link

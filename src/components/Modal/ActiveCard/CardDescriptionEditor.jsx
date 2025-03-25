@@ -40,18 +40,17 @@ function CardDescriptionEditor({ cardDescriptionProp, handleUpdateCardDescriptio
             onClick={updateCardDescription}
             className="interceptor-loading"
             type="button"
-            variant="contained"
-            size="small"
-            color="info">
+            variant="outlined"
+            size="small">
             Save
           </Button>
         </Box>
         : <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Button
-            sx={{ alignSelf: 'flex-end', p: 1.5 }}
+            sx={{ alignSelf: 'flex-end' }}
             onClick={() => setEditMode(true)}
             type="button"
-            variant="contained"
+            variant="text"
             color="info"
             size="small"
             startIcon={<EditNoteIcon />}>

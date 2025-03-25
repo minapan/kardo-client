@@ -42,6 +42,7 @@ import { PersonRemoveOutlined } from '@mui/icons-material'
 import toast from 'react-hot-toast'
 import CardDescriptionEditor from './CardDescriptionEditor'
 import CardLabelGroup from './CardLabelGroup'
+import ChecklistGroup from './Checklist/ChecklistGroup'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -141,6 +142,10 @@ function ActiveCard() {
     else callApiUpdateCard({ labelInfo })
   }
 
+  const handleUpdateCardChecklists = (checklistInfo) => {
+    callApiUpdateCard({ checklistInfo })
+  }
+
   return (
     <Modal
       disableScrollLock
@@ -223,6 +228,8 @@ function ActiveCard() {
                 cardDescriptionProp={activeCard?.description || ''}
                 handleUpdateCardDescription={onUpdateCardDescription}
               />
+
+              <ChecklistGroup checklists={activeCard?.checklists} onUpdateCardChecklists={handleUpdateCardChecklists} />
             </Box>
 
             <Box sx={{ mb: 3 }}>
@@ -270,9 +277,9 @@ function ActiveCard() {
                 <VisuallyHiddenInput type="file" onChange={onUploadCardCover} />
               </SidebarItem>
 
-              <SidebarItem><LocalOfferOutlinedIcon fontSize="small" />Labels</SidebarItem>
+              {/* <SidebarItem><LocalOfferOutlinedIcon fontSize="small" />Labels</SidebarItem>
+              <SidebarItem><TaskAltOutlinedIcon fontSize="small" />Checklist</SidebarItem> */}
               {/* <SidebarItem><AttachFileOutlinedIcon fontSize="small" />Attachment</SidebarItem>
-              <SidebarItem><TaskAltOutlinedIcon fontSize="small" />Checklist</SidebarItem>
               <SidebarItem><WatchLaterOutlinedIcon fontSize="small" />Dates</SidebarItem>
               <SidebarItem><AutoFixHighOutlinedIcon fontSize="small" />Custom Fields</SidebarItem> */}
             </Stack>
