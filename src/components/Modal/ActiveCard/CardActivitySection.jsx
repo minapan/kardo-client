@@ -34,7 +34,12 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
         <TextField
           fullWidth
-          sx={{ borderRadius: 2, border: '1px solid #b1b1b1', backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#33485D' : theme.palette.grey[100] }}
+          sx={{
+            backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#33485D' : '#fff',
+            '.MuiOutlinedInput-notchedOutline': { borderColor: '#fff' },
+            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#fff' },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#fff' }
+          }}
           placeholder="Write a comment..."
           type="text"
           variant="outlined"
@@ -45,7 +50,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
 
       {/* Display comment list */}
       {cardComments.length === 0 &&
-        <Typography sx={{fontSize: '14px', fontWeight: '500', color: '#b1b1b1' }}>
+        <Typography sx={{ fontSize: '14px', fontWeight: '500', color: '#b1b1b1' }}>
           No activity found!
         </Typography>
       }
@@ -67,10 +72,10 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
 
             <Box sx={{
               display: 'block',
-              bgcolor: (theme) => theme.palette.mode === 'dark' ? '#33485D' : '#e9f2ff',
+              bgcolor: (theme) => theme.palette.mode === 'dark' ? '#33485D' : '#fff',
               p: '8px 12px',
               mt: '4px',
-              border: '0.5px solid rgba(0, 0, 0, 0.2)',
+              border: '0.5px solid rgba(161, 160, 160, 0.2)',
               borderRadius: 3,
               wordBreak: 'break-word',
               boxShadow: '0 0 1px rgba(0, 0, 0, 0.2)'

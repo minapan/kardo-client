@@ -84,6 +84,7 @@ function AppBar() {
           <AutoCompleteSearchBoard />
 
           <SelectMode />
+
           {/* <Tooltip title="Notifications">
             <Badge color="warning" variant="dot" sx={{ cursor: 'pointer', color: 'white' }}>
               <NotificationsNoneIcon fontSize='small' style={{ transform: 'rotate(45deg)' }} />

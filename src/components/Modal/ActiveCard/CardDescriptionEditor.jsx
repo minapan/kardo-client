@@ -6,6 +6,7 @@ import EditNoteIcon from '@mui/icons-material/EditNote'
 import { useRef } from 'react'
 import JoditEditor from 'jodit-react'
 import DOMPurify from 'dompurify'
+import { Typography } from '@mui/material'
 
 function CardDescriptionEditor({ cardDescriptionProp, handleUpdateCardDescription }) {
   const { mode } = useColorScheme()
@@ -45,9 +46,9 @@ function CardDescriptionEditor({ cardDescriptionProp, handleUpdateCardDescriptio
             Save
           </Button>
         </Box>
-        : <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        : <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Button
-            sx={{ alignSelf: 'flex-end' }}
+            sx={{ alignSelf: 'flex-end', p: 1.5 }}
             onClick={() => setEditMode(true)}
             type="button"
             variant="contained"
@@ -61,12 +62,12 @@ function CardDescriptionEditor({ cardDescriptionProp, handleUpdateCardDescriptio
               <Box
                 dangerouslySetInnerHTML={{ __html: cardDescription }}
                 sx={{
-                  whiteSpace: 'pre-wrap', wordBreak: 'break-word', backgroundColor: theme => theme.palette.mode === 'dark' ? '#33485D' : theme.palette.grey[100], px: 2, py: 1, borderRadius: 4, scrollbarWidth: 'thin', '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#e9f2ff' }
+                  whiteSpace: 'pre-wrap', wordBreak: 'break-word', backgroundColor: theme => theme.palette.mode === 'dark' ? '#33485D' : '#fff', px: 2, py: '2px', scrollbarWidth: 'thin', '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#e9f2ff' }
                 }}
               />
             </Box>
           ) : (
-            <Box sx={{ color: 'text.secondary' }}>No description</Box>
+            <Typography sx={{ fontSize: '14px', fontWeight: '500', color: '#b1b1b1' }}>No description</Typography>
           )}
         </Box>
       }

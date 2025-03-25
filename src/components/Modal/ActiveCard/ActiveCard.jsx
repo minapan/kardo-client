@@ -34,13 +34,14 @@ import { styled } from '@mui/material/styles'
 import { useDispatch } from 'react-redux'
 import { clearAndHideCurrActiveCard, selectCurrActiveCard, selectIsShowModal, updateCurrActiveCard } from '~/redux/activeCard/activeCardSlice'
 import { useSelector } from 'react-redux'
-import { updateCardDetailsAPI } from '~/apis'
-import { updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { updateBoardDetailsAPI, updateCardDetailsAPI } from '~/apis'
+import { selectCurrActiveBoard, updateCardInBoard, updateCurrActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { selectCurrUser } from '~/redux/user/userSlice'
 import { CARD_MEMBER_ACTIONS } from '~/utils/constants'
 import { PersonRemoveOutlined } from '@mui/icons-material'
 import toast from 'react-hot-toast'
 import CardDescriptionEditor from './CardDescriptionEditor'
+import CardLabelGroup from './CardLabelGroup'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -66,6 +67,7 @@ function ActiveCard() {
   const dispatch = useDispatch()
   const currUser = useSelector(selectCurrUser)
   const activeCard = useSelector(selectCurrActiveCard)
+  const activeBoard = useSelector(selectCurrActiveBoard)
   const isShowModal = useSelector(selectIsShowModal)
 
   // const [isOpen, setIsOpen] = useState(true)
@@ -117,6 +119,28 @@ function ActiveCard() {
     callApiUpdateCard({ memberInfo })
   }
 
+  const onUpdateCardLabels = (labelInfo) => {
+    if (labelInfo.action === 'CREATE')
+      updateBoardDetailsAPI(activeCard.boardId, { newLabel: labelInfo.newLabel })
+        .then(res => {
+          dispatch(updateCurrActiveBoard({ ...activeBoard, labels: res.labels }))
+        })
+
+    else if (labelInfo.action === 'UPDATE')
+      updateBoardDetailsAPI(activeCard.boardId, { updatedLabel: labelInfo.updatedLabel })
+        .then(res => {
+          dispatch(updateCurrActiveBoard({ ...activeBoard, labels: res.labels }))
+        })
+
+    else if (labelInfo.action === 'DELETE') {
+      updateBoardDetailsAPI(activeCard.boardId, { removeLabelId: labelInfo.labelId })
+        .then(res => {
+          dispatch(updateCurrActiveBoard({ ...activeBoard, labels: res.labels }))
+        })
+    }
+    else callApiUpdateCard({ labelInfo })
+  }
+
   return (
     <Modal
       disableScrollLock
@@ -133,7 +157,7 @@ function ActiveCard() {
         outline: 0,
         padding: '40px 20px 20px',
         margin: '50px auto',
-        backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#fff'
+        backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#f1f2f4'
       }}>
         <Box sx={{
           position: 'absolute',
@@ -147,17 +171,17 @@ function ActiveCard() {
         {activeCard?.cover &&
           <Box sx={{ my: 2 }}>
             <img
-              style={{ width: '100%', height: '320px', borderRadius: '6px', objectFit: 'cover' }}
+              style={{ width: '100%', height: '320px', borderRadius: '6px', objectFit: 'cover', objectPosition: 'center' }}
               src={activeCard?.cover}
               alt="card-cover"
             />
           </Box>
         }
 
-        <Box sx={{ mt: -3, pr: 2.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ mt: -2, pr: 2.5, display: 'flex', alignItems: 'center', gap: 1 }}>
           <CreditCardIcon />
 
-          {/* Feature 01: Handle the Card title */}
+          {/* Feature: Handle the Card title */}
           <ToggleFocusInput
             inputFontSize='22px'
             value={activeCard?.title || ''}
@@ -167,14 +191,25 @@ function ActiveCard() {
         <Grid container spacing={2} sx={{ mb: 3 }}>
           {/* Left side */}
           <Grid xs={12} sm={9}>
-            <Box sx={{ mb: 3 }}>
-              <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Members</Typography>
+            <Box sx={{ mb: 3, display: 'flex', gap: 2 }}>
+              <Box>
+                <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Members</Typography>
 
-              {/* Feature 02: Manage Card members */}
-              <CardUserGroup
-                cardMemberIds={activeCard?.memberIds}
-                onUpdateCardMembers={onUpdateCardMembers}
-              />
+                {/* Feature: Manage Card members */}
+                <CardUserGroup
+                  cardMemberIds={activeCard?.memberIds}
+                  onUpdateCardMembers={onUpdateCardMembers}
+                />
+              </Box>
+              <Box>
+                <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Labels</Typography>
+
+                {/* Feature: Manage Card labels */}
+                <CardLabelGroup
+                  cardLabelIds={activeCard?.labelIds}
+                  onUpdateCardLabels={onUpdateCardLabels}
+                />
+              </Box>
             </Box>
 
             <Box sx={{ mb: 3 }}>
@@ -183,7 +218,7 @@ function ActiveCard() {
                 <Typography variant="span" sx={{ fontWeight: '600', fontSize: '20px' }}>Description</Typography>
               </Box>
 
-              {/* Feature 03: Handle the Card description */}
+              {/* Feature: Handle the Card description */}
               <CardDescriptionEditor
                 cardDescriptionProp={activeCard?.description || ''}
                 handleUpdateCardDescription={onUpdateCardDescription}
@@ -196,7 +231,7 @@ function ActiveCard() {
                 <Typography variant="span" sx={{ fontWeight: '600', fontSize: '20px' }}>Activity</Typography>
               </Box>
 
-              {/* Feature 04: Handle actions such as adding comments to the Card */}
+              {/* Feature: Handle actions such as adding comments to the Card */}
               <CardActivitySection
                 cardComments={activeCard?.comments}
                 onAddCardComment={onAddCardComment}
@@ -208,7 +243,7 @@ function ActiveCard() {
           <Grid xs={12} sm={3}>
             <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Add To Card</Typography>
             <Stack direction="column" spacing={1}>
-              {/* Feature 05: Allow the user to join the Card themselves */}
+              {/* Feature: Allow the user to join the Card themselves */}
               {!activeCard?.memberIds?.includes(currUser?._id)
                 ? (
                   <SidebarItem className="active" onClick={() => onUpdateCardMembers({
@@ -228,15 +263,15 @@ function ActiveCard() {
                     Leave
                   </SidebarItem>
                 )}
-              {/* Feature 06: Update the Card Cover image */}
+              {/* Feature: Update the Card Cover image */}
               <SidebarItem className="active" component="label">
                 <ImageOutlinedIcon fontSize="small" />
                 Cover
                 <VisuallyHiddenInput type="file" onChange={onUploadCardCover} />
               </SidebarItem>
 
-              {/* <SidebarItem><AttachFileOutlinedIcon fontSize="small" />Attachment</SidebarItem>
               <SidebarItem><LocalOfferOutlinedIcon fontSize="small" />Labels</SidebarItem>
+              {/* <SidebarItem><AttachFileOutlinedIcon fontSize="small" />Attachment</SidebarItem>
               <SidebarItem><TaskAltOutlinedIcon fontSize="small" />Checklist</SidebarItem>
               <SidebarItem><WatchLaterOutlinedIcon fontSize="small" />Dates</SidebarItem>
               <SidebarItem><AutoFixHighOutlinedIcon fontSize="small" />Custom Fields</SidebarItem> */}

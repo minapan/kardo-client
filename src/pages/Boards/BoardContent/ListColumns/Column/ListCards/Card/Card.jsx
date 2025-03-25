@@ -1,4 +1,4 @@
-import { Button, Typography } from '@mui/material'
+import { Box, Button, Chip, Typography } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
@@ -8,9 +8,16 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useDispatch } from 'react-redux'
 import { showModal, updateCurrActiveCard } from '~/redux/activeCard/activeCardSlice'
+import { useSelector } from 'react-redux'
+import { selectCurrActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 
 function TrelloCard({ card }) {
   const dispatch = useDispatch()
+
+  const board = useSelector(selectCurrActiveBoard)
+  const FE_CardLabels = card?.labelIds?.map(
+    labelId => board?.labels?.find(label => label.id === labelId)
+  ).filter(label => label)
 
   const showCardAction = () => {
     return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
@@ -56,9 +63,21 @@ function TrelloCard({ card }) {
         }}>
         <div style={{ opacity: isDragging ? '0' : '1' }}>
           {card?.cover && (<CardMedia sx={{ height: '140px', borderRadius: '8px 8px 0 0' }} image={card?.cover} />)}
+
+          {FE_CardLabels?.length > 0 && (
+            <Box sx={{ display: 'flex', gap: 1, px: 1, mt: 1.5, flexWrap: 'wrap' }}>
+              {FE_CardLabels?.map((label, index) => (
+                <Chip
+                  key={index}
+                  size="small" sx={{ background: label?.color, width: '52px', height: '8px' }} />
+              ))}
+            </Box>
+          )}
+
           <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
             <Typography sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>{card?.title}</Typography>
           </CardContent>
+
           {showCardAction() && (
             <CardActions sx={{ display: 'flex', justifyContent: 'space-between', p: '0 4px 8px 4px' }}>
               {!!card?.memberIds?.length &&
@@ -72,6 +91,7 @@ function TrelloCard({ card }) {
               }
             </CardActions>
           )}
+
         </div>
       </Card>
     </>

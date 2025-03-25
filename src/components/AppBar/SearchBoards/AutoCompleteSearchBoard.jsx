@@ -89,7 +89,7 @@ function AutoCompleteSearchBoard() {
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Type to search..."
+          placeholder="Search..."
           size="small"
           InputProps={{
             ...params.InputProps,
@@ -101,7 +101,7 @@ function AutoCompleteSearchBoard() {
             endAdornment: (
               <>
                 {loading ? <CircularProgress sx={{ color: 'white' }} size={20} /> : null}
-                {params.InputProps.endAdornment}
+                {/* {params.InputProps.endAdornment} */}
               </>
             )
           }}

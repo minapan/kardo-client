@@ -71,7 +71,7 @@ function CardUserGroup({ cardMemberIds = [], onUpdateCardMembers }) {
             fontWeight: '600',
             borderRadius: '50%',
             color: (theme) => theme.palette.mode === 'dark' ? '#90caf9' : '#172b4d',
-            bgcolor: (theme) => theme.palette.mode === 'dark' ? '#2f3542' : theme.palette.grey[200],
+            bgcolor: (theme) => theme.palette.mode === 'dark' ? '#2f3542' : theme.palette.grey[300],
             '&:hover': {
               color: (theme) => theme.palette.mode === 'dark' ? '#000000de' : '#0c66e4',
               bgcolor: (theme) => theme.palette.mode === 'dark' ? '#90caf9' : '#e9f2ff'
