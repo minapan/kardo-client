@@ -1,21 +1,44 @@
 import { useLocation } from 'react-router-dom'
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
-import { Box } from '@mui/material'
+import { Box, CircularProgress, Typography } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { selectCurrUser } from '~/redux/user/userSlice'
-import { Navigate } from 'react-router-dom'
+import { ggAuthAPI, selectCurrUser, setUserFromGoogle } from '~/redux/user/userSlice'
+import { useEffect } from 'react'
+import { getGGCallbackAPI } from '~/apis'
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import LoadingSpinner from '~/components/Loading/LoadingSpinner'
 
 function Auth() {
   const location = useLocation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const isLogin = location.pathname === '/login'
   const isRegister = location.pathname === '/register'
-  // const isForgot = location.pathname === '/forgot-password'
-
+  const isGGCallback = location.pathname === '/auth/callback'
   const currUser = useSelector(selectCurrUser)
-  if (currUser) {
-    return <Navigate to='/' replace={true} />
-  }
+  // const isForgot = location.pathname === '/forgot-password'
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (isGGCallback && !currUser) {
+        try {
+          const result = await getGGCallbackAPI()
+          dispatch(setUserFromGoogle(result))
+          toast.success('Đăng nhập bằng Google thành công!')
+          navigate('/')
+        } catch (error) {
+          toast.error('Đăng nhập bằng Google thất bại')
+          navigate('/login')
+        }
+      } else if (currUser) {
+        navigate('/')
+      }
+    }
+
+    fetchUserData()
+  }, [currUser, isGGCallback])
 
   return (
     <Box sx={{
@@ -32,6 +55,9 @@ function Auth() {
     }}>
       {isLogin && <LoginForm />}
       {isRegister && <RegisterForm />}
+      {isGGCallback && (
+        <LoadingSpinner caption='Loading...' />
+      )}
       {/* {isForgot && <ForgotPasswordForm />} */}
     </Box>
   )

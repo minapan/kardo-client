@@ -17,6 +17,17 @@ export const loginUserAPI = createAsyncThunk(
   }
 )
 
+export const ggAuthAPI = createAsyncThunk(
+  'user/ggAuthAPI',
+  async (_, { rejectWithValue }) => {
+    try {
+      window.location.href = `${API_ROOT}/v1/users/google`
+    } catch (error) {
+      return rejectWithValue(error.message || 'Google Auth failed')
+    }
+  }
+)
+
 export const logoutUserAPI = createAsyncThunk(
   'user/logoutUserAPI',
   async (showSuccess = true) => {
@@ -54,7 +65,11 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   // Reducers: Handle data from sync actions
-  reducers: {},
+  reducers: {
+    setUserFromGoogle: (state, action) => {
+      state.currUser = action.payload
+    }
+  },
   // ExtraReducers: Handle data from async actions
   extraReducers: (builder) => {
     builder.addCase(loginUserAPI.fulfilled, (state, action) => {
@@ -64,7 +79,6 @@ export const userSlice = createSlice({
       state.currUser = user
     })
     builder.addCase(logoutUserAPI.fulfilled, (state) => {
-      // Update state
       state.currUser = null
     })
     builder.addCase(updateUserAPI.fulfilled, (state, action) => {
@@ -83,7 +97,7 @@ export const userSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-// export const {} = userSlice.actions
+export const { setUserFromGoogle } = userSlice.actions
 
 // Selectors:
 export const selectCurrUser = state => state.user.currUser

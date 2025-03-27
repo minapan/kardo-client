@@ -16,11 +16,12 @@ import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { useSearchParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { loginUserAPI } from '~/redux/user/userSlice'
+import { ggAuthAPI, loginUserAPI } from '~/redux/user/userSlice'
 import { useState } from 'react'
 import { Visibility } from '@mui/icons-material'
 import { VisibilityOff } from '@mui/icons-material'
 import toast from 'react-hot-toast'
+import { Google } from '@mui/icons-material'
 
 function LoginForm() {
   const dispatch = useDispatch()
@@ -41,6 +42,10 @@ function LoginForm() {
     ).then(res => {
       if (!res.error) navigate('/boards')
     })
+  }
+
+  const handleGoogleLogin = () => {
+    dispatch(ggAuthAPI())
   }
   return (
     <form onSubmit={handleSubmit(submitLogIn)}>
@@ -130,7 +135,6 @@ function LoginForm() {
               className='interceptor-loading'
               type="submit"
               variant="contained"
-              color="primary"
               size="large"
               fullWidth
             >
@@ -139,6 +143,20 @@ function LoginForm() {
             {/* <Link to="/forgot-password" style={{ textDecoration: 'none', alignSelf: 'flex-start' }}>
               <Typography sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}>Forgot password?</Typography>
             </Link> */}
+            <Typography sx={{ color: 'primary.main' }}>Or</Typography>
+            <Button
+              variant='outlined'
+              startIcon={<Google />}
+              onClick={handleGoogleLogin}
+              sx={{
+                backgroundColor: '#dfe1e6',
+                border: '1px solid #172b4d',
+                color: '#172b4d',
+                borderRadius: 4
+              }}
+            >
+              Log in with Google
+            </Button>
           </CardActions>
           <Box sx={{ padding: '0 1em 1em 1em', textAlign: 'center' }}>
             <Typography>New to Trello Minapan?</Typography>

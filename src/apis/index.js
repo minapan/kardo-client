@@ -81,3 +81,8 @@ export const inviteUserToBoardAPI = async (data) => {
   toast.success('Invitation sent successfully!')
   return response.data
 }
+
+export const getGGCallbackAPI = async () => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/users/get-user`)
+  return response.data
+}

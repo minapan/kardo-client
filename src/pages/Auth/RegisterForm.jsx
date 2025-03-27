@@ -18,6 +18,9 @@ import { useState } from 'react'
 import { Visibility } from '@mui/icons-material'
 import { VisibilityOff } from '@mui/icons-material'
 import toast from 'react-hot-toast'
+import { Google } from '@mui/icons-material'
+import { useDispatch } from 'react-redux'
+import { ggAuthAPI } from '~/redux/user/userSlice'
 
 function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -27,6 +30,8 @@ function RegisterForm() {
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
   const submitRegister = (data) => {
     const { email, password } = data
     toast.promise(
@@ -35,6 +40,10 @@ function RegisterForm() {
     ).then(user => {
       navigate(`/login?registered=${user.email}`)
     })
+  }
+
+  const handleGoogleLogin = () => {
+    dispatch(ggAuthAPI())
   }
   return (
     <form onSubmit={handleSubmit(submitRegister)}>
@@ -130,7 +139,7 @@ function RegisterForm() {
               <FieldErrorAlert errors={errors} fieldName={'password_confirmation'} />
             </Box>
           </Box>
-          <CardActions sx={{ padding: '0 1em 1em 1em' }}>
+          <CardActions sx={{ padding: '0 1em 1em 1em', flexDirection: 'column', gap: 1 }}>
             <Button
               className='interceptor-loading'
               type="submit"
@@ -140,6 +149,20 @@ function RegisterForm() {
               fullWidth
             >
               Register
+            </Button>
+            <Typography sx={{ color: 'primary.main' }}>Or</Typography>
+            <Button
+              variant='outlined'
+              startIcon={<Google />}
+              onClick={handleGoogleLogin}
+              sx={{
+                backgroundColor: '#dfe1e6',
+                border: '1px solid #172b4d',
+                color: '#172b4d',
+                borderRadius: 4
+              }}
+            >
+              Log in with Google
             </Button>
           </CardActions>
           <Box sx={{ padding: '0 1em 1em 1em', textAlign: 'center' }}>

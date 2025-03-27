@@ -51,13 +51,17 @@ function SecurityTab() {
     }).then(() => {
       const { current_password, new_password } = data
 
-      if (current_password === new_password) {
+      if (user?.typeLogin === 'email' && current_password === new_password) {
         toast('New password should be different from your current password.', { icon: '⚠️' })
         return
       }
 
+      const updatePass = user.typeLogin === 'email'
+        ? { current_password, new_password }
+        : { new_password }
+
       toast.promise(
-        dispatch(updateUserAPI({ current_password, new_password })),
+        dispatch(updateUserAPI(updatePass)),
         {
           loading: 'Updating...'
         }
@@ -114,45 +118,47 @@ function SecurityTab() {
 
         </Box>
         <Box>
-          <Typography variant="h5">Change Password</Typography>
+          <Typography variant="h5">{user?.typeLogin === 'email' ? 'Change' : 'Set Password'}</Typography>
         </Box>
         <form onSubmit={handleSubmit(submitChangePassword)}>
           <Box sx={{ width: '400px', display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Box>
-              <TextField
-                fullWidth
-                label="Current Password"
-                type={showCurrentPassword ? 'text' : 'password'}
-                variant="outlined"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PasswordIcon fontSize="small" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowCurrentPassword}
-                        edge="end"
-                      >
-                        {showCurrentPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-                {...register('current_password', {
-                  required: FIELD_REQUIRED_MESSAGE,
-                  pattern: {
-                    value: PASSWORD_RULE,
-                    message: PASSWORD_RULE_MESSAGE
-                  }
-                })}
-                error={!!errors['current_password']}
-              />
-              <FieldErrorAlert errors={errors} fieldName={'current_password'} />
-            </Box>
+            {user?.typeLogin === 'email' && (
+              <Box>
+                <TextField
+                  fullWidth
+                  label="Current Password"
+                  type={showCurrentPassword ? 'text' : 'password'}
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PasswordIcon fontSize="small" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowCurrentPassword}
+                          edge="end"
+                        >
+                          {showCurrentPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                  {...register('current_password', {
+                    required: FIELD_REQUIRED_MESSAGE,
+                    pattern: {
+                      value: PASSWORD_RULE,
+                      message: PASSWORD_RULE_MESSAGE
+                    }
+                  })}
+                  error={!!errors['current_password']}
+                />
+                <FieldErrorAlert errors={errors} fieldName={'current_password'} />
+              </Box>
+            )}
 
             <Box>
               <TextField
@@ -232,7 +238,7 @@ function SecurityTab() {
                 variant="contained"
                 color="primary"
                 fullWidth>
-                Change
+                Update
               </Button>
             </Box>
           </Box>
