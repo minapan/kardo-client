@@ -1,9 +1,9 @@
 import { useLocation } from 'react-router-dom'
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
-import { Box, CircularProgress, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { ggAuthAPI, selectCurrUser, setUserFromGoogle } from '~/redux/user/userSlice'
+import { selectCurrUser, setUserFromGoogle } from '~/redux/user/userSlice'
 import { useEffect } from 'react'
 import { getGGCallbackAPI } from '~/apis'
 import toast from 'react-hot-toast'
@@ -38,6 +38,7 @@ function Auth() {
     }
 
     fetchUserData()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currUser, isGGCallback])
 
   return (

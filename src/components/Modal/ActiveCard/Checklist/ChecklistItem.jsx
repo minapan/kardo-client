@@ -34,7 +34,7 @@ function ChecklistItem({ item, checklistId, onUpdateCardChecklists }) {
         sx={{
           flexGrow: 1,
           textDecoration: item.completed ? 'line-through' : 'none',
-          color: item.completed ? '#888' : '#171f2b'
+          color: (theme) => item.completed ? '#888' : (theme.palette.mode === 'dark' ? '#dfe1e6' : '#171f2b')
         }}
       >
         {item.name}

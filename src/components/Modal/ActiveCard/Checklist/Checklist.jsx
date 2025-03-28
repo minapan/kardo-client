@@ -126,7 +126,7 @@ function Checklist({ checklist, onUpdateCardChecklists }) {
               backgroundColor: (theme) =>
                 theme.palette.mode === 'dark' ? '#3b4252' : '#dfe1e6',
               '& .MuiLinearProgress-bar': {
-                backgroundColor: progress === 100 ? '#5aac44' : '#172b4d'
+                backgroundColor: progress === 100 ? '#5aac44' : '#546de5'
               }
             }}
           />

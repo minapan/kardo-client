@@ -86,3 +86,8 @@ export const getGGCallbackAPI = async () => {
   const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/users/get-user`)
   return response.data
 }
+
+export const cardSummarizeAPI = async (data) => {
+  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/cards/summarize`, data)
+  return response.data
+}

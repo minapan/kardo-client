@@ -149,7 +149,7 @@ function LoginForm() {
               startIcon={<Google />}
               onClick={handleGoogleLogin}
               sx={{
-                backgroundColor: '#dfe1e6',
+                backgroundColor: '#dfe1e6 !important',
                 border: '1px solid #172b4d',
                 color: '#172b4d',
                 borderRadius: 4
