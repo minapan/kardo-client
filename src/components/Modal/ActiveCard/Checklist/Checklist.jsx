@@ -107,30 +107,44 @@ function Checklist({ checklist, onUpdateCardChecklists }) {
         </Box>
       </Box>
       {totalCount > 0 && (
-        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography
-            variant="body2"
-            sx={{
-              fontSize: '12px'
-            }}
-          >
-            {Math.round(progress)}%
-          </Typography>
-          <LinearProgress
-            variant="determinate"
-            value={progress}
-            sx={{
-              flexGrow: 1,
-              height: 6,
-              borderRadius: 3,
-              backgroundColor: (theme) =>
-                theme.palette.mode === 'dark' ? '#3b4252' : '#dfe1e6',
-              '& .MuiLinearProgress-bar': {
-                backgroundColor: progress === 100 ? '#5aac44' : '#546de5'
-              }
-            }}
-          />
-        </Box>
+        <>
+          <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontSize: '12px'
+              }}
+            >
+              {Math.round(progress)}%
+            </Typography>
+            <LinearProgress
+              variant="determinate"
+              value={progress}
+              sx={{
+                flexGrow: 1,
+                height: 6,
+                borderRadius: 3,
+                backgroundColor: (theme) =>
+                  theme.palette.mode === 'dark' ? '#3b4252' : '#dfe1e6',
+                '& .MuiLinearProgress-bar': {
+                  backgroundColor: progress === 100 ? '#5aac44' : '#546de5'
+                }
+              }}
+            />
+          </Box>
+          {(totalCount === completedCount && hideCompleted) &&
+            <Typography
+              variant="body2"
+              sx={{
+                color: (theme) => (theme.palette.mode === 'dark' ? '#dfe1e6' : '#172b4d'),
+                ml: 5, mt: -1,
+                fontSize: '16px'
+              }}
+            >
+              Everything on this list has been completed!
+            </Typography>
+          }
+        </>
       )}
       {filteredItems.map((item) => (
         <ChecklistItem

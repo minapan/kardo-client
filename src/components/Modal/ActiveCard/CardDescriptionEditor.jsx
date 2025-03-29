@@ -22,6 +22,11 @@ function CardDescriptionEditor({ cardDescriptionProp, handleUpdateCardDescriptio
   const [cardDescription, setCardDescription] = useState(cardDescriptionProp)
 
   const updateCardDescription = () => {
+    if (cardDescription === cardDescriptionProp) {
+      setEditMode(false)
+      return
+    }
+
     const sanitizedDescription = DOMPurify.sanitize(cardDescription)
     setEditMode(false)
     handleUpdateCardDescription(sanitizedDescription)
@@ -51,7 +56,7 @@ function CardDescriptionEditor({ cardDescriptionProp, handleUpdateCardDescriptio
 
   useEffect(() => {
     if (summary && summaryRef.current) {
-      summaryRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+      summaryRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
   }, [summary])
 

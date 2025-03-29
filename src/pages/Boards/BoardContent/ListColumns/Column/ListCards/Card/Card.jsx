@@ -4,6 +4,7 @@ import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import { Attachment, Comment, Group } from '@mui/icons-material'
+import DomainVerificationIcon from '@mui/icons-material/DomainVerification'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useDispatch } from 'react-redux'
@@ -18,6 +19,12 @@ function TrelloCard({ card }) {
   const FE_CardLabels = card?.labelIds?.map(
     labelId => board?.labels?.find(label => label.id === labelId)
   ).filter(label => label)
+
+  const totalItems = card?.checklists?.reduce((sum, checklist) => sum + checklist.items.length, 0) || 0
+  const completedItems = card?.checklists?.reduce(
+    (sum, checklist) => sum + checklist.items.filter((item) => item.completed).length,
+    0
+  ) || 0
 
   const showCardAction = () => {
     return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
@@ -62,14 +69,17 @@ function TrelloCard({ card }) {
           backgroundColor: card.FE_Placeholder ? 'transparent' : isDragging ? ((theme) => theme.palette.mode === 'dark' ? '#dff9fb' : '#535c68') : ((theme) => theme.palette.mode === 'dark' ? '#535c68' : '#fff')
         }}>
         <div style={{ opacity: isDragging ? '0' : '1' }}>
-          {card?.cover && (<CardMedia sx={{ height: '140px', borderRadius: '8px 8px 0 0' }} image={card?.cover} />)}
+          {card?.cover && (
+            <CardMedia sx={{ height: '140px', borderRadius: '8px 8px 0 0' }} image={card?.cover} />
+          )}
 
           {FE_CardLabels?.length > 0 && (
             <Box sx={{ display: 'flex', gap: 1, px: 1, mt: 1.5, flexWrap: 'wrap' }}>
               {FE_CardLabels?.map((label, index) => (
                 <Chip
                   key={index}
-                  size="small" sx={{ background: label?.color, width: '52px', height: '8px' }} />
+                  label={label?.name}
+                  size="small" sx={{ background: label?.color, minWidth: '52px', maxWidth: '100%', height: '16px', color: '#fff', fontSize: '12px', fontWeight: '600', borderRadius: '4px' }} />
               ))}
             </Box>
           )}
@@ -79,15 +89,42 @@ function TrelloCard({ card }) {
           </CardContent>
 
           {showCardAction() && (
-            <CardActions sx={{ display: 'flex', justifyContent: 'space-between', p: '0 4px 8px 4px' }}>
-              {!!card?.memberIds?.length &&
-                <Button sx={{ py: 0 }} startIcon={<Group />} size="small">{card?.memberIds?.length}</Button>
+            <CardActions sx={{ display: 'flex', p: '0 12px 8px 12px', justifyContent: 'space-between', alignItems: 'center' }}>
+              {totalItems > 0 &&
+                <Button
+                  sx={{
+                    py: 0, px: '4px', minWidth: 'unset !important', fontSize: '12px', fontWeight: '700',
+                    backgroundColor: completedItems === totalItems ? '#27AE60' : '',
+                    color: (theme) => completedItems === totalItems ? '#fff' : (theme.palette.mode === 'dark' ? '#ccc' : '#6b7fa2'),
+                    '&:hover': {
+                      backgroundColor: completedItems === totalItems ? '#27AE60' : '',
+                      color: completedItems === totalItems ? '#fff' : ''
+                    }
+                  }}
+                  startIcon={<DomainVerificationIcon />} size="small">
+                  {completedItems}/{totalItems}
+                </Button>
               }
               {!!card?.comments?.length &&
-                <Button sx={{ py: 0 }} startIcon={<Comment />} size="small">{card?.comments?.length}</Button>
+                <Button sx={{
+                  py: 0, px: '4px', fontSize: '12px', minWidth: 'unset !important', fontWeight: '700',
+                  color: (theme) => theme.palette.mode === 'dark' ? '#ccc' : '#6b7fa2'
+                }}
+                startIcon={<Comment />} size="small">{card?.comments?.length}</Button>
               }
               {!!card?.attachments?.length &&
-                <Button sx={{ py: 0 }} startIcon={<Attachment />} size="small">{card?.attachments?.length}</Button>
+                <Button sx={{
+                  py: 0, px: '4px', fontSize: '12px', minWidth: 'unset !important', fontWeight: '700',
+                  color: (theme) => theme.palette.mode === 'dark' ? '#ccc' : '#6b7fa2'
+                }}
+                startIcon={<Attachment />} size="small">{card?.attachments?.length}</Button>
+              }
+              {!!card?.memberIds?.length &&
+                <Button sx={{
+                  py: 0, px: '4px', fontSize: '12px', minWidth: 'unset !important', fontWeight: '700',
+                  color: (theme) => theme.palette.mode === 'dark' ? '#ccc' : '#6b7fa2'
+                }}
+                startIcon={<Group />} size="small">{card?.memberIds?.length}</Button>
               }
             </CardActions>
           )}

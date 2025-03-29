@@ -7,8 +7,8 @@ import Checklist from './Checklist'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import { v4 as uuidv4 } from 'uuid'
 
-function ChecklistGroup({ checklists = [], onUpdateCardChecklists }) {
-  const [isAddingChecklist, setIsAddingChecklist] = useState(false)
+function ChecklistGroup({ checklists = [], onUpdateCardChecklists, isAddingChecklistOpen, setIsAddingChecklistOpen }) {
+  // const [isAddingChecklist, setIsAddingChecklist] = useState(false)
   const [newChecklistTitle, setNewChecklistTitle] = useState('')
 
   const handleAddChecklist = () => {
@@ -26,11 +26,12 @@ function ChecklistGroup({ checklists = [], onUpdateCardChecklists }) {
     })
 
     setNewChecklistTitle('')
-    setIsAddingChecklist(false)
+    // setIsAddingChecklist(false)
+    setIsAddingChecklistOpen(false)
   }
 
   return (
-    <Box sx={{ mt: 4 }}>
+    <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
         <Typography
           sx={{
@@ -45,18 +46,18 @@ function ChecklistGroup({ checklists = [], onUpdateCardChecklists }) {
           Checklists
         </Typography>
 
-        {!isAddingChecklist && (
+        {!isAddingChecklistOpen && (
           <Button
             variant="text"
             size="small"
-            onClick={() => setIsAddingChecklist(true)}
+            onClick={() => setIsAddingChecklistOpen(true)}
           >
             + Add Checklist
           </Button>
         )}
       </Box>
 
-      {isAddingChecklist && (
+      {isAddingChecklistOpen && (
         <Box sx={{ mb: 2 }}>
           <TextField
             placeholder="Checklist Title"
@@ -82,7 +83,7 @@ function ChecklistGroup({ checklists = [], onUpdateCardChecklists }) {
             <Button
               variant="text"
               size="small"
-              onClick={() => setIsAddingChecklist(false)}
+              onClick={() => setIsAddingChecklistOpen(false)}
               sx={{
                 color: (theme) => (theme.palette.mode === 'dark' ? '#dfe1e6' : '#172b4d'),
                 textTransform: 'none',

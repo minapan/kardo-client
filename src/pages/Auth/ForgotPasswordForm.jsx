@@ -3,48 +3,69 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
-import { IconButton, InputAdornment, Card } from '@mui/material'
+import { Card, IconButton, InputAdornment } from '@mui/material'
 import { ReactComponent as TrelloIcon } from '~/assets/trello.svg'
 import TextField from '@mui/material/TextField'
 import Zoom from '@mui/material/Zoom'
 import { useForm } from 'react-hook-form'
-import { EMAIL_RULE, EMAIL_RULE_MESSAGE, FIELD_REQUIRED_MESSAGE, PASSWORD_CONFIRMATION_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE } from '~/utils/validators'
+import { EMAIL_RULE, EMAIL_RULE_MESSAGE, FIELD_REQUIRED_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
-import { registerUserAPI } from '~/apis'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { Visibility } from '@mui/icons-material'
 import { VisibilityOff } from '@mui/icons-material'
 import toast from 'react-hot-toast'
-import { Google } from '@mui/icons-material'
-import { useDispatch } from 'react-redux'
-import { ggAuthAPI } from '~/redux/user/userSlice'
+import { forgotPasswordAPI, resetPasswordAPI } from '~/apis'
 
-function RegisterForm() {
+function ForgotPasswordForm() {
+  const navigate = useNavigate()
+  const { register, handleSubmit, watch, formState: { errors } } = useForm()
+
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
+
   const handleClickShowPassword = () => setShowPassword((show) => !show)
   const handleClickShowPasswordComfirm = () => setShowPasswordConfirm((show) => !show)
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm()
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const [cooldown, setCooldown] = useState(0)
 
-  const submitRegister = (data) => {
-    const { email, password } = data
+  const submitForgotPassword = (data) => {
+    const { email, password, otpToken } = data
     toast.promise(
-      registerUserAPI({ email, password }),
-      { loading: 'Signing...' }
-    ).then(user => {
-      navigate(`/login?registered=${user.email}`)
+      resetPasswordAPI({ email, password, otpToken }),
+      { loading: 'Logging...' }
+    ).then(res => {
+      if (!res.error) {
+        toast.success('Reset password successfully! Please login again.')
+        navigate('/login')
+      }
     })
   }
 
-  const handleGoogleLogin = () => {
-    dispatch(ggAuthAPI())
+  const handleGetOTP = (data) => {
+    const { email } = data
+    toast.promise(
+      forgotPasswordAPI({ email }),
+      { loading: 'Logging...' }
+    ).then(res => {
+      if (!res.error) {
+        toast.success('Please check your email to reset password!')
+        setCooldown(60)
+        const timer = setInterval(() => {
+          setCooldown((prev) => {
+            if (prev <= 1) {
+              clearInterval(timer)
+              return 0
+            }
+            return prev - 1
+          })
+        }, 1000)
+      }
+    })
   }
+
   return (
-    <form onSubmit={handleSubmit(submitRegister)} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+    <form onSubmit={handleSubmit(submitForgotPassword)} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
       <Zoom in={true} timeout={400} style={{ transitionTimingFunction: 'ease-out' }}>
         <Card
           sx={{
@@ -70,19 +91,74 @@ function RegisterForm() {
               <TrelloIcon fontSize="large" />
             </Avatar>
             <Typography variant="h5" sx={{ fontWeight: 700, letterSpacing: '-0.5px' }}>
-              Create Account
+              Reset Password
+            </Typography>
+          </Box>
+
+          {/* Instruction Section */}
+          <Box sx={{ padding: '1em 2em 0' }}>
+            <Typography variant="body2" sx={{ color: '#5E6C84', textAlign: 'center' }}>
+              Enter your email to receive an OTP and reset your password.
             </Typography>
           </Box>
 
           {/* Input Fields */}
           <Box sx={{ padding: '1em 2em 1.5em' }}>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+              <TextField
+                fullWidth
+                label="Email"
+                variant="outlined"
+                size="medium"
+                error={!!errors.email}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#2f3542' : '#fff',
+                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+                  },
+                  '& .MuiInputLabel-root': { color: '#5E6C84' }
+                }}
+                {...register('email', {
+                  required: FIELD_REQUIRED_MESSAGE,
+                  pattern: {
+                    value: EMAIL_RULE,
+                    message: EMAIL_RULE_MESSAGE
+                  }
+                })}
+              />
+              <Button
+                variant={cooldown > 0 ? 'outlined' : 'contained'}
+                size="medium"
+                onClick={handleSubmit(handleGetOTP)}
+                disabled={cooldown > 0}
+                sx={{
+                  height: '58px',
+                  background: cooldown > 0 ? 'unset' : '#0079BF',
+                  color: '#fff',
+                  borderRadius: 2,
+                  padding: '0.5em 1em',
+                  '&:disabled': {
+                    color: 'rgba(0, 121, 191, 0.5)',
+                    borderColor: 'rgba(0, 121, 191, 0.5)'
+                  }
+                }}
+              >
+                {cooldown > 0 ? `${cooldown}s` : 'Get OTP'}
+              </Button>
+            </Box>
+            <FieldErrorAlert errors={errors} fieldName="email" />
+
+            {/* OTP Field */}
             <TextField
               fullWidth
-              label="Email"
+              label="OTP"
+              type="text"
               variant="outlined"
               size="medium"
-              error={!!errors.email}
+              error={!!errors.otpToken}
               sx={{
+                marginTop: '0.5em',
                 '& .MuiOutlinedInput-root': {
                   borderRadius: 2,
                   backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#2f3542' : '#fff',
@@ -90,19 +166,19 @@ function RegisterForm() {
                 },
                 '& .MuiInputLabel-root': { color: '#5E6C84' }
               }}
-              {...register('email', {
-                required: FIELD_REQUIRED_MESSAGE,
+              {...register('otpToken', {
                 pattern: {
-                  value: EMAIL_RULE,
-                  message: EMAIL_RULE_MESSAGE
+                  value: /^[0-9]{6}$/,
+                  message: 'OTP must be a 6-digit number'
                 }
               })}
             />
-            <FieldErrorAlert errors={errors} fieldName="email" />
+            <FieldErrorAlert errors={errors} fieldName="otpToken" />
 
+            {/* New Password Field */}
             <TextField
               fullWidth
-              label="Password"
+              label="New Password"
               type={showPassword ? 'text' : 'password'}
               variant="outlined"
               size="medium"
@@ -117,7 +193,6 @@ function RegisterForm() {
                 '& .MuiInputLabel-root': { color: '#5E6C84' }
               }}
               {...register('password', {
-                required: FIELD_REQUIRED_MESSAGE,
                 pattern: {
                   value: PASSWORD_RULE,
                   message: PASSWORD_RULE_MESSAGE
@@ -140,13 +215,14 @@ function RegisterForm() {
             />
             <FieldErrorAlert errors={errors} fieldName="password" />
 
+            {/* Confirm New Password Field */}
             <TextField
               fullWidth
-              label="Confirm Password"
+              label="Confirm New Password"
               type={showPasswordConfirm ? 'text' : 'password'}
               variant="outlined"
               size="medium"
-              error={!!errors.password_confirmation}
+              error={!!errors.confirmPassword}
               sx={{
                 marginTop: '0.5em',
                 '& .MuiOutlinedInput-root': {
@@ -156,9 +232,8 @@ function RegisterForm() {
                 },
                 '& .MuiInputLabel-root': { color: '#5E6C84' }
               }}
-              {...register('password_confirmation', {
-                required: FIELD_REQUIRED_MESSAGE,
-                validate: (value) => value === watch('password') || PASSWORD_CONFIRMATION_MESSAGE
+              {...register('confirmPassword', {
+                validate: (value) => value === watch('password') || 'Passwords do not match'
               })}
               InputProps={{
                 endAdornment: (
@@ -175,7 +250,7 @@ function RegisterForm() {
                 )
               }}
             />
-            <FieldErrorAlert errors={errors} fieldName="password_confirmation" />
+            <FieldErrorAlert errors={errors} fieldName="confirmPassword" />
           </Box>
 
           {/* Actions Section */}
@@ -199,40 +274,14 @@ function RegisterForm() {
                 transition: 'all 0.2s ease'
               }}
             >
-              Register
-            </Button>
-            <Typography variant="body2" sx={{ textAlign: 'center', color: '#91A1B7', fontWeight: 500 }}>
-              or continue with
-            </Typography>
-            <Button
-              variant="outlined"
-              startIcon={<Google />}
-              onClick={handleGoogleLogin}
-              fullWidth
-              sx={{
-                textTransform: 'none',
-                color: '#172B4D',
-                borderColor: '#E0E4E9',
-                backgroundColor: '#fff',
-                padding: '0.75em',
-                borderRadius: 2,
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-                '&:hover': {
-                  backgroundColor: '#F7F8FA',
-                  borderColor: '#D1D6DD',
-                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)'
-                },
-                transition: 'all 0.2s ease'
-              }}
-            >
-              Google
+              Reset Password
             </Button>
           </Box>
 
           {/* Footer Section */}
           <Box sx={{ padding: '0 2.5em 2em', textAlign: 'center' }}>
             <Typography variant="body2" sx={{ color: '#91A1B7', fontWeight: 500 }}>
-              Already have an account?
+              Remember your password?
             </Typography>
             <Link to="/login" style={{ textDecoration: 'none' }}>
               <Typography
@@ -244,7 +293,7 @@ function RegisterForm() {
                   transition: 'color 0.2s ease'
                 }}
               >
-                Log in
+                Back to Log In
               </Typography>
             </Link>
           </Box>
@@ -254,4 +303,4 @@ function RegisterForm() {
   )
 }
 
-export default RegisterForm
+export default ForgotPasswordForm

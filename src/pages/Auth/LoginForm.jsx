@@ -2,11 +2,9 @@ import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
-import LockIcon from '@mui/icons-material/Lock'
 import Typography from '@mui/material/Typography'
 import { Card, IconButton, InputAdornment } from '@mui/material'
 import { ReactComponent as TrelloIcon } from '~/assets/trello.svg'
-import CardActions from '@mui/material/CardActions'
 import TextField from '@mui/material/TextField'
 import Zoom from '@mui/material/Zoom'
 import Alert from '@mui/material/Alert'
@@ -48,125 +46,220 @@ function LoginForm() {
     dispatch(ggAuthAPI())
   }
   return (
-    <form onSubmit={handleSubmit(submitLogIn)}>
-      <Zoom in={true} style={{ transitionDelay: '200ms' }}>
-        <Card sx={{ minWidth: 380, maxWidth: 380, marginTop: '6em' }}>
-          <Box sx={{
-            margin: '1em',
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 1
-          }}>
-            <Avatar sx={{ bgcolor: 'primary.main' }}><LockIcon /></Avatar>
-            <Avatar sx={{ bgcolor: 'primary.main' }}><TrelloIcon /></Avatar>
+    <form onSubmit={handleSubmit(submitLogIn)} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+      <Zoom in={true} timeout={400} style={{ transitionTimingFunction: 'ease-out' }}>
+        <Card
+          sx={{
+            minWidth: 380, maxWidth: 380,
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.08)',
+            borderRadius: 3
+          }}
+        >
+          {/* Header Section */}
+          <Box
+            sx={{
+              padding: '2em 2.5em 1em',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 1.5,
+              background: '#0079BF',
+              color: '#fff'
+            }}
+          >
+            <Avatar sx={{ width: 44, height: 44, bgcolor: 'primary.main' }}>
+              <TrelloIcon fontSize="large" />
+            </Avatar>
+            <Typography variant="h5" sx={{ fontWeight: 700, letterSpacing: '-0.5px' }}>
+              Welcome Back
+            </Typography>
           </Box>
-          <Box sx={{ marginTop: '1em', display: 'flex', justifyContent: 'center', color: theme => theme.palette.grey[500] }}>
-            Trello Clone
-          </Box>
-          <Box sx={{ marginTop: '1em', display: 'flex', justifyContent: 'center', flexDirection: 'column', padding: '0 1em' }}>
-            {verifiedEmail &&
-              <Alert Alert severity="success" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
-                Your email
-                <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}> {verifiedEmail} </Typography>
-                has been verified.<br />Now you can login to enjoy our services! Have a good day!
-              </Alert>
-            }
-            {registeredEmail &&
-              <Alert severity="info" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
-                An email has been sent to
-                <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}> {registeredEmail}</Typography>
-                <br />Please check and verify your account before logging in!
-              </Alert>
-            }
-          </Box>
-          <Box sx={{ padding: '0 1em 1em 1em' }}>
-            <Box sx={{ marginTop: '1em' }}>
-              <TextField
-                // autoComplete="nope"
-                autoFocus
-                fullWidth
-                label="Enter Email..."
-                type="text"
-                variant="outlined"
-                error={!!errors.email}
-                {...register('email', {
-                  required: FIELD_REQUIRED_MESSAGE,
-                  pattern: {
-                    value: EMAIL_RULE,
-                    message: EMAIL_RULE_MESSAGE
-                  }
-                })}
-              />
-              <FieldErrorAlert errors={errors} fieldName={'email'} />
-            </Box>
-            <Box sx={{ marginTop: '1em' }}>
-              <TextField
-                fullWidth
-                label="Enter Password..."
-                type={showPassword ? 'text' : 'password'}
-                variant="outlined"
-                error={!!errors.password}
-                {...register('password', {
-                  required: FIELD_REQUIRED_MESSAGE,
-                  pattern: {
-                    value: PASSWORD_RULE,
-                    message: PASSWORD_RULE_MESSAGE
-                  }
-                })}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        edge="end"
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
+
+          {/* Notification Section */}
+          <Box sx={{ padding: '1em 1em 0' }}>
+            {verifiedEmail && (
+              <Alert
+                severity="success"
+                sx={{
+                  borderRadius: 2,
+                  backgroundColor: '#EBF6F2',
+                  color: '#137A51',
+                  '.MuiAlert-icon': { color: '#34C759' }
                 }}
-              />
-              <FieldErrorAlert errors={errors} fieldName={'password'} />
-            </Box>
+              >
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  Email{' '}
+                  <Typography component="span" sx={{ fontWeight: 700, color: '#34C759' }}>
+                    {verifiedEmail}
+                  </Typography>{' '}
+                  verified successfully. Log in to continue!
+                </Typography>
+              </Alert>
+            )}
+            {registeredEmail && (
+              <Alert
+                severity="info"
+                sx={{
+                  borderRadius: 2,
+                  backgroundColor: '#E8F0FE',
+                  color: '#1A4680',
+                  '.MuiAlert-icon': { color: '#4268F6' }
+                }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  Check{' '}
+                  <Typography component="span" sx={{ fontWeight: 700, color: '#4268F6' }}>
+                    {registeredEmail}
+                  </Typography>{' '}
+                  to verify your account.
+                </Typography>
+              </Alert>
+            )}
           </Box>
-          <CardActions sx={{ padding: '0 1em 0.5em 1em', flexDirection: 'column', gap: 1 }}>
+
+          {/* Input Fields */}
+          <Box sx={{ padding: '1em 2em 1.5em' }}>
+            <TextField
+              fullWidth
+              label="Email"
+              variant="outlined"
+              size="medium"
+              error={!!errors.email}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#2f3542' : '#fff',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+                },
+                '& .MuiInputLabel-root': { color: '#5E6C84' }
+              }}
+              {...register('email', {
+                required: FIELD_REQUIRED_MESSAGE,
+                pattern: {
+                  value: EMAIL_RULE,
+                  message: EMAIL_RULE_MESSAGE
+                }
+              })}
+            />
+            <FieldErrorAlert errors={errors} fieldName="email" />
+
+            <TextField
+              fullWidth
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
+              variant="outlined"
+              size="medium"
+              error={!!errors.password}
+              sx={{
+                marginTop: '0.5em',
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#2f3542' : '#fff',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+                },
+                '& .MuiInputLabel-root': { color: '#5E6C84' }
+              }}
+              {...register('password', {
+                required: FIELD_REQUIRED_MESSAGE,
+                pattern: {
+                  value: PASSWORD_RULE,
+                  message: PASSWORD_RULE_MESSAGE
+                }
+              })}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="Toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                      sx={{ color: '#91A1B7', '&:hover': { color: '#0079BF' } }}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+            <Link to='/forgot-password' style={{ color: '#91A1B7', fontSize: '16px' }}>
+              Forgot password?
+            </Link>
+            <FieldErrorAlert errors={errors} fieldName="password" />
+          </Box>
+
+          {/* Actions Section */}
+          <Box sx={{ padding: '0 2em 2.5em', display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Button
-              className='interceptor-loading'
               type="submit"
               variant="contained"
               size="large"
               fullWidth
-            >
-              Login
-            </Button>
-            {/* <Link to="/forgot-password" style={{ textDecoration: 'none', alignSelf: 'flex-start' }}>
-              <Typography sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}>Forgot password?</Typography>
-            </Link> */}
-            <Typography sx={{ color: 'primary.main' }}>Or</Typography>
-            <Button
-              variant='outlined'
-              startIcon={<Google />}
-              onClick={handleGoogleLogin}
               sx={{
-                backgroundColor: '#dfe1e6 !important',
-                border: '1px solid #172b4d',
-                color: '#172b4d',
-                borderRadius: 4
+                backgroundColor: '#0079BF',
+                color: '#fff',
+                fontWeight: 600,
+                padding: '0.75em',
+                borderRadius: 2,
+                boxShadow: '0 2px 6px rgba(0, 121, 191, 0.3)',
+                '&:hover': {
+                  backgroundColor: '#026AA7',
+                  boxShadow: '0 4px 12px rgba(0, 121, 191, 0.4)'
+                },
+                transition: 'all 0.2s ease'
               }}
             >
-              Log in with Google
+              Log In
             </Button>
-          </CardActions>
-          <Box sx={{ padding: '0 1em 1em 1em', textAlign: 'center' }}>
-            <Typography>New to Trello Minapan?</Typography>
+            <Typography variant="body2" sx={{ textAlign: 'center', color: '#91A1B7', fontWeight: 500 }}>
+              or continue with
+            </Typography>
+            <Button
+              variant="outlined"
+              startIcon={<Google />}
+              onClick={handleGoogleLogin}
+              fullWidth
+              sx={{
+                textTransform: 'none',
+                color: '#172B4D',
+                borderColor: '#E0E4E9',
+                backgroundColor: '#fff',
+                padding: '0.75em',
+                borderRadius: 2,
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+                '&:hover': {
+                  backgroundColor: '#F7F8FA',
+                  borderColor: '#D1D6DD',
+                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)'
+                },
+                transition: 'all 0.2s ease'
+              }}
+            >
+              Google
+            </Button>
+          </Box>
+
+          {/* Footer Section */}
+          <Box sx={{ padding: '0 2.5em 2em', textAlign: 'center' }}>
+            <Typography variant="body2" sx={{ color: '#91A1B7', fontWeight: 500 }}>
+              New to Trello Minapan?
+            </Typography>
             <Link to="/register" style={{ textDecoration: 'none' }}>
-              <Typography sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}>Create account!</Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: '#0079BF',
+                  fontWeight: 600,
+                  '&:hover': { color: '#026AA7', textDecoration: 'underline' },
+                  transition: 'color 0.2s ease'
+                }}
+              >
+                Create an account
+              </Typography>
             </Link>
           </Box>
         </Card>
       </Zoom>
-    </form >
+    </form>
   )
 }
 

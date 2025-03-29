@@ -59,6 +59,15 @@ export const get2FaQrCodeAPI = async () => {
   const res = await authorizeAxiosInstance.get(`${API_ROOT}/v1/users/get_2fa_qr_code`)
   return res.data
 }
+export const forgotPasswordAPI = async (data) => {
+  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/users/forgot-password`, data)
+  return response.data
+}
+
+export const resetPasswordAPI = async (data) => {
+  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/reset-password`, data)
+  return response.data
+}
 
 export const fetchBoardsAPI = async (searchPath) => {
   const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/boards${searchPath}`)

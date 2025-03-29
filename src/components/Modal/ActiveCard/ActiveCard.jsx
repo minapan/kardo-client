@@ -6,6 +6,8 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import Grid from '@mui/material/Unstable_Grid2'
 import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
+import Tooltip from '@mui/material/Tooltip'
+import AddIcon from '@mui/icons-material/Add'
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined'
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined'
@@ -43,6 +45,8 @@ import toast from 'react-hot-toast'
 import CardDescriptionEditor from './CardDescriptionEditor'
 import CardLabelGroup from './CardLabelGroup'
 import ChecklistGroup from './Checklist/ChecklistGroup'
+import { useState } from 'react'
+import { Chip } from '@mui/material'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -70,6 +74,13 @@ function ActiveCard() {
   const activeCard = useSelector(selectCurrActiveCard)
   const activeBoard = useSelector(selectCurrActiveBoard)
   const isShowModal = useSelector(selectIsShowModal)
+
+  const [anchorPopover, setAnchorPopover] = useState(null)
+  const FE_CardLabels = activeCard?.labelIds?.map(
+    labelId => activeBoard?.labels?.find(label => label.id === labelId)
+  ).filter(label => label)
+
+  const [isAddingChecklistOpen, setIsAddingChecklistOpen] = useState(false)
 
   // const [isOpen, setIsOpen] = useState(true)
   // const handleOpenModal = () => setIsOpen(true)
@@ -197,48 +208,102 @@ function ActiveCard() {
           {/* Left side */}
           <Grid xs={12} sm={9}>
             <Box sx={{ mb: 3, display: 'flex', gap: 2 }}>
+              {/* Feature: Manage Card members */}
               <Box>
                 <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Members</Typography>
-
-                {/* Feature: Manage Card members */}
                 <CardUserGroup
                   cardMemberIds={activeCard?.memberIds}
                   onUpdateCardMembers={onUpdateCardMembers}
                 />
               </Box>
-              <Box>
+
+              {/* Feature: Manage Card labels */}
+              <Box sx={{ visibility: FE_CardLabels?.length > 0 ? 'visible' : 'hidden', flexDirection: 'column' }}>
                 <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Labels</Typography>
+                <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap', alignItems: 'center' }}>
+                  {FE_CardLabels?.map((label, index) => (
+                    <Chip
+                      key={index}
+                      label={label?.name}
+                      sx={{
+                        backgroundColor: label?.color,
+                        color: '#fff',
+                        height: 32,
+                        maxWidth: 250,
+                        borderRadius: 1
+                      }}
+                    />
+                  ))}
+                  <Tooltip title="Add or edit labels">
+                    <Box
+                      onClick={(e) => setAnchorPopover(e.currentTarget)}
+                      sx={{
+                        width: 36,
+                        height: 36,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        borderRadius: 2,
+                        color: (theme) => (theme.palette.mode === 'dark' ? '#90caf9' : '#172b4d'),
+                        bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#2f3542' : theme.palette.grey[300]),
+                        '&:hover': {
+                          color: (theme) => (theme.palette.mode === 'dark' ? '#000000de' : '#0c66e4'),
+                          bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#90caf9' : '#e9f2ff')
+                        }
+                      }}
+                    >
+                      <AddIcon fontSize="small" />
+                    </Box>
+                  </Tooltip>
+                </Box>
 
                 {/* Feature: Manage Card labels */}
                 <CardLabelGroup
                   cardLabelIds={activeCard?.labelIds}
+                  board={activeBoard}
                   onUpdateCardLabels={onUpdateCardLabels}
+                  anchorEl={anchorPopover}
+                  onClose={() => setAnchorPopover(null)}
                 />
               </Box>
             </Box>
 
+            {/* Feature: Handle the Card description */}
             <Box sx={{ mb: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <SubjectRoundedIcon />
                 <Typography variant="span" sx={{ fontWeight: '600', fontSize: '20px' }}>Description</Typography>
               </Box>
 
-              {/* Feature: Handle the Card description */}
               <CardDescriptionEditor
                 cardDescriptionProp={activeCard?.description || ''}
                 handleUpdateCardDescription={onUpdateCardDescription}
               />
 
-              <ChecklistGroup checklists={activeCard?.checklists} onUpdateCardChecklists={handleUpdateCardChecklists} />
             </Box>
 
+            {/* Feature: Handle the Card checklists */}
+            {(activeCard?.checklists?.length > 0 || isAddingChecklistOpen) &&
+              <Box sx={{ mb: 3 }}>
+                <ChecklistGroup
+                  checklists={activeCard?.checklists}
+                  onUpdateCardChecklists={handleUpdateCardChecklists}
+                  isAddingChecklistOpen={isAddingChecklistOpen}
+                  setIsAddingChecklistOpen={setIsAddingChecklistOpen}
+                />
+              </Box>
+            }
+
+            {/* Feature: Handle actions such as adding comments to the Card */}
             <Box sx={{ mb: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <DvrOutlinedIcon />
                 <Typography variant="span" sx={{ fontWeight: '600', fontSize: '20px' }}>Activity</Typography>
               </Box>
 
-              {/* Feature: Handle actions such as adding comments to the Card */}
               <CardActivitySection
                 cardComments={activeCard?.comments}
                 onAddCardComment={onAddCardComment}
@@ -277,8 +342,28 @@ function ActiveCard() {
                 <VisuallyHiddenInput type="file" onChange={onUploadCardCover} />
               </SidebarItem>
 
-              {/* <SidebarItem><LocalOfferOutlinedIcon fontSize="small" />Labels</SidebarItem>
-              <SidebarItem><TaskAltOutlinedIcon fontSize="small" />Checklist</SidebarItem> */}
+              {/* <SidebarItem><LocalOfferOutlinedIcon fontSize="small" />Labels</SidebarItem> */}
+              <SidebarItem
+                className="active"
+                onClick={(e) => setAnchorPopover(e.currentTarget)}
+              >
+                <LocalOfferOutlinedIcon fontSize="small" />
+                Labels
+              </SidebarItem>
+
+              <CardLabelGroup
+                cardLabelIds={activeCard?.labelIds}
+                board={activeBoard}
+                onUpdateCardLabels={onUpdateCardLabels}
+                anchorEl={anchorPopover}
+                onClose={() => setAnchorPopover(null)}
+              />
+
+              <SidebarItem className="active" onClick={() => setIsAddingChecklistOpen(true)}>
+                <TaskAltOutlinedIcon fontSize="small" />
+                Checklist
+              </SidebarItem>
+
               {/* <SidebarItem><AttachFileOutlinedIcon fontSize="small" />Attachment</SidebarItem>
               <SidebarItem><WatchLaterOutlinedIcon fontSize="small" />Dates</SidebarItem>
               <SidebarItem><AutoFixHighOutlinedIcon fontSize="small" />Custom Fields</SidebarItem> */}

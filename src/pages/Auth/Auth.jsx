@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import LoadingSpinner from '~/components/Loading/LoadingSpinner'
+import ForgotPasswordForm from './ForgotPasswordForm'
 
 function Auth() {
   const location = useLocation()
@@ -17,9 +18,9 @@ function Auth() {
   const navigate = useNavigate()
   const isLogin = location.pathname === '/login'
   const isRegister = location.pathname === '/register'
+  const isForgot = location.pathname === '/forgot-password'
   const isGGCallback = location.pathname === '/auth/callback'
   const currUser = useSelector(selectCurrUser)
-  // const isForgot = location.pathname === '/forgot-password'
   useEffect(() => {
     const fetchUserData = async () => {
       if (isGGCallback && !currUser) {
@@ -59,7 +60,7 @@ function Auth() {
       {isGGCallback && (
         <LoadingSpinner caption='Loading...' />
       )}
-      {/* {isForgot && <ForgotPasswordForm />} */}
+      {isForgot && <ForgotPasswordForm />}
     </Box>
   )
 }

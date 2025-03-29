@@ -46,7 +46,7 @@ function App() {
       <Route path='/login' element={<Auth />} />
       <Route path='/register' element={<Auth />} />
       <Route path='/auth/callback' element={<Auth />} />
-      {/* <Route path='/forgot-password' element={<Auth />} /> */}
+      <Route path='/forgot-password' element={<Auth />} />
       <Route path='/account/verify' element={<AccountVerification />} />
 
       <Route path='*' element={<NotFound />} />
