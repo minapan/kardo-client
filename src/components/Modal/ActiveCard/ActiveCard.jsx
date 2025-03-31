@@ -46,7 +46,8 @@ import CardDescriptionEditor from './CardDescriptionEditor'
 import CardLabelGroup from './CardLabelGroup'
 import ChecklistGroup from './Checklist/ChecklistGroup'
 import { useState } from 'react'
-import { Chip } from '@mui/material'
+import { Chip, IconButton } from '@mui/material'
+import { Close } from '@mui/icons-material'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -181,7 +182,9 @@ function ActiveCard() {
           right: '10px',
           cursor: 'pointer'
         }}>
-          <CancelIcon color="error" sx={{ '&:hover': { color: 'error.light' } }} onClick={handleCloseModal} />
+          <IconButton onClick={handleCloseModal}>
+            <Close fontSize='medium'/>
+          </IconButton>
         </Box>
 
         {activeCard?.cover &&

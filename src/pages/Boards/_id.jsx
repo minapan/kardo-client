@@ -1,4 +1,4 @@
-import { Container } from '@mui/material'
+import { Box, Container } from '@mui/material'
 import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
@@ -80,14 +80,35 @@ function Board() {
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <ActiveCard />
       <AppBar />
-      <BoardBar board={board} />
-      <BoardContent
-        board={board}
+      <Box
+        sx={{
+          background: (theme) =>
+            board?.cover
+              ? `url(${board?.cover}) no-repeat center center / cover`
+              : theme.palette.mode === 'dark'
+                ? '#808e9b'
+                : '#778beb',
+          position: 'relative', // Needed for overlay positioning
+          '&:before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'rgba(0, 0, 0, 0.3)', // Semi-transparent overlay
+            zIndex: 0, // Behind content
+          },
+        }}>
+        <BoardBar board={board} />
+        <BoardContent
+          board={board}
 
-        moveColumns={moveColumns}
-        moveCardInSameCol={moveCardInSameCol}
-        moveCardToDiffCol={moveCardToDiffCol}
-      />
+          moveColumns={moveColumns}
+          moveCardInSameCol={moveCardInSameCol}
+          moveCardToDiffCol={moveCardToDiffCol}
+        />
+      </Box>
     </Container>
   )
 }

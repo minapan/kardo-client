@@ -24,9 +24,6 @@ import { styled } from '@mui/material/styles'
 import LoadingSpinner from '~/components/Loading/LoadingSpinner'
 import { fetchBoardsAPI } from '~/apis'
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from '~/utils/constants'
-import { useSelector } from 'react-redux'
-import { selectCurrUser } from '~/redux/user/userSlice'
-import Require2FA from '~/components/Modal/2FA/Require2FA'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -47,7 +44,6 @@ const SidebarItem = styled(Box)(({ theme }) => ({
 function Boards() {
   const [boards, setBoards] = useState(null)
   const [totalBoards, setTotalBoards] = useState(null)
-  const user = useSelector(selectCurrUser)
 
   // Get the current URL location
   const location = useLocation()
@@ -122,41 +118,94 @@ function Boards() {
 
             {/* If the API returns boards, render the list */}
             {boards?.length > 0 &&
-              <Grid container spacing={2}>
-                {boards.map(b =>
-                  <Grid xs={2} sm={3} md={4} key={b._id} sx={{ m: '0 auto' }}>
-                    <Card sx={{ width: 325 }}>
-                      {/* Future feature: Adding a cover image for the board */}
-                      {/* <CardMedia component="img" height="100" image="https://picsum.photos/100" /> */}
-                      <Box sx={{ height: '50px', backgroundColor: randomColor() }}></Box>
-
-                      <CardContent sx={{ p: 1.5, '&:last-child': { p: 1.5 } }}>
-                        <Typography gutterBottom variant="h6" component="div">
+              <Grid
+                container
+                spacing={2}
+                sx={{
+                  m: '0 auto',
+                  maxWidth: '1200px',
+                  px: { xs: 1, sm: 2 },
+                  justifyContent: 'center'
+                }}
+              >
+                {boards.map((b) => (
+                  <Grid
+                    xs={12} sm={6} md={4} lg={3}
+                    key={b._id}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Link to={`/b/${b._id}`} style={{ textDecoration: 'none' }}>
+                      <Card
+                        sx={{
+                          width: { xs: 325, sm: 280, md: 260, lg: 250 },
+                          height: 140,
+                          background: b?.cover
+                            ? `url(${b?.cover}) no-repeat center center / cover`
+                            : randomColor(),
+                          position: 'relative',
+                          overflow: 'hidden',
+                          borderRadius: '12px',
+                          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            transform: 'translateY(-8px)',
+                            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.2)',
+                            opacity: 0.8,
+                            '& .board-title:after': {
+                              width: 'calc(100% - 24px)'
+                            }
+                          }
+                        }}
+                      >
+                        <Typography
+                          gutterBottom
+                          variant="h6"
+                          component="div"
+                          className="board-title"
+                          sx={{
+                            p: { xs: 1, sm: 1.5 },
+                            color: '#fff',
+                            fontWeight: 'bold',
+                            fontSize: { xs: '1rem', sm: '1.125rem' },
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
+                            textOverflow: 'ellipsis',
+                            position: 'relative',
+                            zIndex: 1,
+                            '&:after': {
+                              content: '""',
+                              position: 'absolute',
+                              bottom: '6px',
+                              left: '12px',
+                              width: 0,
+                              height: '2px',
+                              backgroundColor: '#fff',
+                              transition: 'width 0.4s ease-in-out'
+                            }
+                          }}
+                        >
                           {b?.title}
                         </Typography>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                          {b?.description}
-                        </Typography>
+
+                        {/* Overlay */}
                         <Box
-                          component={Link}
-                          to={`/b/${b._id}`}
                           sx={{
-                            mt: 1,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'flex-end',
-                            color: 'primary.main',
-                            '&:hover': { color: 'primary.light' }
-                          }}>
-                          Go to board <ArrowRightIcon fontSize="small" />
-                        </Box>
-                      </CardContent>
-                    </Card>
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5))',
+                            zIndex: 0
+                          }}
+                        />
+                      </Card>
+                    </Link>
                   </Grid>
-                )}
+                ))}
               </Grid>
             }
 

@@ -72,15 +72,26 @@ function CardDescriptionEditor({ cardDescriptionProp, handleUpdateCardDescriptio
               config={{ theme: mode === 'dark' ? 'dark' : 'default', maxHeight: 500 }}
             />
           </Box>
-          <Button
-            sx={{ alignSelf: 'flex-end' }}
-            onClick={updateCardDescription}
-            className="interceptor-loading"
-            type="button"
-            variant="outlined"
-            size="small">
-            Save
-          </Button>
+          <Box sx={{ display: 'flex', gap: 1, alignSelf: 'flex-end' }}>
+            <Button
+              onClick={updateCardDescription}
+              className="interceptor-loading"
+              type="button"
+              variant="outlined"
+              size="small">
+              Save
+            </Button>
+            <Button
+              variant="text"
+              size="small"
+              onClick={() => setEditMode(false)}
+              sx={{
+                color: (theme) => (theme.palette.mode === 'dark' ? '#dfe1e6' : '#172b4d')
+              }}
+            >
+              Cancel
+            </Button>
+          </Box>
         </Box>
         : <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Button

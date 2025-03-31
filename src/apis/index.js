@@ -100,3 +100,8 @@ export const cardSummarizeAPI = async (data) => {
   const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/cards/summarize`, data)
   return response.data
 }
+
+export const uploadCoverImageAPI = async (data) => {
+  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/boards/supports/upload-cover`, data)
+  return response.data
+}

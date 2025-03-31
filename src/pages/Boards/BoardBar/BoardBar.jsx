@@ -33,10 +33,12 @@ function BoardBar({ board }) {
       alignItems: 'center',
       justifyContent: 'space-between',
       gap: 2,
-      paddingX: 2,
+      padding: '0 10px',
       overflowX: 'auto',
       '&::-webkit-scrollbar-track': { m: 2 },
-      backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#808e9b' : '#778beb'
+      backgroundColor: 'rgba(255, 255, 255, 0.1)', // Nền trắng trong suốt nhẹ
+      backdropFilter: 'blur(10px)', // Hiệu ứng blur kính gương
+      WebkitBackdropFilter: 'blur(10px)',
     }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Tooltip title={board?.description}>
@@ -44,9 +46,9 @@ function BoardBar({ board }) {
             sx={MENU_STYLES}
             icon={<DashboardCustomizeIcon />} label={board?.title} clickable />
         </Tooltip>
-        <Chip
+        {/* <Chip
           sx={MENU_STYLES}
-          icon={<VpnLockIcon />} label={capitalizeFirstLetter(board?.type)} clickable />
+          icon={<VpnLockIcon />} label={capitalizeFirstLetter(board?.type)} clickable /> */}
         {/* <Chip
           sx={MENU_STYLES}
           icon={<AddToDriveIcon />} label="Add To Google Drive" clickable />

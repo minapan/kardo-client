@@ -27,7 +27,8 @@ function AppBar() {
         gap: 2,
         overflowX: 'auto',
         '&::-webkit-scrollbar-track': { m: 2 },
-        backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#485460' : '#546de5'
+        // backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#485460' : '#546de5'
+        backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#2f3542' : '#485460'
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Link to='/boards'>

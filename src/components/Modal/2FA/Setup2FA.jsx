@@ -10,6 +10,8 @@ import { useDispatch } from 'react-redux'
 import { get2FaQrCodeAPI } from '~/apis'
 import { setup2FaAPI } from '~/redux/user/userSlice'
 import { MuiOtpInput } from 'mui-one-time-password-input'
+import { IconButton } from '@mui/material'
+import { Close } from '@mui/icons-material'
 
 function Setup2FA({ isOpen, toggleOpen, handleSuccessSetup2FA }) {
   const [otpToken, setConfirmOtpToken] = useState('')
@@ -70,7 +72,9 @@ function Setup2FA({ isOpen, toggleOpen, handleSuccessSetup2FA }) {
           right: '10px',
           cursor: 'pointer'
         }}>
-          <CancelIcon color="error" sx={{ '&:hover': { color: 'error.light' } }} onClick={handleCloseModal} />
+          <IconButton onClick={handleCloseModal}>
+            <Close fontSize='medium'/>
+          </IconButton>
         </Box>
 
         <Box sx={{ mb: 1, mt: -3, pr: 2.5, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>

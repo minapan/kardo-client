@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import ListComlumns from './ListColumns/ListComlumns'
-import { closestCorners, defaultDropAnimationSideEffects, DndContext, DragOverlay, getFirstCollision, pointerWithin, useSensor, useSensors } from '@dnd-kit/core'
+import { closestCorners, DndContext, DragOverlay, getFirstCollision, pointerWithin, useSensor, useSensors } from '@dnd-kit/core'
 import { useEffect, useState } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column'
@@ -271,51 +271,52 @@ function BoardContent({
     // bug flickering and wrong data
     // collisionDetection={closestCorners} // use closestCorners for the most accurate drag-and-drop behavior
     >
-      <Box sx={{
-        width: '100%',
-        py: '16px',
-        userSelect: 'none',
-        height: (theme) => theme.trelloCustom.boardContentHeight,
-        backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#808e9b' : '#778beb'
-      }}>
-        <ListComlumns columns={orderedColumns} />
-        <DragOverlay
-        //  dropAnimation={dropAnimation}
-        >
-          {(!activeDragItemType) && null}
-          {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (
-            <div
-              style={{
-                transform: 'rotate(3deg)',
-                MozTransform: 'rotate(3deg)',
-                WebkitTransform: 'rotate(3deg)',
-                maskImage: 'radial-gradient(circle, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%)',
-                WebkitMaskImage: 'radial-gradient(circle, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%)',
-                transition: 'all 0.2s ease-in-out'
-              }}
-            >
-              <Column column={activeDragItemData} />
-            </div>
-          )}
+      {
+        <Box sx={{
+          width: '100%',
+          py: '16px',
+          userSelect: 'none',
+          height: (theme) => theme.trelloCustom.boardContentHeight
+        }}>
+          <ListComlumns columns={orderedColumns} />
+          <DragOverlay
+          //  dropAnimation={dropAnimation}
+          >
+            {(!activeDragItemType) && null}
+            {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (
+              <div
+                style={{
+                  transform: 'rotate(4deg)',
+                  borderRadius: '6px',
+                  opacity: 0.85,
+                  transition: 'all 0.15s ease-in-out',
+                  position: 'relative',
+                  zIndex: 999
+                }}
+              >
+                <Column column={activeDragItemData} />
+              </div>
+            )}
 
-          {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD && (
-            <div
-              style={{
-                transform: 'rotate(3deg)',
-                MozTransform: 'rotate(3deg)',
-                WebkitTransform: 'rotate(3deg)',
-                maskImage: 'radial-gradient(circle, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%)',
-                WebkitMaskImage: 'radial-gradient(circle, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%)',
-                transition: 'all 0.2s ease-in-out'
-              }}
-            >
-              <TrelloCard card={activeDragItemData} />
-            </div>
-          )}
-          {/* {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (<Column column={activeDragItemData} />)} */}
-          {/* {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD && (<TrelloCard card={activeDragItemData} />)} */}
-        </DragOverlay>
-      </Box>
+            {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD && (
+              <div
+                style={{
+                  transform: 'rotate(4deg)',
+                  borderRadius: '6px',
+                  opacity: 0.85,
+                  transition: 'all 0.15s ease-in-out',
+                  position: 'relative',
+                  zIndex: 999
+                }}
+              >
+                <TrelloCard card={activeDragItemData} />
+              </div>
+            )}
+            {/* {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (<Column column={activeDragItemData} />)} */}
+            {/* {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD && (<TrelloCard card={activeDragItemData} />)} */}
+          </DragOverlay>
+        </Box>
+      }
     </DndContext >
   )
 }

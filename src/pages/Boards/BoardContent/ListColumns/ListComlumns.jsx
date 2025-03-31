@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { selectCurrActiveBoard, updateCurrActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import toast from 'react-hot-toast'
+import { IconButton } from '@mui/material'
 function ListComlumns({ columns }) {
   const dispatch = useDispatch()
   const board = useSelector(selectCurrActiveBoard)
@@ -131,9 +132,10 @@ function ListComlumns({ columns }) {
                 }}>
                 Add Column
               </Button>
-              <CloseIcon fontSize='medium'
-                onClick={toggleOpenNewColForm}
-                sx={{ color: 'white', cursor: 'pointer', '&:hover': { color: (theme) => theme.palette.warning.light } }} />
+              <IconButton onClick={toggleOpenNewColForm}>
+                <CloseIcon fontSize='medium'
+                  sx={{ color: 'white' }} />
+              </IconButton>
             </Box>
           </Box>
         )}
