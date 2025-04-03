@@ -3,8 +3,7 @@ import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Typography from '@mui/material/Typography'
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
-import CancelIcon from '@mui/icons-material/Cancel'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
 import { FIELD_REQUIRED_MESSAGE, singleFileValidator } from '~/utils/validators'
@@ -12,9 +11,6 @@ import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import AbcIcon from '@mui/icons-material/Abc'
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
 import Button from '@mui/material/Button'
-import Radio from '@mui/material/Radio'
-import RadioGroup from '@mui/material/RadioGroup'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import { styled } from '@mui/material/styles'
 
 import { createNewBoardAPI, uploadCoverImageAPI } from '~/apis'
@@ -27,6 +23,7 @@ import { Refresh } from '@mui/icons-material'
 import { useEffect } from 'react'
 import axios from 'axios'
 import { Close } from '@mui/icons-material'
+import LoadingSpinner from '~/components/Loading/LoadingSpinner'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -55,16 +52,15 @@ function SidebarCreateBoardModal({ afterCreate }) {
   const [isOpen, setIsOpen] = useState(false)
   const handleOpenModal = () => setIsOpen(true)
 
-  const handleCloseModal = () => {
-    setIsOpen(false)
-    setCoverPreview(null)
-    setUnsplashPhotos([])
-    reset()
-  }
-
   const [coverPreview, setCoverPreview] = useState(null)
   const [unsplashPhotos, setUnsplashPhotos] = useState([])
   const [isUnsplashOpen, setIsUnsplashOpen] = useState(false)
+
+  const handleCloseModal = () => {
+    setIsOpen(false)
+    setCoverPreview(null)
+    reset()
+  }
 
   useEffect(() => {
     if (isUnsplashOpen && unsplashPhotos.length === 0) {
@@ -97,7 +93,12 @@ function SidebarCreateBoardModal({ afterCreate }) {
           client_id: import.meta.env.VITE_UNSPLASH_ACCESS_KEY
         }
       })
-      setUnsplashPhotos(response.data)
+      setUnsplashPhotos(response.data.map(photo => ({
+        ...photo,
+        cover_regular: photo?.urls?.regular,
+        cover_thumb: photo?.urls?.small,
+        cover_full: photo?.urls?.full
+      })))
     } catch (error) {
       toast.error('Failed to fetch Unsplash cover images')
     }
@@ -108,8 +109,9 @@ function SidebarCreateBoardModal({ afterCreate }) {
       title: data.title,
       description: data.description || ''
     }
-
     let coverUrl = null
+    let coverThumbUrl = null
+
     if (coverPreview?.file) {
       const formData = new FormData()
       formData.append('boardCover', coverPreview.file)
@@ -119,15 +121,19 @@ function SidebarCreateBoardModal({ afterCreate }) {
         { loading: 'Uploading...' }
       ).then(res => {
         if (!res.error) {
-          coverUrl = res
+          coverUrl = res?.cover
+          coverThumbUrl = res?.cover_thumb
         }
       })
     }
-    else if (coverPreview?.previewUrl?.startsWith('https://'))
-      coverUrl = coverPreview.previewUrl
+    else if (coverPreview?.previewUrl?.startsWith('https://')) {
+      coverUrl = unsplashPhotos.find(photo => photo.cover_regular === coverPreview?.previewUrl)?.cover_full
+      coverThumbUrl = unsplashPhotos.find(photo => photo.cover_regular === coverPreview?.previewUrl)?.cover_thumb
+    }
 
     if (coverUrl) {
       boardData.cover = coverUrl
+      boardData.cover_small = coverThumbUrl
     }
 
     createNewBoardAPI(boardData).then(() => {
@@ -279,12 +285,25 @@ function SidebarCreateBoardModal({ afterCreate }) {
                           p: 2,
                           width: { xs: '90%', md: '600px' },
                           maxHeight: '80vh',
-                          overflowY: 'auto'
+                          overflowY: 'auto',
+                          position: 'relative'
                         }}
                       >
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: '10px',
+                            right: '10px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <IconButton onClick={() => setIsUnsplashOpen(false)}>
+                            <Close fontSize='medium' />
+                          </IconButton>
+                        </Box>
                         <Typography variant="h6" sx={{ mb: 2 }}>Choose from Unsplash</Typography>
-                        <Box sx={{ display: 'flex', mb: 2, justifyContent: 'space-between' }}>
-                          <Typography color="text.secondary">Select a random image</Typography>
+                        <Box sx={{ display: 'flex', mb: 2 }}>
+                          <Typography color="text.secondary" sx={{ fontSize: '1rem !important' }}>Select a random image</Typography>
                           <IconButton
                             variant="text"
                             size="small"
@@ -300,7 +319,7 @@ function SidebarCreateBoardModal({ afterCreate }) {
                               <CardMedia
                                 key={photo.id}
                                 component="img"
-                                image={photo.urls.small}
+                                image={photo.urls.thumb}
                                 alt={photo.alt_description || 'Random image'}
                                 sx={{
                                   width: { xs: '48%', sm: '32%' },
@@ -311,13 +330,13 @@ function SidebarCreateBoardModal({ afterCreate }) {
                                   '&:hover': { opacity: 0.8 }
                                 }}
                                 onClick={() => {
-                                  setCoverPreview({ previewUrl: photo.urls.full })
+                                  setCoverPreview({ previewUrl: photo?.urls?.regular })
                                   setIsUnsplashOpen(false)
                                 }}
                               />
                             ))
                           ) : (
-                            <Typography color="text.secondary">Click Refresh to load random images</Typography>
+                            <LoadingSpinner />
                           )}
                         </Box>
                       </Box>

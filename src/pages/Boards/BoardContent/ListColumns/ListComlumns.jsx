@@ -59,8 +59,9 @@ function ListComlumns({ columns }) {
         backgroundColor: 'inherit',
         width: '100%',
         height: '100%',
-        overflowX: 'auto',
         display: 'flex',
+        zIndex: 1,
+        overflowX: 'auto',
         '&::-webkit-scrollbar-track': { m: 2 }
       }}>
         {columns?.map(column => (

@@ -91,21 +91,34 @@ function AccountTab() {
         gap: 3
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Box>
-            <Avatar
-              sx={{ width: 84, height: 84, mb: 1 }}
-              alt="avt"
-              src={currentUser?.avatar}
-            />
+          <Box sx={{ position: 'relative', display: 'inline-block' }}>
             <Tooltip title="Upload a new image to update your avatar immediately.">
-              <Button
+              <Box
                 component="label"
-                variant="contained"
-                size="small"
-                startIcon={<CloudUploadIcon />}>
-                Upload
+                sx={{
+                  display: 'block'
+                }}
+              >
+                <Avatar
+                  sx={{ width: 84, height: 84, mb: 1, cursor: 'pointer' }}
+                  alt="avt"
+                  src={currentUser?.avatar}
+                />
+                <CloudUploadIcon
+                  className="edit-icon"
+                  sx={{
+                    position: 'absolute',
+                    bottom: 8,
+                    right: 8,
+                    fontSize: 22,
+                    color: '#fff',
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                    borderRadius: '50%',
+                    padding: '2px'
+                  }}
+                />
                 <VisuallyHiddenInput type="file" onChange={uploadAvatar} />
-              </Button>
+              </Box>
             </Tooltip>
           </Box>
           <Box>
@@ -184,7 +197,7 @@ function AccountTab() {
                 variant="contained"
                 color="primary"
                 fullWidth>
-                Update
+                Save
               </Button>
             </Box>
           </Box>

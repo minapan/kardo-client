@@ -6,7 +6,7 @@ import EditNoteIcon from '@mui/icons-material/EditNote'
 import { useRef } from 'react'
 import JoditEditor from 'jodit-react'
 import DOMPurify from 'dompurify'
-import { CircularProgress, Typography } from '@mui/material'
+import { CircularProgress, IconButton, Tooltip, Typography } from '@mui/material'
 import { cardSummarizeAPI } from '~/apis'
 import { AutoAwesome } from '@mui/icons-material'
 import { useEffect } from 'react'
@@ -95,51 +95,54 @@ function CardDescriptionEditor({ cardDescriptionProp, handleUpdateCardDescriptio
         </Box>
         : <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Button
-            sx={{ alignSelf: 'flex-end' }}
+            sx={{ alignSelf: 'flex-end', color: 'primary.main' }}
             onClick={() => setEditMode(true)}
             type="button"
-            variant="text"
             color="info"
             size="small"
             startIcon={<EditNoteIcon />}>
             Edit
           </Button>
           {(cardDescription !== '<p><br></p>' && cardDescription) ? (
-            <Box sx={{ overflow: 'auto', maxHeight: 400 }}>
+            <Box sx={{ overflow: 'auto', maxHeight: 400, position: 'relative' }}>
               <Box
                 dangerouslySetInnerHTML={{ __html: cardDescription }}
                 sx={{
-                  whiteSpace: 'pre-wrap', wordBreak: 'break-word', backgroundColor: theme => theme.palette.mode === 'dark' ? '#33485D' : '#fff', px: 2, py: '2px', scrollbarWidth: 'thin', '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#e9f2ff' }
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                  backgroundColor: theme => theme.palette.mode === 'dark' ? '#33485D' : '#fff',
+                  px: 2,
+                  py: '2px',
+                  scrollbarWidth: 'thin',
+                  '&::-webkit-scrollbar': { width: 4 },
+                  '&::-webkit-scrollbar-thumb': { backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#e9f2ff' }
                 }}
               />
-              {!summary &&
-                <Button
-                  sx={{
-                    float: 'right',
-                    mt: 1,
-                    background: 'linear-gradient(45deg, #4285F4 30%, #34A853 50%, #FBBC05 70%, #EA4335 90%)',
-                    color: '#fff',
-                    fontWeight: 700,
-                    borderRadius: 2,
-                    padding: '8px 16px',
-                    boxShadow: '0 3px 5px 2px rgba(66, 133, 244, .3)',
-                    transition: 'all 0.3s ease-in-out',
-                    '&:hover': {
-                      background: 'linear-gradient(45deg, #3B78E7 30%, #2E9B47 50%, #F4B400 70%, #D93025 90%)',
-                      boxShadow: '0 5px 10px 2px rgba(66, 133, 244, .4)',
-                      transform: 'translateY(-2px)'
-                    }
-                  }}
-                  variant="outlined"
-                  onClick={handleSummarize}
-                  disabled={loading}
-                  size="small"
-                  startIcon={loading ? <CircularProgress size={20} /> : null}
-                >
-                  <AutoAwesome sx={{ mr: 1 }} />
-                  AI Summarize
-                </Button>
-              }
+              {!summary && (
+                <Tooltip title="AI Summarize">
+                  <IconButton
+                    onClick={handleSummarize}
+                    disabled={loading}
+                    sx={{
+                      position: 'absolute',
+                      top: 4,
+                      right: 4,
+                      background: 'linear-gradient(45deg, #4285F4 30%, #34A853 50%, #FBBC05 70%, #EA4335 90%)',
+                      color: '#fff',
+                      padding: '6px',
+                      opacity: 0.5,
+                      '&:hover': {
+                        background: 'linear-gradient(45deg, #3B78E7 30%, #2E9B47 50%, #F4B400 70%, #D93025 90%)',
+                        boxShadow: '0 5px 10px 2px rgba(66, 133, 244, .4)',
+                        transform: 'translateY(-2px)'
+                      },
+                      transition: 'all 0.3s ease-in-out'
+                    }}
+                  >
+                    {loading ? <CircularProgress size={20} /> : <AutoAwesome fontSize="small" />}
+                  </IconButton>
+                </Tooltip>
+              )}
               {error && (
                 <Typography color="error" sx={{ mt: 2 }}>
                   {error}
@@ -175,7 +178,7 @@ function CardDescriptionEditor({ cardDescriptionProp, handleUpdateCardDescriptio
               )}
             </Box>
           ) : (
-            <Typography sx={{ fontSize: '14px', fontWeight: '500', color: '#b1b1b1' }}>No description</Typography>
+            <Typography sx={{ fontSize: '16px !important', fontWeight: '500', color: '#b1b1b1' }}>No description!</Typography>
           )}
         </Box>
       }

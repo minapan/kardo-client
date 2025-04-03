@@ -88,22 +88,11 @@ function Board() {
               : theme.palette.mode === 'dark'
                 ? '#808e9b'
                 : '#778beb',
-          position: 'relative', // Needed for overlay positioning
-          '&:before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(0, 0, 0, 0.3)', // Semi-transparent overlay
-            zIndex: 0, // Behind content
-          },
+          maxHeight: (theme) => `calc(${theme.trelloCustom.boardContentHeight} + ${theme.trelloCustom.boardBarHeight})`
         }}>
         <BoardBar board={board} />
         <BoardContent
           board={board}
-
           moveColumns={moveColumns}
           moveCardInSameCol={moveCardInSameCol}
           moveCardToDiffCol={moveCardToDiffCol}

@@ -118,7 +118,7 @@ function SecurityTab() {
 
         </Box>
         <Box>
-          <Typography variant="h5">{user?.typeLogin === 'email' ? 'Change' : 'Set Password'}</Typography>
+          <Typography variant="h5">{user?.typeLogin === 'email' ? 'Change ' : 'Set '}Password</Typography>
         </Box>
         <form onSubmit={handleSubmit(submitChangePassword)}>
           <Box sx={{ width: '400px', display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -238,7 +238,7 @@ function SecurityTab() {
                 variant="contained"
                 color="primary"
                 fullWidth>
-                Update
+                Save
               </Button>
             </Box>
           </Box>

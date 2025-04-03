@@ -50,7 +50,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
 
       {/* Display comment list */}
       {cardComments.length === 0 &&
-        <Typography sx={{ fontSize: '14px', fontWeight: '500', color: '#b1b1b1' }}>
+        <Typography sx={{ fontSize: '16px !important', fontWeight: '500', color: '#b1b1b1' }}>
           No activity found!
         </Typography>
       }

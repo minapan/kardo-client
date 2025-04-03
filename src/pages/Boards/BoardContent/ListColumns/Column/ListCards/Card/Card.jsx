@@ -55,7 +55,7 @@ function TrelloCard({ card }) {
         ref={setNodeRef} style={dndKitCardStyle} {...attributes} {...listeners}
         sx={{
           cursor: 'pointer',
-          boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px',
+          boxShadow: 'rgba(0, 0, 0, 0.2) 0px 5px 15px 0px',
           overflow: 'unset',
           border: '2px solid transparent',
           borderRadius: 2.5,
@@ -69,8 +69,8 @@ function TrelloCard({ card }) {
           backgroundColor: card.FE_Placeholder ? 'transparent' : isDragging ? ((theme) => theme.palette.mode === 'dark' ? '#dff9fb' : '#535c68') : ((theme) => theme.palette.mode === 'dark' ? '#535c68' : '#fff')
         }}>
         <div style={{ opacity: isDragging ? '0' : '1' }}>
-          {card?.cover && (
-            <CardMedia sx={{ height: '140px', borderRadius: '8px 8px 0 0' }} image={card?.cover} />
+          {card?.cover_small && (
+            <CardMedia component="img" loading="lazy" sx={{ height: '140px', borderRadius: '8px 8px 0 0' }} image={card?.cover_small || null} />
           )}
 
           {FE_CardLabels?.length > 0 && (

@@ -1,10 +1,5 @@
 import { Box, Chip, Tooltip } from '@mui/material'
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize'
-import VpnLockIcon from '@mui/icons-material/VpnLock'
-import AddToDriveIcon from '@mui/icons-material/AddToDrive'
-import BoltIcon from '@mui/icons-material/Bolt'
-import FilterListIcon from '@mui/icons-material/FilterList'
-import { capitalizeFirstLetter } from '~/utils/formatters'
 import BoardUserGroup from './BoardUserGroup'
 import InviteBoardUser from './InviteBoardUser'
 
@@ -26,7 +21,7 @@ const MENU_STYLES = {
 
 function BoardBar({ board }) {
   return (
-    <Box sx={{
+    <Box sx={(theme) => ({
       width: '100%',
       height: ({ trelloCustom }) => trelloCustom.boardBarHeight,
       display: 'flex',
@@ -36,10 +31,24 @@ function BoardBar({ board }) {
       padding: '0 10px',
       overflowX: 'auto',
       '&::-webkit-scrollbar-track': { m: 2 },
-      backgroundColor: 'rgba(255, 255, 255, 0.1)', // Nền trắng trong suốt nhẹ
-      backdropFilter: 'blur(10px)', // Hiệu ứng blur kính gương
-      WebkitBackdropFilter: 'blur(10px)',
-    }}>
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)',
+      position: 'relative',
+      zIndex: 1,
+      ...(theme.palette.mode === 'dark' && {
+        '&:before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: '100%',
+          height: '100%',
+          background: 'rgba(0, 0, 0, 0.3)',
+          zIndex: 0
+        }
+      })
+    })}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Tooltip title={board?.description}>
           <Chip

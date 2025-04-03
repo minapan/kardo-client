@@ -258,7 +258,9 @@ function Column({ column }) {
                   alignItems: 'center',
                   justifyContent: 'space-between'
                 }}>
-                <Button size='small' onClick={toggleOpenNewCardForm} startIcon={<AddCard />}>Add Card</Button>
+                <Button size='small' onClick={toggleOpenNewCardForm} startIcon={<AddCard />}
+                  sx={{ p: 1, fontSize: '16px' }}>
+                  Add a card</Button>
                 <Tooltip title="Drag to move">
                   <DragHandleIcon sx={{
                     cursor: 'pointer',

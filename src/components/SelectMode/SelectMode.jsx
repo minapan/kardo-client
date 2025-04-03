@@ -1,8 +1,6 @@
 import { Box } from '@mui/material'
 import { useColorScheme } from '@mui/material/styles'
-import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import LightModeIcon from '@mui/icons-material/LightMode'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
@@ -16,47 +14,46 @@ function SelectMode() {
   }
 
   return (
-    <FormControl size="small"
+    <Select
+      size="small"
       sx={{
-        minWidth: 120,
-        '& .MuiSelect-icon': { color: '#fff' }
-      }}>
-      <InputLabel
-        sx={{
-          color: '#fff',
-          '&.Mui-focused': { color: '#fff' }
-        }}
-        id="demo-select-dark-light-mode-label">Mode</InputLabel>
-      <Select
-        sx={{
-          color: '#fff',
-          '.MuiOutlinedInput-notchedOutline': { borderColor: '#fff' },
-          '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#fff' },
-          '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#fff' }
-        }}
-        labelId="demo-select-dark-light-mode-label"
-        id="demo-select-dark-light-mode "
-        value={mode}
-        label="Mode"
-        onChange={handleChange}
-      >
-        <MenuItem value={'light'}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <LightModeIcon fontSize='small' />Light
-          </Box>
-        </MenuItem>
-        <MenuItem value={'dark'}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <DarkModeIcon fontSize='small' />Dark
-          </Box>
-        </MenuItem>
-        <MenuItem value={'system'}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <SettingsBrightnessIcon fontSize='small' />System
-          </Box>
-        </MenuItem>
-      </Select>
-    </FormControl>
+        color: '#fff',
+        padding: 0,
+        '& .MuiSelect-select.MuiInputBase-input': { height: '25px', padding: '0 !important' },
+        '& .MuiSelect-icon': { display: 'none' },
+        '.MuiOutlinedInput-notchedOutline': { border: 'none' },
+        '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+        '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' }
+      }}
+      labelId="demo-select-dark-light-mode-label"
+      id="demo-select-dark-light-mode"
+      value={mode}
+      onChange={handleChange}
+      renderValue={(selected) => {
+        if (!selected) return <SettingsBrightnessIcon fontSize='small' />
+        return {
+          'light': <LightModeIcon fontSize='small' />,
+          'dark': <DarkModeIcon fontSize='small' />,
+          'system': <SettingsBrightnessIcon fontSize='small' />
+        }[selected]
+      }}
+    >
+      <MenuItem value={'light'}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <LightModeIcon fontSize='small' /> Light
+        </Box>
+      </MenuItem>
+      <MenuItem value={'dark'}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <DarkModeIcon fontSize='small' /> Dark
+        </Box>
+      </MenuItem>
+      <MenuItem value={'system'}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <SettingsBrightnessIcon fontSize='small' /> System
+        </Box>
+      </MenuItem>
+    </Select>
   )
 }
 
