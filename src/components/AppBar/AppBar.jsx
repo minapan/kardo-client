@@ -1,20 +1,19 @@
 import SelectMode from '../SelectMode/SelectMode'
-import { Badge, Box, Button, SvgIcon, Typography } from '@mui/material'
+import { Box, Button, SvgIcon, Typography } from '@mui/material'
 import Tooltip from '@mui/material/Tooltip'
 import AppsIcon from '@mui/icons-material/Apps'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
-import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
 import { ReactComponent as Logo } from '~/assets/trello.svg'
-import Workspaces from './Menus/Workspaces'
-import Recent from './Menus/Recent'
-import Starred from './Menus/Starred'
-import Teamplates from './Menus/Teamplates'
 import Profile from './Menus/Profile'
 import { Link } from 'react-router-dom'
 import Notifications from './Notifications/Notifications'
 import AutoCompleteSearchBoard from './SearchBoards/AutoCompleteSearchBoard'
+import { useSelector } from 'react-redux'
+import { selectCurrUser } from '~/redux/user/userSlice'
+import { Login } from '@mui/icons-material'
+import { AccountBox } from '@mui/icons-material'
 
 function AppBar() {
+  const currUser = useSelector(selectCurrUser)
   // const [search, setSearch] = useState('')
   return (
     <>
@@ -82,7 +81,7 @@ function AppBar() {
                 '&.Mui-focused fieldset': { borderColor: 'white' }
               }
             }} /> */}
-          <AutoCompleteSearchBoard />
+          {currUser && <AutoCompleteSearchBoard />}
 
           <SelectMode />
 
@@ -91,14 +90,32 @@ function AppBar() {
               <NotificationsNoneIcon fontSize='small' style={{ transform: 'rotate(45deg)' }} />
             </Badge>
           </Tooltip> */}
-          <Notifications />
+          {currUser && <Notifications currUser={currUser} />}
 
           {/* <Tooltip title="Help">
             <Badge color="secondary" sx={{ cursor: 'pointer', color: 'white' }}>
               <HelpOutlineIcon fontSize='small' />
             </Badge>
           </Tooltip> */}
-          <Profile />
+          {currUser ? <Profile />
+            :
+            <>
+              {/* <Link to='/register'>
+                <Button variant='outlined'
+                  sx={{ color: 'white', padding: 1, borderColor: 'white', '&:hover': { borderColor: 'white' } }}
+                  startIcon={<AccountBox />} size='small'>
+                  Register
+                </Button>
+              </Link> */}
+              <Link to='/login'>
+                <Button variant='outlined'
+                  sx={{ color: 'white', padding: 1, borderColor: 'white', '&:hover': { borderColor: 'white' } }}
+                  startIcon={<Login />} size='small'>
+                  Login
+                </Button>
+              </Link>
+            </>
+          }
         </Box>
       </Box>
     </>

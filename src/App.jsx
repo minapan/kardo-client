@@ -11,6 +11,7 @@ import { selectCurrUser } from './redux/user/userSlice'
 import Settings from './pages/Settings/Settings'
 import Boards from './pages/Boards'
 import Require2FA from './components/Modal/2FA/Require2FA'
+import LandingPage from './pages/LandingPage/Landingpage'
 
 const Require2FALayout = ({ user, children }) => {
   if (user?.require_2fa && !user?.is_2fa_verified) return <Require2FA />
@@ -31,10 +32,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path='/' element={
-        <Navigate to={currUser ? '/boards' : '/login'} replace={true} />
-      }
-      />
+      <Route path='/' element={<LandingPage />} />
 
       <Route element={<ProtectedRoute user={currUser} />}>
         <Route path='/b/:boardId' element={<Board />} />

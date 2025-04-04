@@ -262,7 +262,9 @@ function SidebarCreateBoardModal({ afterCreate }) {
                         onChange={handleFileChange}
                       />
                     </Button>
-
+                    <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary' }}>
+                      or
+                    </Typography>
                     <Button
                       variant="outlined"
                       size="small"

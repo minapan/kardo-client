@@ -18,7 +18,6 @@ import { addNotification, fetchInvitationsAPI, selectCurrNotifications, updateBo
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { socketIo } from '~/socketClient'
-import { selectCurrUser } from '~/redux/user/userSlice'
 import { useNavigate } from 'react-router-dom'
 
 const BOARD_INVITATION_STATUS = {
@@ -27,7 +26,7 @@ const BOARD_INVITATION_STATUS = {
   REJECTED: 'REJECTED'
 }
 
-function Notifications() {
+function Notifications({ currUser }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClickNotificationIcon = (event) => {
@@ -43,13 +42,11 @@ function Notifications() {
 
   const notifications = useSelector(selectCurrNotifications)
   const dispatch = useDispatch()
-  const currUser = useSelector(selectCurrUser)
-
   useEffect(() => {
     dispatch(fetchInvitationsAPI())
 
     const onReceiveNewInvitation = (invitation) => {
-      if (invitation.inviteeId === currUser._id) {
+      if (invitation.inviteeId === currUser?._id) {
         // Add new notification record into redux store
         dispatch(addNotification(invitation))
         // Update new notification badge
@@ -62,7 +59,7 @@ function Notifications() {
     return () => {
       socketIo.off('BE_USER_INVITED_TO_BOARD', onReceiveNewInvitation)
     }
-  }, [dispatch, currUser._id])
+  }, [dispatch, currUser?._id])
 
   const updateBoardInvitation = (status, invitationId) => {
     dispatch(updateBoardInvitationAPI({ status, invitationId }))
@@ -124,7 +121,7 @@ function Notifications() {
                       variant="contained"
                       color="success"
                       size="small"
-                      onClick={() => updateBoardInvitation(BOARD_INVITATION_STATUS.ACCEPTED, notification._id)}
+                      onClick={() => updateBoardInvitation(BOARD_INVITATION_STATUS.ACCEPTED, notification?._id)}
                     >
                       Accept
                     </Button>
@@ -134,7 +131,7 @@ function Notifications() {
                       variant="contained"
                       color="secondary"
                       size="small"
-                      onClick={() => updateBoardInvitation(BOARD_INVITATION_STATUS.REJECTED, notification._id)}
+                      onClick={() => updateBoardInvitation(BOARD_INVITATION_STATUS.REJECTED, notification?._id)}
                     >
                       Reject
                     </Button>
