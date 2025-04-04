@@ -27,14 +27,13 @@ function Auth() {
         try {
           const result = await getGGCallbackAPI()
           dispatch(setUserFromGoogle(result))
-          toast.success('Đăng nhập bằng Google thành công!')
           navigate('/')
         } catch (error) {
-          toast.error('Đăng nhập bằng Google thất bại')
+          toast.error('Something went wrong. Please try again.')
           navigate('/login')
         }
       } else if (currUser) {
-        navigate('/')
+        navigate('/boards')
       }
     }
 

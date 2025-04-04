@@ -10,7 +10,6 @@ import AutoCompleteSearchBoard from './SearchBoards/AutoCompleteSearchBoard'
 import { useSelector } from 'react-redux'
 import { selectCurrUser } from '~/redux/user/userSlice'
 import { Login } from '@mui/icons-material'
-import { AccountBox } from '@mui/icons-material'
 
 function AppBar() {
   const currUser = useSelector(selectCurrUser)

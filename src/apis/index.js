@@ -96,6 +96,11 @@ export const getGGCallbackAPI = async () => {
   return response.data
 }
 
+export const deleteUserAPI = async () => {
+  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/delete-account`)
+  return response.data
+}
+
 export const cardSummarizeAPI = async (data) => {
   const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/cards/summarize`, data)
   return response.data

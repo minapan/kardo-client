@@ -168,7 +168,7 @@ function ActiveCard() {
           position: 'absolute',
           top: '8px',
           right: '10px',
-          cursor: 'pointer',
+          cursor: 'pointer'
         }}>
           <IconButton onClick={handleCloseModal}>
             <Close fontSize='medium' />

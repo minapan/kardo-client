@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography'
 import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import TextField from '@mui/material/TextField'
+import { Alert, Dialog, DialogActions, DialogContent, DialogTitle, Divider } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
 import Button from '@mui/material/Button'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
@@ -12,15 +13,21 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import { FIELD_REQUIRED_MESSAGE, singleFileValidator } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { useSelector } from 'react-redux'
-import { selectCurrUser, updateUserAPI } from '~/redux/user/userSlice'
+import { logoutUserAPI, selectCurrUser, updateUserAPI } from '~/redux/user/userSlice'
 import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import VisuallyHiddenInput from '~/components/Form/VisuallyHiddenInput'
 import toast from 'react-hot-toast'
+import { useState } from 'react'
+import { deleteUserAPI } from '~/apis'
 
 function AccountTab() {
   const dispatch = useDispatch()
   const currentUser = useSelector(selectCurrUser)
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [confirmUsername, setConfirmUsername] = useState('')
+  const [isUsernameValid, setIsUsernameValid] = useState(false)
 
   const initialGeneralForm = {
     displayName: currentUser?.displayName || '',
@@ -74,6 +81,30 @@ function AccountTab() {
     })
   }
 
+  const handleDeleteAccount = () => {
+    if (confirmUsername !== currentUser?.username) return
+    if (currentUser.typeLogin !== 'email') return
+
+    toast.promise(
+      deleteUserAPI(),
+      { loading: 'Deleting your account...' }
+    ).then(res => {
+      if (!res.error) {
+        toast.success('Account deleted successfully.')
+        dispatch(logoutUserAPI(false))
+      }
+    })
+    setOpenDeleteDialog(false)
+    setConfirmUsername('')
+    setIsUsernameValid(false)
+  }
+
+  const handleUsernameChange = (e) => {
+    const value = e.target.value
+    setConfirmUsername(value)
+    setIsUsernameValid(value === currentUser?.username)
+  }
+
   return (
     <Box sx={{
       width: '100%',
@@ -88,42 +119,40 @@ function AccountTab() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 3
+        gap: 2
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Box sx={{ position: 'relative', display: 'inline-block' }}>
-            <Tooltip title="Upload a new image to update your avatar immediately.">
-              <Box
-                component="label"
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+          <Tooltip title="Upload a new image to update your avatar.">
+            <Box component="label" sx={{ position: 'relative', cursor: 'pointer' }}>
+              <Avatar
+                sx={{ width: 100, height: 100, border: '2px solid #1976d2' }}
+                alt="User Avatar"
+                src={currentUser?.avatar}
+              />
+              <CloudUploadIcon
                 sx={{
-                  display: 'block'
+                  position: 'absolute',
+                  bottom: 8,
+                  right: 8,
+                  fontSize: 28,
+                  color: '#fff',
+                  bgcolor: '#1976d2',
+                  borderRadius: '50%',
+                  p: 0.5,
+                  transition: 'all 0.3s',
+                  '&:hover': { bgcolor: '#1565c0' }
                 }}
-              >
-                <Avatar
-                  sx={{ width: 84, height: 84, mb: 1, cursor: 'pointer' }}
-                  alt="avt"
-                  src={currentUser?.avatar}
-                />
-                <CloudUploadIcon
-                  className="edit-icon"
-                  sx={{
-                    position: 'absolute',
-                    bottom: 8,
-                    right: 8,
-                    fontSize: 22,
-                    color: '#fff',
-                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                    borderRadius: '50%',
-                    padding: '2px'
-                  }}
-                />
-                <VisuallyHiddenInput type="file" onChange={uploadAvatar} />
-              </Box>
-            </Tooltip>
-          </Box>
+              />
+              <VisuallyHiddenInput type="file" onChange={uploadAvatar} />
+            </Box>
+          </Tooltip>
           <Box>
-            <Typography variant="h6">{currentUser?.displayName}</Typography>
-            <Typography sx={{ color: 'grey' }}>@{currentUser?.username}</Typography>
+            <Typography variant="h5" sx={{ fontWeight: 600, color: '#1976d2' }}>
+              {currentUser?.displayName}
+            </Typography>
+            <Typography sx={{ color: 'grey.600', fontSize: '0.9rem' }}>
+              @{currentUser?.username}
+            </Typography>
           </Box>
         </Box>
 
@@ -197,11 +226,62 @@ function AccountTab() {
                 variant="contained"
                 color="primary"
                 fullWidth>
-                Save
+                Save Changes
               </Button>
             </Box>
           </Box>
         </form>
+        <Divider />
+        <Box sx={{
+          maxWidth: '500px', border: '2px solid red', padding: 4, borderRadius: 4,
+          backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#fff0f0'
+        }}>
+          <Typography variant="h6" sx={{ color: '#d32f2f', fontWeight: 600, mb: 2 }}>
+            Danger Zone
+          </Typography>
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            Deleting your account is permanent and cannot be undone. All your data will be lost.
+          </Alert>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => setOpenDeleteDialog(true)}
+            sx={{ borderRadius: 1, fontWeight: 600 }}
+          >
+            Delete Account
+          </Button>
+        </Box>
+
+        <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+          <DialogTitle sx={{ color: '#d32f2f' }}>Confirm Account Deletion</DialogTitle>
+          <DialogContent>
+            <Typography sx={{ mb: 2 }}>
+              To confirm, please enter your username: <strong style={{ color: 'red' }}>{currentUser?.username}</strong>
+            </Typography>
+            <TextField
+              fullWidth
+              label="Enter your username"
+              variant="outlined"
+              value={confirmUsername}
+              onChange={handleUsernameChange}
+              error={confirmUsername && !isUsernameValid}
+              helperText={confirmUsername && !isUsernameValid ? 'Username does not match' : ''}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDeleteAccount}
+              color="error"
+              variant="contained"
+              disabled={!isUsernameValid}
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </Box>
   )

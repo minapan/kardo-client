@@ -31,7 +31,7 @@ export const ggAuthAPI = createAsyncThunk(
 export const logoutUserAPI = createAsyncThunk(
   'user/logoutUserAPI',
   async (showSuccess = true) => {
-    const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/logout`)
+    const response = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/users/logout`)
     if (showSuccess) toast.success('Logout successfully!')
     return response.data
   }
