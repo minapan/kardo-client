@@ -83,7 +83,6 @@ function AccountTab() {
 
   const handleDeleteAccount = () => {
     if (confirmUsername !== currentUser?.username) return
-    if (currentUser.typeLogin !== 'email') return
 
     toast.promise(
       deleteUserAPI(),
@@ -114,7 +113,7 @@ function AccountTab() {
       justifyContent: 'center'
     }}>
       <Box sx={{
-        maxWidth: '1200px',
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -157,8 +156,8 @@ function AccountTab() {
         </Box>
 
         <form onSubmit={handleSubmit(submitChangeGeneralInformation)}>
-          <Box sx={{ width: '400px', display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: { xs: '350px', md: '500px' } }}>
+            <Box >
               <TextField
                 disabled
                 defaultValue={currentUser?.email}
@@ -232,56 +231,57 @@ function AccountTab() {
           </Box>
         </form>
         <Divider />
-        <Box sx={{
-          maxWidth: '500px', border: '2px solid red', padding: 4, borderRadius: 4,
-          backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#fff0f0'
-        }}>
-          <Typography variant="h6" sx={{ color: '#d32f2f', fontWeight: 600, mb: 2 }}>
-            Danger Zone
-          </Typography>
-          <Alert severity="warning" sx={{ mb: 2 }}>
-            Deleting your account is permanent and cannot be undone. All your data will be lost.
-          </Alert>
-          <Button
-            variant="outlined"
-            color="error"
-            onClick={() => setOpenDeleteDialog(true)}
-            sx={{ borderRadius: 1, fontWeight: 600 }}
-          >
-            Delete Account
-          </Button>
-        </Box>
-
-        <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-          <DialogTitle sx={{ color: '#d32f2f' }}>Confirm Account Deletion</DialogTitle>
-          <DialogContent>
-            <Typography sx={{ mb: 2 }}>
-              To confirm, please enter your username: <strong style={{ color: 'red' }}>{currentUser?.username}</strong>
+        {currentUser?.typeLogin === 'email' && <>
+          <Box sx={{
+            maxWidth: '500px', border: '2px solid red', padding: 4, borderRadius: 4,
+            backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#fff0f0'
+          }}>
+            <Typography variant="h6" sx={{ color: '#d32f2f', fontWeight: 600, mb: 2 }}>
+              Danger Zone
             </Typography>
-            <TextField
-              fullWidth
-              label="Enter your username"
-              variant="outlined"
-              value={confirmUsername}
-              onChange={handleUsernameChange}
-              error={confirmUsername && !isUsernameValid}
-              helperText={confirmUsername && !isUsernameValid ? 'Username does not match' : ''}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
-              Cancel
-            </Button>
+            <Alert severity="warning" sx={{ mb: 2 }}>
+              Deleting your account is permanent and cannot be undone. All your data will be lost.
+            </Alert>
             <Button
-              onClick={handleDeleteAccount}
+              variant="outlined"
               color="error"
-              variant="contained"
-              disabled={!isUsernameValid}
+              onClick={() => setOpenDeleteDialog(true)}
+              sx={{ borderRadius: 1, fontWeight: 600 }}
             >
-              Delete
+              Delete Account
             </Button>
-          </DialogActions>
-        </Dialog>
+          </Box>
+          <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+            <DialogTitle sx={{ color: '#d32f2f' }}>Confirm Account Deletion</DialogTitle>
+            <DialogContent>
+              <Typography sx={{ mb: 2 }}>
+                To confirm, please enter your username: <strong style={{ color: 'violet' }}>{currentUser?.username}</strong>
+              </Typography>
+              <TextField
+                fullWidth
+                label="Enter your username"
+                variant="outlined"
+                value={confirmUsername}
+                onChange={handleUsernameChange}
+                error={confirmUsername && !isUsernameValid}
+                helperText={confirmUsername && !isUsernameValid ? 'Username does not match' : ''}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
+                Cancel
+              </Button>
+              <Button
+                onClick={handleDeleteAccount}
+                color="error"
+                variant="contained"
+                disabled={!isUsernameValid}
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>}
       </Box>
     </Box>
   )

@@ -84,7 +84,7 @@ function SecurityTab() {
       justifyContent: 'center'
     }}>
       <Box sx={{
-        maxWidth: '1200px',
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -115,13 +115,10 @@ function SecurityTab() {
           </Typography>
         </Alert>
         <Box>
-
-        </Box>
-        <Box>
           <Typography variant="h5">{user?.typeLogin === 'email' ? 'Change ' : 'Set '}Password</Typography>
         </Box>
         <form onSubmit={handleSubmit(submitChangePassword)}>
-          <Box sx={{ width: '400px', display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: { xs: '350px', md: '500px' } }}>
             {user?.typeLogin === 'email' && (
               <Box>
                 <TextField

@@ -16,7 +16,6 @@ import { AutoAwesome } from '@mui/icons-material'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { testimonials } from '~/utils/constants'
-import { Favorite } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 
 const LandingPage = () => {
@@ -36,9 +35,9 @@ const LandingPage = () => {
         <AppBar />
       </Box>
 
-      <Box sx={{ bgcolor: 'background.default', pt: 10 }}>
+      <Box sx={{ bgcolor: 'background.default', pt: { xs: 8, md: 12 } }}>
         {/* Hero Section */}
-        <Container maxWidth="lg" sx={{ py: 18 }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12, lg: 18 } }}>
           <Grid container spacing={6} alignItems="center">
             <Grid item xs={12} md={6}>
               <Typography
@@ -73,7 +72,7 @@ const LandingPage = () => {
             <Grid item xs={12} md={6}>
               <CardMedia
                 component="img"
-                image="https://base.vn/wp-content/uploads/2024/06/trello-la-gi.webp" // Replace with real Trello asset
+                image="https://base.vn/wp-content/uploads/2024/06/trello-la-gi.webp"
                 alt="Trello in Action"
                 sx={{
                   borderRadius: 3,
@@ -274,11 +273,12 @@ const LandingPage = () => {
         {/* Footer */}
         <Box sx={{ backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#2f3542' : '#485460', py: 4, textAlign: 'center', color: '#fff' }}>
           <Typography variant="body2">
-            © {new Date().getFullYear()} Trello Minapan. Made with <Favorite sx={{ color: 'red', verticalAlign: 'middle' }} /> by &nbsp;
+            &copy; {new Date().getFullYear()}<br />
+            Build by&nbsp;
             <Link to="https://facebook.com/minapan204" target="_blank" rel="noopener noreferrer" style={{
               color: 'white', textDecoration: 'none'
             }}>
-              MinhNhatPhan.
+              MinhNhatPhan
             </Link>
           </Typography>
         </Box>

@@ -2,14 +2,14 @@ import { Avatar, Box, IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import Divider from '@mui/material/Divider'
 import { useState } from 'react'
-import { Logout, PersonAdd, Settings } from '@mui/icons-material'
+import { Logout } from '@mui/icons-material'
 import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
-import { logoutUserAPI, selectCurrUser } from '~/redux/user/userSlice'
+import { logoutUserAPI } from '~/redux/user/userSlice'
 import { useConfirm } from 'material-ui-confirm'
 import { Link } from 'react-router-dom'
+import AutoCompleteSearchBoard from '../SearchBoards/AutoCompleteSearchBoard'
 
-function Profile() {
+function Profile({ currUser }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -20,7 +20,6 @@ function Profile() {
   }
 
   const dispatch = useDispatch()
-  const currUser = useSelector(selectCurrUser)
 
   const confirmLogout = useConfirm()
   const handleLogout = () => {
@@ -51,10 +50,10 @@ function Profile() {
       </IconButton>
     </Tooltip>
     <Menu
+      onClose={handleClose}
       id="account-menu"
       anchorEl={anchorEl}
       open={open}
-      onClick={handleClose}
       MenuListProps={{
         'aria-labelledby': 'basic-button'
       }}
@@ -91,6 +90,13 @@ function Profile() {
         </ListItemIcon>
         Logout
       </MenuItem>
+      <Box sx={{
+        display: { xs: 'block', md: 'none' },
+        bgcolor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#888',
+        p: 1
+      }}>
+        {currUser && <AutoCompleteSearchBoard />}
+      </Box>
     </Menu>
   </>)
 }

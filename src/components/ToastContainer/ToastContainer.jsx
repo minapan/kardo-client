@@ -1,8 +1,18 @@
 import { Box, useTheme } from '@mui/material'
+import { useEffect } from 'react'
+import { useToasterStore } from 'react-hot-toast'
 import { Toaster, ToastBar, toast } from 'react-hot-toast'
+import { TOAST_LIMIT } from '~/utils/constants'
 
 const ToastContainer = () => {
   const theme = useTheme()
+  const { toasts } = useToasterStore()
+  useEffect(() => {
+    toasts
+      .filter((t) => t.visible) // Only consider visible toasts
+      .filter((_, i) => i >= TOAST_LIMIT) // Is toast index over limit?
+      .forEach((t) => toast.dismiss(t.id)) // Dismiss – Use toast.remove(t.id) for no exit animation
+  }, [toasts])
 
   return (
     <Box>

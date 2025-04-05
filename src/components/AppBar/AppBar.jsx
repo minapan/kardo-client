@@ -80,7 +80,9 @@ function AppBar() {
                 '&.Mui-focused fieldset': { borderColor: 'white' }
               }
             }} /> */}
-          {currUser && <AutoCompleteSearchBoard />}
+          <Box sx={{ display: { xs: 'none', md: 'block' } }} >
+            {currUser && <AutoCompleteSearchBoard />}
+          </Box>
 
           <SelectMode />
 
@@ -96,7 +98,7 @@ function AppBar() {
               <HelpOutlineIcon fontSize='small' />
             </Badge>
           </Tooltip> */}
-          {currUser ? <Profile />
+          {currUser ? <Profile currUser={currUser} />
             :
             <>
               {/* <Link to='/register'>

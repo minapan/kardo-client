@@ -13,6 +13,9 @@ export const API_ROOT = apiRoot
 export const DEFAULT_PAGE = 1
 export const DEFAULT_LIMIT = 12
 
+export const TOAST_LIMIT = 3
+
+
 export const CARD_MEMBER_ACTIONS = {
   ADD: 'ADD',
   REMOVE: 'REMOVE'

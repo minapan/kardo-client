@@ -11,7 +11,7 @@ import { selectCurrUser } from './redux/user/userSlice'
 import Settings from './pages/Settings/Settings'
 import Boards from './pages/Boards'
 import Require2FA from './components/Modal/2FA/Require2FA'
-import LandingPage from './pages/LandingPage/Landingpage'
+import LandingPage from './pages/LandingPage/LandingPage'
 
 const Require2FALayout = ({ user, children }) => {
   if (user?.require_2fa && !user?.is_2fa_verified) return <Require2FA />
