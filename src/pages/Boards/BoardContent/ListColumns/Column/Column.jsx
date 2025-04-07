@@ -1,15 +1,13 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, TextField } from '@mui/material'
 import { Tooltip, Menu, MenuItem } from '@mui/material'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemIcon from '@mui/material/ListItemIcon'
-import ContentCut from '@mui/icons-material/ContentCut'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Divider from '@mui/material/Divider'
 import CloseIcon from '@mui/icons-material/Close'
-import Cloud from '@mui/icons-material/Cloud'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import { useState } from 'react'
-import { AddCard, ContentCopy, ContentPaste } from '@mui/icons-material'
+import { AddCard } from '@mui/icons-material'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ListCard from './ListCards/ListCards'
 import { useSortable } from '@dnd-kit/sortable'
@@ -23,6 +21,8 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 import toast from 'react-hot-toast'
+import { useEffect } from 'react'
+import { socketIo } from '~/socketClient'
 
 function Column({ column }) {
   const dispatch = useDispatch()
@@ -47,23 +47,9 @@ function Column({ column }) {
     // Call API
     const createdCard = await createNewCardAPI({ ...newCardData, boardId: board._id })
 
+    socketIo.emit('FE_CREATED_NEW_CARD', { createdCard, boardId: board._id })
     // const newBoard = { ...board }
-    const newBoard = cloneDeep(board)
-    const columnToUpdate = newBoard.columns.find(col => col._id === createdCard.columnId)
-    if (columnToUpdate) {
-      // Insert the new card and remove the placeholder card
-      if (columnToUpdate.cards.some(card => card.FE_Placeholder)) {
-        columnToUpdate.cards = [createdCard]
-        columnToUpdate.cardOrderIds = [createdCard._id]
-      }
-      // Insert the new card
-      else {
-        columnToUpdate.cards.push(createdCard)
-        columnToUpdate.cardOrderIds.push(createdCard._id)
-      }
-    }
-    // setBoard(newBoard)
-    dispatch(updateCurrActiveBoard(newBoard))
+    onCreateNewCard(createdCard)
 
     toggleOpenNewCardForm()
   }
@@ -91,14 +77,60 @@ function Column({ column }) {
         const newBoard = { ...board }
         newBoard.columns = newBoard.columns.filter(col => col._id !== column._id)
         newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== column._id)
-        // setBoard(newBoard)
+
+        socketIo.emit('FE_DELETED_COLUMN', { deletedColId: column._id, boardId: board._id })
         dispatch(updateCurrActiveBoard(newBoard))
 
-        deleteColDetailsAPI(column._id).then(res => {
-          toast.success(res?.deleteResult)
-        })
+        deleteColDetailsAPI(column._id)
       })
       .catch(() => { })
+  }
+
+  useEffect(() => {
+    const onReceiveDeleteColumn = (deletedColId) => {
+      if (board) {
+        if (column?._id !== deletedColId) return
+        const newBoard = { ...board }
+        newBoard.columns = newBoard.columns.filter(col => col._id !== deletedColId)
+        newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== deletedColId)
+
+        dispatch(updateCurrActiveBoard(newBoard))
+      }
+    }
+
+    const onReceiveCreateNewCard = (createdCard) => {
+      if (board) {
+        if (column?.cards.some(c => c._id === createdCard._id)) return
+        onCreateNewCard(createdCard)
+      }
+    }
+
+    socketIo.on('BE_DELETED_COLUMN', onReceiveDeleteColumn)
+    socketIo.on('BE_CREATED_NEW_CARD', onReceiveCreateNewCard)
+
+    return () => {
+      socketIo.off('BE_DELETED_COLUMN', onReceiveDeleteColumn)
+      socketIo.off('BE_CREATED_NEW_CARD', onReceiveCreateNewCard)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [board, dispatch])
+
+  const onCreateNewCard = (createdCard) => {
+    const newBoard = cloneDeep(board)
+    const columnToUpdate = newBoard.columns.find(col => col._id === createdCard.columnId)
+    if (columnToUpdate) {
+      // Insert the new card and remove the placeholder card
+      if (columnToUpdate.cards.some(card => card.FE_Placeholder)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      }
+      // Insert the new card
+      else {
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
+    }
+    dispatch(updateCurrActiveBoard(newBoard))
   }
 
   const onUpdateColumnTitle = async (newTitle) => {
@@ -109,7 +141,7 @@ function Column({ column }) {
         columnToUpdate.title = newTitle
       }
       dispatch(updateCurrActiveBoard(newBoard))
-      column.title = res?.title
+      // column.title = res?.title
     })
   }
 

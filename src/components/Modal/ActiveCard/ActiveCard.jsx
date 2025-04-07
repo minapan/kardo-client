@@ -36,6 +36,7 @@ import ChecklistGroup from './Checklist/ChecklistGroup'
 import { useState } from 'react'
 import { Chip, IconButton } from '@mui/material'
 import { Close } from '@mui/icons-material'
+import { socketIo } from '~/socketClient'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -79,6 +80,7 @@ function ActiveCard() {
 
   const callApiUpdateCard = async (updateData) => {
     const updatedCard = await updateCardDetailsAPI(activeCard._id, updateData)
+    socketIo.emit('FE_UPDATED_CARD', { boardId: activeBoard._id, updatedCard })
 
     dispatch(updateCurrActiveCard(updatedCard))
     dispatch(updateCardInBoard(updatedCard))
@@ -124,18 +126,21 @@ function ActiveCard() {
     if (labelInfo.action === 'CREATE')
       updateBoardDetailsAPI(activeCard.boardId, { newLabel: labelInfo.newLabel })
         .then(res => {
+          socketIo.emit('FE_UPDATED_BOARD_LABELS', { boardId: activeCard.boardId, labels: res.labels })
           dispatch(updateCurrActiveBoard({ ...activeBoard, labels: res.labels }))
         })
 
     else if (labelInfo.action === 'UPDATE')
       updateBoardDetailsAPI(activeCard.boardId, { updatedLabel: labelInfo.updatedLabel })
         .then(res => {
+          socketIo.emit('FE_UPDATED_BOARD_LABELS', { boardId: activeCard.boardId, labels: res.labels })
           dispatch(updateCurrActiveBoard({ ...activeBoard, labels: res.labels }))
         })
 
     else if (labelInfo.action === 'DELETE') {
       updateBoardDetailsAPI(activeCard.boardId, { removeLabelId: labelInfo.labelId })
         .then(res => {
+          socketIo.emit('FE_UPDATED_BOARD_LABELS', { boardId: activeCard.boardId, labels: res.labels })
           dispatch(updateCurrActiveBoard({ ...activeBoard, labels: res.labels }))
         })
     }

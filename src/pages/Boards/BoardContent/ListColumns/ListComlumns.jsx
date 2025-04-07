@@ -14,6 +14,8 @@ import { useSelector } from 'react-redux'
 import { selectCurrActiveBoard, updateCurrActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import toast from 'react-hot-toast'
 import { IconButton } from '@mui/material'
+import { useEffect } from 'react'
+import { socketIo } from '~/socketClient'
 function ListComlumns({ columns }) {
   const dispatch = useDispatch()
   const board = useSelector(selectCurrActiveBoard)
@@ -39,16 +41,33 @@ function ListComlumns({ columns }) {
 
     createdCol.cards = [generatePlaceholderCard(createdCol)]
     createdCol.cardOrderIds = [generatePlaceholderCard(createdCol)._id]
+    socketIo.emit('FE_CREATED_NEW_COLUMN', { createdCol, boardId: board._id })
 
-    // const newBoard = { ...board }
     const newBoard = cloneDeep(board)
     newBoard.columns.push(createdCol)
     newBoard.columnOrderIds.push(createdCol._id)
     // setBoard(newBoard)
     dispatch(updateCurrActiveBoard(newBoard))
-
     toggleOpenNewColForm()
   }
+
+  useEffect(() => {
+    const onReceiveNewColumn = (createdCol) => {
+      // console.log(`FE I received new member ${newMember._id}`)
+      if (board) {
+        if (board?.columns.some(col => col._id === createdCol._id)) return
+        const newBoard = cloneDeep(board)
+        newBoard.columns.push(createdCol)
+        newBoard.columnOrderIds.push(createdCol._id)
+        dispatch(updateCurrActiveBoard(newBoard))
+      }
+    }
+
+    socketIo.on('BE_CREATED_NEW_COLUMN', onReceiveNewColumn)
+    return () => {
+      socketIo.off('BE_CREATED_NEW_COLUMN', onReceiveNewColumn)
+    }
+  }, [board, dispatch])
   return (<>
     {/* The <SortableContext> component expects a sorted array of unique identifiers associated with each sortable item via the items attribute. This array should be ['1', '2', '3'] rather than [{id: '1'}, {id: '2}, {id: '3}].
 

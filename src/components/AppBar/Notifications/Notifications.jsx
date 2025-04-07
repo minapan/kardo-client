@@ -65,6 +65,7 @@ function Notifications({ currUser }) {
     dispatch(updateBoardInvitationAPI({ status, invitationId }))
       .then((res) => {
         if (res.payload.boardInvitation.status === BOARD_INVITATION_STATUS.ACCEPTED) {
+          socketIo.emit('FE_USER_ACCEPTED_INVITATION', { boardId: res.payload.boardInvitation.boardId, user: currUser })
           navigate(`/b/${res.payload.boardInvitation.boardId}`)
         }
       })
