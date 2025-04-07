@@ -12,13 +12,14 @@ import Divider from '@mui/material/Divider'
 import GroupAddIcon from '@mui/icons-material/GroupAdd'
 import DoneIcon from '@mui/icons-material/Done'
 import NotInterestedIcon from '@mui/icons-material/NotInterested'
-import { Badge } from '@mui/material'
+import { Badge, IconButton } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { addNotification, fetchInvitationsAPI, selectCurrNotifications, updateBoardInvitationAPI } from '~/redux/notifications/notificationsSlice'
+import { addNotification, deleteInvitationAPI, fetchInvitationsAPI, selectCurrNotifications, updateBoardInvitationAPI } from '~/redux/notifications/notificationsSlice'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { socketIo } from '~/socketClient'
 import { useNavigate } from 'react-router-dom'
+import { Close } from '@mui/icons-material'
 
 const BOARD_INVITATION_STATUS = {
   PENDING: 'PENDING',
@@ -64,11 +65,16 @@ function Notifications({ currUser }) {
   const updateBoardInvitation = (status, invitationId) => {
     dispatch(updateBoardInvitationAPI({ status, invitationId }))
       .then((res) => {
+        if (res.error) dispatch(deleteInvitationAPI(invitationId))
         if (res.payload.boardInvitation.status === BOARD_INVITATION_STATUS.ACCEPTED) {
           socketIo.emit('FE_USER_ACCEPTED_INVITATION', { boardId: res.payload.boardInvitation.boardId, user: currUser })
           navigate(`/b/${res.payload.boardInvitation.boardId}`)
         }
       })
+  }
+
+  const handleDelete = (invitationId) => {
+    dispatch(deleteInvitationAPI(invitationId))
   }
 
   return (
@@ -102,11 +108,21 @@ function Notifications({ currUser }) {
         {notifications?.map((notification, index) =>
           <Box key={index}>
             <MenuItem sx={{
-              minWidth: 200,
-              maxWidth: 360,
-              overflowY: 'auto'
+              minWidth: 200, maxWidth: 360,
+              overflowY: 'auto', position: 'relative'
             }}>
+              <Box sx={{
+                position: 'absolute',
+                top: '0px',
+                right: '0px',
+                cursor: 'pointer'
+              }}>
+                <IconButton onClick={() => handleDelete(notification._id)}>
+                  <Close fontSize='small' color='warning' />
+                </IconButton>
+              </Box>
               <Box sx={{ maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'pre-wrap', display: 'flex', flexDirection: 'column', gap: 1 }}>
+
                 {/* Notification content */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Box><GroupAddIcon fontSize="small" /></Box>
@@ -144,7 +160,7 @@ function Notifications({ currUser }) {
                   {notification?.boardInvitation?.status === BOARD_INVITATION_STATUS.ACCEPTED &&
                     <Chip icon={<DoneIcon />} label="Accepted" color="success" size="small" />}
                   {notification?.boardInvitation?.status === BOARD_INVITATION_STATUS.REJECTED &&
-                    <Chip icon={<NotInterestedIcon />} label="Rejected" size="small" />}
+                    <Chip icon={<NotInterestedIcon />} label="Rejected" color='error' size="small" />}
                 </Box>
 
                 {/* Notification time */}

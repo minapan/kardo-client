@@ -24,6 +24,14 @@ export const updateBoardInvitationAPI = createAsyncThunk(
   }
 )
 
+export const deleteInvitationAPI = createAsyncThunk(
+  'notifications/deleteInvitationAPI',
+  async (invitationId) => {
+    const response = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/invitations/${invitationId}`)
+    return response.data
+  }
+)
+
 export const notificationsSlice = createSlice({
   name: 'notifications',
   initialState,
@@ -51,6 +59,10 @@ export const notificationsSlice = createSlice({
       const incommingInvitation = action.payload
       const getInvitation = state.currNotifications.find(i => i._id === incommingInvitation._id)
       getInvitation.boardInvitation = incommingInvitation.boardInvitation
+    })
+    builder.addCase(deleteInvitationAPI.fulfilled, (state, action) => {
+      const deletedInvitationId = action.payload
+      state.currNotifications = state.currNotifications.filter(i => i._id !== deletedInvitationId)
     })
   }
 })
