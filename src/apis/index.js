@@ -110,3 +110,23 @@ export const uploadCoverImageAPI = async (data) => {
   const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/boards/supports/upload-cover`, data)
   return response.data
 }
+
+export const fetchSessionAPI = async () => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/sessions`)
+  return response.data
+}
+
+export const deleteSessionAPI = async (sessionId) => {
+  const response = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/sessions/${sessionId}`)
+  return response.data
+}
+
+export const clearSessionAPI = async () => {
+  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/sessions/clear`)
+  return response.data
+}
+
+export const setMaxSessionsAPI = async (data) => {
+  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/sessions/set-max-sessions`, data)
+  return response.data
+}

@@ -31,7 +31,7 @@ export const ggAuthAPI = createAsyncThunk(
 export const logoutUserAPI = createAsyncThunk(
   'user/logoutUserAPI',
   async (showSuccess = true) => {
-    const response = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/users/logout`)
+    const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/logout`)
     if (showSuccess) toast.success('Logout successfully!')
     return response.data
   }
@@ -68,6 +68,9 @@ export const userSlice = createSlice({
   reducers: {
     setUserFromGoogle: (state, action) => {
       state.currUser = action.payload
+    },
+    setUserMaxSession: (state, action) => {
+      state.currUser.max_sessions = action.payload
     }
   },
   // ExtraReducers: Handle data from async actions
@@ -97,7 +100,7 @@ export const userSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setUserFromGoogle } = userSlice.actions
+export const { setUserFromGoogle, setUserMaxSession } = userSlice.actions
 
 // Selectors:
 export const selectCurrUser = state => state.user.currUser

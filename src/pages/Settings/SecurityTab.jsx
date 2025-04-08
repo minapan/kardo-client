@@ -14,13 +14,16 @@ import { useForm } from 'react-hook-form'
 import { useConfirm } from 'material-ui-confirm'
 import { useDispatch } from 'react-redux'
 import { useState } from 'react'
-import { IconButton } from '@mui/material'
+import { Divider, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText } from '@mui/material'
 import { Visibility } from '@mui/icons-material'
 import { VisibilityOff } from '@mui/icons-material'
 import toast from 'react-hot-toast'
 import Setup2FA from '~/components/Modal/2FA/Setup2FA'
 import { useSelector } from 'react-redux'
-import { logoutUserAPI, selectCurrUser, updateUserAPI } from '~/redux/user/userSlice'
+import { logoutUserAPI, selectCurrUser, setUserMaxSession, updateUserAPI } from '~/redux/user/userSlice'
+import { useEffect } from 'react'
+import { clearSessionAPI, deleteSessionAPI, fetchSessionAPI, setMaxSessionsAPI } from '~/apis'
+import { Logout } from '@mui/icons-material'
 
 function SecurityTab() {
   const dispatch = useDispatch()
@@ -75,6 +78,50 @@ function SecurityTab() {
     }).catch(() => { })
   }
 
+  const [sessions, setSessions] = useState([])
+  const [maxSessions, setMaxSessions] = useState(user?.max_sessions)
+
+  useEffect(() => {
+    fetchSessionAPI().then((data) => setSessions(data))
+  }, [])
+
+  const handleLogoutSession = async (sessionId) => {
+    setSessions(sessions.filter(session => session._id !== sessionId))
+    deleteSessionAPI(sessionId).then((res) => {
+      if (res.isDeletedMySelf) dispatch(logoutUserAPI())
+    })
+  }
+
+  const handleSetMaxSessions = () => {
+    if (maxSessions === user?.max_sessions) return
+    setMaxSessionsAPI({ max_sessions: maxSessions })
+      .then((res) => {
+        if (!res.error) {
+          toast.success('Update max sessions successfully!')
+          setSessions(res)
+          dispatch(setUserMaxSession(maxSessions))
+        }
+      })
+  }
+
+  const confirmLogout = useConfirm()
+  const logoutOthers = () => {
+    confirmLogout({
+      title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Logout sx={{ color: 'warning.dark' }} /> LOGOUT ALL OTHERS?
+      </Box>,
+      description: 'Are you sure you want to logout all other sessions?',
+      confirmationText: 'Yes'
+    })
+      .then(() => {
+        clearSessionAPI().then(() => {
+          setSessions(sessions.filter(session => session.is_current)) // remove all other sessions
+          toast.success('Logout all other sessions successfully!')
+        })
+      })
+      .catch(() => { })
+  }
+
   return (
     <Box sx={{
       width: '100%',
@@ -86,160 +133,203 @@ function SecurityTab() {
       <Box sx={{
         width: '100%',
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: { xs: 'column', lg: 'row' },
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 3
+        gap: 4,
+        p: 2
       }}>
-        <Setup2FA
-          isOpen={openSetup2FA}
-          toggleOpen={setOpenSetup2FA}
-          handleSuccessSetup2FA={handleSuccessSetup2FA}
-        />
-        <Alert
-          severity={`${user.require_2fa ? 'success' : 'warning'}`}
-          action={
-            !user.require_2fa &&
-            <Button
-              color="warning" size="small"
-              sx={{ p: .5 }}
-              onClick={() => setOpenSetup2FA(true)}
-            >
-              Enable 2FA
-            </Button>
-          }
-        >
-          Account security status:&nbsp;
-          <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#e67e22' } }}>
-            Two-Factor Authentication (2FA) {user.require_2fa ? 'enabled.' : 'not enabled.'}
-          </Typography>
-        </Alert>
-        <Box>
+        <Box sx={{
+          p: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 3,
+          width: { xs: '100%', lg: '40%' }
+        }}>
+          <Alert
+            severity={`${user.require_2fa ? 'success' : 'warning'}`}
+            action={
+              !user.require_2fa &&
+              <Button
+                color="warning" size="small"
+                sx={{ p: .5 }}
+                onClick={() => setOpenSetup2FA(true)}
+              >
+                Enable 2FA
+              </Button>
+            }
+          >
+            Account security status:
+            <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#e67e22' } }}>
+              Two-Factor Authentication (2FA) {user.require_2fa ? 'enabled.' : 'not enabled.'}
+            </Typography>
+          </Alert>
           <Typography variant="h5">{user?.typeLogin === 'email' ? 'Change ' : 'Set '}Password</Typography>
-        </Box>
-        <form onSubmit={handleSubmit(submitChangePassword)}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: { xs: '350px', md: '500px' } }}>
-            {user?.typeLogin === 'email' && (
+          <form onSubmit={handleSubmit(submitChangePassword)}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {user?.typeLogin === 'email' && (
+                <Box>
+                  <TextField
+                    fullWidth
+                    label="Current Password"
+                    type={showCurrentPassword ? 'text' : 'password'}
+                    variant="outlined"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PasswordIcon fontSize="small" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowCurrentPassword}
+                            edge="end"
+                          >
+                            {showCurrentPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
+                    {...register('current_password', {
+                      required: FIELD_REQUIRED_MESSAGE,
+                      pattern: {
+                        value: PASSWORD_RULE,
+                        message: PASSWORD_RULE_MESSAGE
+                      }
+                    })}
+                    error={!!errors['current_password']}
+                  />
+                  <FieldErrorAlert errors={errors} fieldName={'current_password'} />
+                </Box>
+              )}
               <Box>
                 <TextField
                   fullWidth
-                  label="Current Password"
-                  type={showCurrentPassword ? 'text' : 'password'}
+                  label="New Password"
+                  type={showNewPassword ? 'text' : 'password'}
                   variant="outlined"
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <PasswordIcon fontSize="small" />
+                        <LockIcon fontSize="small" />
                       </InputAdornment>
                     ),
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
                           aria-label="toggle password visibility"
-                          onClick={handleClickShowCurrentPassword}
+                          onClick={handleClickShowNewPassword}
                           edge="end"
                         >
-                          {showCurrentPassword ? <Visibility /> : <VisibilityOff />}
+                          {showNewPassword ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                       </InputAdornment>
                     )
                   }}
-                  {...register('current_password', {
+                  {...register('new_password', {
                     required: FIELD_REQUIRED_MESSAGE,
                     pattern: {
                       value: PASSWORD_RULE,
                       message: PASSWORD_RULE_MESSAGE
                     }
                   })}
-                  error={!!errors['current_password']}
+                  error={!!errors['new_password']}
                 />
-                <FieldErrorAlert errors={errors} fieldName={'current_password'} />
+                <FieldErrorAlert errors={errors} fieldName={'new_password'} />
               </Box>
-            )}
-
-            <Box>
-              <TextField
-                fullWidth
-                label="New Password"
-                type={showNewPassword ? 'text' : 'password'}
-                variant="outlined"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockIcon fontSize="small" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowNewPassword}
-                        edge="end"
-                      >
-                        {showNewPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-                {...register('new_password', {
-                  required: FIELD_REQUIRED_MESSAGE,
-                  pattern: {
-                    value: PASSWORD_RULE,
-                    message: PASSWORD_RULE_MESSAGE
-                  }
-                })}
-                error={!!errors['new_password']}
-              />
-              <FieldErrorAlert errors={errors} fieldName={'new_password'} />
-            </Box>
-
-            <Box>
-              <TextField
-                fullWidth
-                label="New Password Confirmation"
-                type={showPasswordConfirm ? 'text' : 'password'}
-                variant="outlined"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockResetIcon fontSize="small" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPasswordComfirm}
-                        edge="end"
-                      >
-                        {showPasswordConfirm ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-                {...register('new_password_confirmation', {
-                  validate: (value) => {
-                    if (value === watch('new_password')) return true
-                    return 'Password confirmation does not match.'
-                  }
-                })}
-                error={!!errors['new_password_confirmation']}
-              />
-              <FieldErrorAlert errors={errors} fieldName={'new_password_confirmation'} />
-            </Box>
-
-            <Box>
+              <Box>
+                <TextField
+                  fullWidth
+                  label="New Password Confirmation"
+                  type={showPasswordConfirm ? 'text' : 'password'}
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockResetIcon fontSize="small" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPasswordComfirm}
+                          edge="end"
+                        >
+                          {showPasswordConfirm ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                  {...register('new_password_confirmation', {
+                    validate: (value) => value === watch('new_password') || 'Password confirmation does not match.'
+                  })}
+                  error={!!errors['new_password_confirmation']}
+                />
+                <FieldErrorAlert errors={errors} fieldName={'new_password_confirmation'} />
+              </Box>
               <Button
                 className="interceptor-loading"
                 type="submit"
                 variant="contained"
                 color="primary"
-                fullWidth>
+                fullWidth
+              >
                 Save Changes
               </Button>
             </Box>
+          </form>
+        </Box>
+
+        <Box sx={{
+          p: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 3,
+          width: { xs: '100%', lg: '40%' }
+        }}>
+          <Typography variant="h5">Session Management</Typography>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <TextField
+              label="Set Max Sessions"
+              type="number"
+              value={maxSessions}
+              onChange={(e) => setMaxSessions(Math.min(10, Math.max(1, e.target.value)))}
+              InputProps={{ inputProps: { min: 1, max: 10 } }}
+              sx={{ flex: 1 }}
+            />
+            <Button variant="contained" onClick={handleSetMaxSessions}>
+              Save
+            </Button>
           </Box>
-        </form>
+          <List sx={{ maxHeight: '300px', overflowY: 'auto' }}>
+            {sessions.map((session) => (
+              <ListItem key={session._id}>
+                <ListItemText
+                  sx={{ color: session?.is_current ? 'info.main' : '' }}
+                  primary={`${session.device_info} ${session?.is_current ? '(Current)' : ''}`}
+                  secondary={`${session.location.city}, ${session.location.country} | ${new Date(session.last_active).toLocaleString()}`}
+                />
+                <ListItemSecondaryAction>
+                  <IconButton edge="end" onClick={() => handleLogoutSession(session._id)}>
+                    <Logout sx={{ fontSize: 20, color: 'warning.dark' }} />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <Button
+            fullWidth
+            variant="outlined"
+            color="warning"
+            onClick={() => logoutOthers()}
+          >
+            Logout All Other Devices
+          </Button>
+        </Box>
       </Box>
     </Box>
   )
