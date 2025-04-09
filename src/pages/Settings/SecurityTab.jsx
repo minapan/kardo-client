@@ -14,7 +14,7 @@ import { useForm } from 'react-hook-form'
 import { useConfirm } from 'material-ui-confirm'
 import { useDispatch } from 'react-redux'
 import { useState } from 'react'
-import { Divider, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText } from '@mui/material'
+import { Divider, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText, Tooltip } from '@mui/material'
 import { Visibility } from '@mui/icons-material'
 import { VisibilityOff } from '@mui/icons-material'
 import toast from 'react-hot-toast'
@@ -38,6 +38,7 @@ function SecurityTab() {
 
   const [openSetup2FA, setOpenSetup2FA] = useState(false)
   const handleSuccessSetup2FA = () => {
+    fetchSessionAPI().then((data) => setSessions(data))
     setOpenSetup2FA(false)
   }
   const { register, handleSubmit, watch, formState: { errors } } = useForm()
@@ -89,6 +90,7 @@ function SecurityTab() {
     setSessions(sessions.filter(session => session._id !== sessionId))
     deleteSessionAPI(sessionId).then((res) => {
       if (res.isDeletedMySelf) dispatch(logoutUserAPI())
+      else toast.success('Logout session successfully!')
     })
   }
 
@@ -127,39 +129,40 @@ function SecurityTab() {
       width: '100%',
       height: '100%',
       display: 'flex',
-      alignItems: 'center',
       justifyContent: 'center'
     }}>
+      {openSetup2FA && <Setup2FA
+        isOpen={openSetup2FA}
+        toggleOpen={setOpenSetup2FA}
+        handleSuccessSetup2FA={handleSuccessSetup2FA}
+      />}
       <Box sx={{
         width: '100%',
         display: 'flex',
-        flexDirection: { xs: 'column', lg: 'row' },
-        alignItems: 'center',
+        flexDirection: { xs: 'column', md: 'row' },
+        alignItems: { xs: 'center', md: 'flex-start' },
         justifyContent: 'center',
-        gap: 4,
-        p: 2
+        gap: { xs: 4, md: 6, lg: 10 }
       }}>
         <Box sx={{
-          p: 2,
           display: 'flex',
           flexDirection: 'column',
           gap: 3,
-          width: { xs: '100%', lg: '40%' }
+          width: { xs: '350px', md: '500px' }
         }}>
           <Alert
             severity={`${user.require_2fa ? 'success' : 'warning'}`}
             action={
-              !user.require_2fa &&
               <Button
-                color="warning" size="small"
+                color="info" size="small"
                 sx={{ p: .5 }}
                 onClick={() => setOpenSetup2FA(true)}
               >
-                Enable 2FA
+                {`${user.require_2fa ? 'Disable' : 'Enable'} 2FA`}
               </Button>
             }
           >
-            Account security status:
+            Account security status:&nbsp;
             <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#e67e22' } }}>
               Two-Factor Authentication (2FA) {user.require_2fa ? 'enabled.' : 'not enabled.'}
             </Typography>
@@ -284,11 +287,10 @@ function SecurityTab() {
         </Box>
 
         <Box sx={{
-          p: 2,
           display: 'flex',
           flexDirection: 'column',
-          gap: 3,
-          width: { xs: '100%', lg: '40%' }
+          gap: 2,
+          width: { xs: '350px', md: '500px' }
         }}>
           <Typography variant="h5">Session Management</Typography>
           <Box sx={{ display: 'flex', gap: 2 }}>
@@ -296,27 +298,30 @@ function SecurityTab() {
               label="Set Max Sessions"
               type="number"
               value={maxSessions}
-              onChange={(e) => setMaxSessions(Math.min(10, Math.max(1, e.target.value)))}
-              InputProps={{ inputProps: { min: 1, max: 10 } }}
+              inputProps={{ min: 1, max: 10 }}
+              onChange={(e) => setMaxSessions(e.target.value)}
               sx={{ flex: 1 }}
             />
             <Button variant="contained" onClick={handleSetMaxSessions}>
               Save
             </Button>
           </Box>
+          <Alert severity="info" >It can take up to 10 minutes to revoke sessions from other devices.</Alert>
           <List sx={{ maxHeight: '300px', overflowY: 'auto' }}>
             {sessions.map((session) => (
               <ListItem key={session._id}>
                 <ListItemText
                   sx={{ color: session?.is_current ? 'info.main' : '' }}
-                  primary={`${session.device_info} ${session?.is_current ? '(Current)' : ''}`}
-                  secondary={`${session.location.city}, ${session.location.country} | ${new Date(session.last_active).toLocaleString()}`}
+                  primary={`${session?.device_info?.os} - ${session?.device_info?.browser} ${session?.is_current ? '(Current)' : ''}`}
+                  secondary={`${new Date(session.last_active).toLocaleString()}`}
                 />
-                <ListItemSecondaryAction>
-                  <IconButton edge="end" onClick={() => handleLogoutSession(session._id)}>
-                    <Logout sx={{ fontSize: 20, color: 'warning.dark' }} />
-                  </IconButton>
-                </ListItemSecondaryAction>
+                <Tooltip title="Logout">
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" onClick={() => handleLogoutSession(session._id)}>
+                      <Logout sx={{ fontSize: 20, color: 'warning.dark' }} />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </Tooltip>
               </ListItem>
             ))}
           </List>

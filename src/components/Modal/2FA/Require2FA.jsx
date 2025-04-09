@@ -10,22 +10,24 @@ import { MuiOtpInput } from 'mui-one-time-password-input'
 import { Link } from '@mui/material'
 import { useConfirm } from 'material-ui-confirm'
 import { Logout } from '@mui/icons-material'
+import { useTimeDriftWarning } from '~/customHooks/useTimeDriftWarning'
 
-function Require2FA() {
+function Require2FA({ username }) {
   const [otpToken, setConfirmOtpToken] = useState('')
   const [error, setError] = useState(null)
   const dispatch = useDispatch()
+  useTimeDriftWarning()
 
-  const handleRequire2FA = () => {
+  const handleRequire2FA = (otp) => {
     toast.promise(
-      dispatch(verify2FaAPI(otpToken)),
+      dispatch(verify2FaAPI(otp)),
       { loading: 'Setting up...' }
     ).then((res) => {
       if (res.error) {
         setError(res.error)
       }
       else {
-        toast.success('Setup 2FA successfully!')
+        toast.success('Verify 2FA successfully!')
       }
     })
   }
@@ -49,8 +51,7 @@ function Require2FA() {
     >
       <Box
         sx={{
-          width: '90vw',
-          maxWidth: '400px',
+          maxWidth: 600,
           bgcolor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
           boxShadow: 24,
           borderRadius: 2,
@@ -59,14 +60,14 @@ function Require2FA() {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 2 }}>
-          <SecurityIcon sx={{ color: '#27ae60' }} />
-          <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#27ae60' }}>
+          <SecurityIcon color='info' />
+          <Typography variant="h6" color='info.main' sx={{ fontWeight: 'bold' }}>
             Require 2FA (Two-Factor Authentication)
           </Typography>
         </Box>
 
         <Typography sx={{ mb: 2 }}>
-          Enter the 6-digit code from your authentication app and click <strong>Confirm</strong> to verify.
+          Enter the 6-digit code from your <strong>authentication app</strong> to verify your account `<strong>{username}</strong>` and continue.
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 2 }}>
           <MuiOtpInput
@@ -77,9 +78,12 @@ function Require2FA() {
               setConfirmOtpToken(value)
               if (error) setError(null)
             }}
-            onComplete={handleRequire2FA}
+            onComplete={(value) => {
+              setConfirmOtpToken(value)
+              handleRequire2FA(value)
+            }}
             length={6}
-            TextFieldProps={{
+            textfieldprops={{
               error: !!error
             }}
             sx={{

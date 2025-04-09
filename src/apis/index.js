@@ -8,6 +8,11 @@ import { API_ROOT } from '~/utils/constants'
 //   return response.data
 // }
 
+export const getServerTimeAPI = async () => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/server-time`)
+  return response.data
+}
+
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
   const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/boards/${boardId}`, updateData)
   return response.data

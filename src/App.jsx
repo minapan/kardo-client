@@ -14,7 +14,7 @@ import Require2FA from './components/Modal/2FA/Require2FA'
 import LandingPage from './pages/LandingPage/Landingpage'
 
 const Require2FALayout = ({ user, children }) => {
-  if (user?.require_2fa && !user?.is_2fa_verified) return <Require2FA />
+  if (user?.require_2fa && !user?.is_2fa_verified) return <Require2FA username={user.username} />
   return children
 }
 

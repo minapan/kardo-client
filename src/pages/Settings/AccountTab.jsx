@@ -231,57 +231,53 @@ function AccountTab() {
           </Box>
         </form>
         <Divider />
-        {currentUser?.typeLogin === 'email' && <>
-          <Box sx={{
-            maxWidth: '500px', border: '2px solid red', padding: 4, borderRadius: 4,
-            backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#fff0f0'
-          }}>
-            <Typography variant="h6" sx={{ color: '#d32f2f', fontWeight: 600, mb: 2 }}>
-              Danger Zone
+        <Box sx={{
+          maxWidth: '500px', border: '2px solid red', padding: 4, borderRadius: 4,
+          backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#fff0f0'
+        }}>
+          <Typography variant="h6" sx={{ color: '#d32f2f', fontWeight: 600, mb: 2 }}>
+            Danger Zone
+          </Typography>
+          <Alert severity="error" sx={{ mb: 2 }}>
+            Deleting your account is permanent and cannot be undone. All your data will be lost.
+          </Alert>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => setOpenDeleteDialog(true)}
+            sx={{ borderRadius: 1, fontWeight: 600 }}
+          >
+            Delete Account
+          </Button>
+        </Box>
+        <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+          <DialogTitle sx={{ color: '#d32f2f' }}>Confirm Account Deletion</DialogTitle>
+          <DialogContent>
+            <Typography sx={{ mb: 2 }}>
+              To confirm, please enter your username: <strong style={{ color: 'violet' }}>{currentUser?.username}</strong>
             </Typography>
-            <Alert severity="warning" sx={{ mb: 2 }}>
-              Deleting your account is permanent and cannot be undone. All your data will be lost.
-            </Alert>
-            <Button
+            <TextField
+              fullWidth
+              label="Enter your username"
               variant="outlined"
-              color="error"
-              onClick={() => setOpenDeleteDialog(true)}
-              sx={{ borderRadius: 1, fontWeight: 600 }}
-            >
-              Delete Account
+              value={confirmUsername}
+              onChange={handleUsernameChange}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
+              Cancel
             </Button>
-          </Box>
-          <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-            <DialogTitle sx={{ color: '#d32f2f' }}>Confirm Account Deletion</DialogTitle>
-            <DialogContent>
-              <Typography sx={{ mb: 2 }}>
-                To confirm, please enter your username: <strong style={{ color: 'violet' }}>{currentUser?.username}</strong>
-              </Typography>
-              <TextField
-                fullWidth
-                label="Enter your username"
-                variant="outlined"
-                value={confirmUsername}
-                onChange={handleUsernameChange}
-                error={confirmUsername && !isUsernameValid}
-                helperText={confirmUsername && !isUsernameValid ? 'Username does not match' : ''}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
-                Cancel
-              </Button>
-              <Button
-                onClick={handleDeleteAccount}
-                color="error"
-                variant="contained"
-                disabled={!isUsernameValid}
-              >
-                Delete
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>}
+            <Button
+              onClick={handleDeleteAccount}
+              color="error"
+              variant="contained"
+              disabled={!isUsernameValid}
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </Box>
   )
