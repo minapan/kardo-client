@@ -134,14 +134,13 @@ function Column({ column }) {
   }
 
   const onUpdateColumnTitle = async (newTitle) => {
-    await updateColDetailsAPI(column._id, { title: newTitle }).then((res) => {
+    await updateColDetailsAPI(column._id, { title: newTitle }).then(() => {
       const newBoard = cloneDeep(board)
       const columnToUpdate = newBoard.columns.find(col => col._id === column._id)
       if (columnToUpdate) {
         columnToUpdate.title = newTitle
       }
       dispatch(updateCurrActiveBoard(newBoard))
-      // column.title = res?.title
     })
   }
 

@@ -303,6 +303,8 @@ function ActiveCard() {
               <CardActivitySection
                 cardComments={activeCard?.comments}
                 onAddCardComment={onAddCardComment}
+                currCardId={activeCard?._id}
+                boardId={activeCard?.boardId}
               />
             </Box>
           </Grid>

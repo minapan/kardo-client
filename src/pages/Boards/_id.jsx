@@ -29,6 +29,7 @@ function Board() {
 
     // Cleanup event through unmount to avoid memory leak
     return () => {
+      dispatch(updateCurrActiveBoard(null))
       socketIo.emit('FE_USER_LEFT_ROOM', boardId)
       // console.log(`FE I am left room ${boardId}`)
     }

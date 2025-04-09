@@ -8,7 +8,6 @@ import { logoutUserAPI } from '~/redux/user/userSlice'
 import { useConfirm } from 'material-ui-confirm'
 import { Link } from 'react-router-dom'
 import AutoCompleteSearchBoard from '../SearchBoards/AutoCompleteSearchBoard'
-import { deleteSessionAPI } from '~/apis'
 
 function Profile({ currUser }) {
   const [anchorEl, setAnchorEl] = useState(null)

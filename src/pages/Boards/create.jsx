@@ -67,6 +67,7 @@ function SidebarCreateBoardModal({ afterCreate }) {
       fetchRandomUnsplashPhotos()
     }
   }, [isUnsplashOpen, unsplashPhotos.length])
+
   const handleFileChange = (event) => {
     const file = event?.target?.files[0]
 
