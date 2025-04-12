@@ -24,6 +24,7 @@ import { logoutUserAPI, selectCurrUser, setUserMaxSession, updateUserAPI } from 
 import { useEffect } from 'react'
 import { clearSessionAPI, deleteSessionAPI, fetchSessionAPI, setMaxSessionsAPI } from '~/apis'
 import { Logout } from '@mui/icons-material'
+import { Fingerprint } from '@mui/icons-material'
 
 function SecurityTab() {
   const dispatch = useDispatch()
@@ -72,7 +73,7 @@ function SecurityTab() {
       ).then(res => {
         if (!res.error) {
           toast.success('Change password successfully. Please login again.')
-          dispatch(logoutUserAPI(false))
+          dispatch(logoutUserAPI())
         }
       })
 
@@ -169,11 +170,18 @@ function SecurityTab() {
           </Alert>
           <Typography variant="h5">{user?.typeLogin === 'email' ? 'Change ' : 'Set '}Password</Typography>
           <form onSubmit={handleSubmit(submitChangePassword)}>
+            <TextField
+              sx={{ display: 'none' }}
+              disabled
+              autoComplete='username'
+              defaultValue={user?.username}
+            />
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {user?.typeLogin === 'email' && (
                 <Box>
                   <TextField
                     fullWidth
+                    autoComplete='current-password'
                     label="Current Password"
                     type={showCurrentPassword ? 'text' : 'password'}
                     variant="outlined"
@@ -210,6 +218,7 @@ function SecurityTab() {
               <Box>
                 <TextField
                   fullWidth
+                  autoComplete='new-password'
                   label="New Password"
                   type={showNewPassword ? 'text' : 'password'}
                   variant="outlined"
@@ -245,6 +254,7 @@ function SecurityTab() {
               <Box>
                 <TextField
                   fullWidth
+                  autoComplete='new-password'
                   label="New Password Confirmation"
                   type={showPasswordConfirm ? 'text' : 'password'}
                   variant="outlined"
@@ -306,13 +316,21 @@ function SecurityTab() {
               Save
             </Button>
           </Box>
-          <Alert severity="info" >It can take up to 10 minutes to revoke sessions from other devices.</Alert>
           <List sx={{ maxHeight: '300px', overflowY: 'auto' }}>
             {sessions.map((session) => (
               <ListItem key={session._id}>
                 <ListItemText
                   sx={{ color: session?.is_current ? 'info.main' : '' }}
-                  primary={`${session?.device_info?.os} - ${session?.device_info?.browser} ${session?.is_current ? '(Current)' : ''}`}
+                  primary={
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      {session?.device_info?.userAgent && (
+                        <Tooltip title={session?.device_info?.userAgent} placement="top">
+                          <Fingerprint sx={{ fontSize: 16, color: 'info.dark', cursor: 'pointer' }} />
+                        </Tooltip>
+                      )}
+                      <span>{`${session?.device_info?.os} - ${session?.device_info?.browser} ${session?.is_current ? '(Current)' : ''}`}</span>
+                    </Box>
+                  }
                   secondary={`${new Date(session.last_active).toLocaleString()}`}
                 />
                 <Tooltip title="Logout">

@@ -30,10 +30,16 @@ export const ggAuthAPI = createAsyncThunk(
 
 export const logoutUserAPI = createAsyncThunk(
   'user/logoutUserAPI',
-  async (showSuccess = true) => {
-    const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/logout`)
-    if (showSuccess) toast.success('Logout successfully!')
-    return response.data
+  async (assertive = true) => {
+    if (assertive) {
+      const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/logout`)
+      return response.data
+    }
+
+    else {
+      const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/logged-out`)
+      return response.data
+    }
   }
 )
 
@@ -55,7 +61,7 @@ export const setup2FaAPI = createAsyncThunk(
 
 export const verify2FaAPI = createAsyncThunk(
   'user/verify2FaAPI',
-  async (otpToken ) => {
+  async (otpToken) => {
     const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/verify_2fa`, { otpToken })
     return response.data
   }
@@ -88,14 +94,14 @@ export const userSlice = createSlice({
       const user = action.payload
       state.currUser = user
     }),
-    builder.addCase(setup2FaAPI.fulfilled, (state, action) => {
-      const user = action.payload
-      state.currUser = user
-    }),
-    builder.addCase(verify2FaAPI.fulfilled, (state, action) => {
-      const user = action.payload
-      state.currUser = user
-    })
+      builder.addCase(setup2FaAPI.fulfilled, (state, action) => {
+        const user = action.payload
+        state.currUser = user
+      }),
+      builder.addCase(verify2FaAPI.fulfilled, (state, action) => {
+        const user = action.payload
+        state.currUser = user
+      })
   }
 })
 
