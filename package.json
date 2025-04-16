@@ -1,10 +1,10 @@
 {
-  "name": "trello-minapan-web",
+  "name": "kardo-client",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
-  "author": "Minh Nhat Phan",
-  "description": "Simple trello clone",
+  "author": "MinhNhatPhan",
+  "description": "Kardo - A modern task manager built with MERN.",
   "engines": {
     "node": "18.16.0"
   },

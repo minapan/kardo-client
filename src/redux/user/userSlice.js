@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
-import toast from 'react-hot-toast'
 import authorizeAxiosInstance from '~/utils/authorizeAxios'
 import { API_ROOT } from '~/utils/constants'
 
@@ -94,14 +93,14 @@ export const userSlice = createSlice({
       const user = action.payload
       state.currUser = user
     }),
-      builder.addCase(setup2FaAPI.fulfilled, (state, action) => {
-        const user = action.payload
-        state.currUser = user
-      }),
-      builder.addCase(verify2FaAPI.fulfilled, (state, action) => {
-        const user = action.payload
-        state.currUser = user
-      })
+    builder.addCase(setup2FaAPI.fulfilled, (state, action) => {
+      const user = action.payload
+      state.currUser = user
+    }),
+    builder.addCase(verify2FaAPI.fulfilled, (state, action) => {
+      const user = action.payload
+      state.currUser = user
+    })
   }
 })
 

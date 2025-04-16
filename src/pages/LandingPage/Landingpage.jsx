@@ -51,7 +51,7 @@ const LandingPage = () => {
                   animation: 'fadeIn 1s ease-out forwards'
                 }}
               >
-                Master Your Workflow with Trello
+                Master Your Workflow with Kardo
               </Typography>
               <Typography variant="h5" color="text.secondary" sx={{ mb: 4 }}>
                 From brainstorming to delivery, manage tasks and teams with ease.
@@ -72,8 +72,8 @@ const LandingPage = () => {
             <Grid item xs={12} md={6}>
               <CardMedia
                 component="img"
-                image="https://base.vn/wp-content/uploads/2024/06/trello-la-gi.webp"
-                alt="Trello in Action"
+                image="hero.png"
+                alt="Kardo in Action"
                 sx={{
                   borderRadius: 3,
                   boxShadow: '0 10px 30px rgba(0, 121, 191, 0.3)',
@@ -91,7 +91,7 @@ const LandingPage = () => {
         <Box sx={{ py: 12 }} >
           <Container maxWidth="lg">
             <Typography variant="h4" align="center" sx={{ color: 'text.primary', mb: 6 }}>
-              See Trello in Action
+              See Kardo in Action
             </Typography>
             <Card
               sx={{
@@ -106,7 +106,7 @@ const LandingPage = () => {
                 component="video"
                 controls
                 src="https://www.w3schools.com/html/mov_bbb.mp4"
-                poster="https://base.vn/wp-content/uploads/2024/06/trello-la-gi.webp"
+                poster="thumb-demo.png"
                 sx={{ borderRadius: '8px 8px 0 0' }}
               />
             </Card>
@@ -265,7 +265,7 @@ const LandingPage = () => {
                   color: '#fff'
                 }
               }} >
-              Join Trello Today
+              Join Kardo Today
             </Button>
           </Container>
         </Box>

@@ -12,7 +12,7 @@ import Divider from '@mui/material/Divider'
 import GroupAddIcon from '@mui/icons-material/GroupAdd'
 import DoneIcon from '@mui/icons-material/Done'
 import NotInterestedIcon from '@mui/icons-material/NotInterested'
-import { Badge, IconButton } from '@mui/material'
+import { Badge, CardMedia, IconButton } from '@mui/material'
 import { useSelector } from 'react-redux'
 import { addNotification, deleteInvitationAPI, fetchInvitationsAPI, selectCurrNotifications, updateBoardInvitationAPI } from '~/redux/notifications/notificationsSlice'
 import { useDispatch } from 'react-redux'
@@ -104,7 +104,18 @@ function Notifications({ currUser }) {
         onClose={handleClose}
         MenuListProps={{ 'aria-labelledby': 'basic-button-open-notification' }}
       >
-        {(!notifications || notifications.length === 0) && <MenuItem sx={{ minWidth: 200 }}>You do not have any new notifications.</MenuItem>}
+        {(!notifications || notifications.length === 0) &&
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, p: 2 }}>
+            <CardMedia
+              component="img"
+              loading='lazy'
+              sx={{ width: 150, height: 150, objectFit: 'contain' }}
+              image="https://trello.com/assets/ee2660df9335718b1a80.svg"
+              alt="No notifications"
+            />
+            <Typography variant='body2'>You do not have any new notifications.</Typography>
+          </Box>
+        }
         {notifications?.map((notification, index) =>
           <Box key={index}>
             <MenuItem sx={{

@@ -39,7 +39,7 @@ export const testimonials = [
   {
     name: 'Jane Doe',
     role: 'Project Manager',
-    text: 'Trello transformed how we manage projects! The visual boards make tracking progress a breeze.',
+    text: 'Kardo transformed how we manage projects! The visual boards make tracking progress a breeze.',
     avatar: 'https://res.cloudinary.com/dlg8pkxcl/image/upload/v1743742842/2244af71ad0c25f2cb0a8efa167491fb_ulhy0q.png'
   },
   {
@@ -57,19 +57,19 @@ export const testimonials = [
   {
     name: 'Michael Lee',
     role: 'Marketing Lead',
-    text: 'Trello keeps our campaigns on track. The timeline view is perfect for planning launches.',
+    text: 'Kardo keeps our campaigns on track. The timeline view is perfect for planning launches.',
     avatar: 'https://res.cloudinary.com/dlg8pkxcl/image/upload/v1743742925/76891f0bd337c6ee10f84067d7808044_r0q1bi.png'
   },
   {
     name: 'Sara Kim',
     role: 'Product Owner',
-    text: 'Managing sprints is so much simpler with Trello. The flexibility is unmatched.',
+    text: 'Managing sprints is so much simpler with Kardo. The flexibility is unmatched.',
     avatar: 'https://res.cloudinary.com/dlg8pkxcl/image/upload/v1743742841/644dfc35027924a6e5dfbcad653be697_vcmwf9.png'
   },
   {
     name: 'David Patel',
     role: 'Freelancer',
-    text: 'As a solo worker, Trello helps me stay organized across multiple client projects.',
+    text: 'As a solo worker, Kardo helps me stay organized across multiple client projects.',
     avatar: 'https://res.cloudinary.com/dlg8pkxcl/image/upload/v1743742841/78c7bf3d348d505f15d332f9a58092f7_gjzhjc.png'
   }
 ]

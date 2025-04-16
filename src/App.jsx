@@ -47,7 +47,8 @@ function App() {
       <Route path='/forgot-password' element={<Auth />} />
       <Route path='/account/verify' element={<AccountVerification />} />
 
-      <Route path='*' element={<NotFound />} />
+      <Route path='/404' element={<NotFound />} replace={true}/>
+      <Route path='*' element={<NotFound />} replace={true}/>
     </Routes>
   )
 }

@@ -241,7 +241,7 @@ function LoginForm() {
           {/* Footer Section */}
           <Box sx={{ padding: '0 2.5em 2em', textAlign: 'center' }}>
             <Typography variant="body2" sx={{ color: '#91A1B7', fontWeight: 500 }}>
-              New to Trello Minapan?
+              New to Kardo?
             </Typography>
             <Link to="/register" style={{ textDecoration: 'none' }}>
               <Typography

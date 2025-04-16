@@ -39,7 +39,7 @@ function AppBar() {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <SvgIcon component={Logo} fontSize='medium' inheritViewBox />
               <Typography variant='span' sx={{ fontSize: '1rem', fontWeight: 'bold', color: 'white', marginRight: 1 }}>
-                Trello
+                Kardo
               </Typography>
             </Box>
           </Link>

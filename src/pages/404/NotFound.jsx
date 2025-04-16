@@ -51,7 +51,7 @@ const NotFound = () => {
                 speed: 10,
                 straight: true,
                 outModes: {
-                  default: 'destroy',  // Đảm bảo hạt bị xóa khi ra khỏi màn hình
+                  default: 'destroy',
                   left: 'none'
                 }
               },

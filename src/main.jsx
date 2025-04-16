@@ -12,10 +12,10 @@ import { store } from './redux/store'
 import { BrowserRouter } from 'react-router-dom'
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
+import ToastContainer from './components/ToastContainer/ToastContainer'
 const persistor = persistStore(store)
 
 import { injectStore } from './utils/authorizeAxios'
-import ToastContainer from './components/ToastContainer/ToastContainer'
 injectStore(store)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
