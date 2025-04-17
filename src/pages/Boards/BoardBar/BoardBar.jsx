@@ -1,7 +1,14 @@
-import { Box, Chip, Tooltip } from '@mui/material'
+import { Box, Chip, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from '@mui/material'
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize'
 import BoardUserGroup from './BoardUserGroup'
 import InviteBoardUser from './InviteBoardUser'
+import { Delete } from '@mui/icons-material'
+import { useState } from 'react'
+import { socketIo } from '~/socketClient'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import { useConfirm } from 'material-ui-confirm'
+import { deleteBoardAPI } from '~/apis'
 
 const MENU_STYLES = {
   backgroundColor: 'transparent',
@@ -20,6 +27,38 @@ const MENU_STYLES = {
 }
 
 function BoardBar({ board }) {
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
+  const navigate = useNavigate()
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const confirm = useConfirm()
+  const handleDeleteBoard = () => {
+    confirm({
+      title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Delete sx={{ color: 'warning.dark' }} /> DELETE BOARD ?
+      </Box>,
+      description: 'This action is permanently delete your board! Are you sure?',
+      confirmationText: 'Yes'
+    })
+      .then(() => {
+        deleteBoardAPI(board._id).then((res) => {
+          if (!res?.error) {
+            socketIo.emit('FE_DELETED_BOARD', { boardId: board._id })
+            navigate('/boards')
+            toast.success('Board deleted successfully!')
+          }
+        })
+      })
+      .catch(() => { })
+  }
   return (
     <Box sx={(theme) => ({
       width: '100%',
@@ -53,8 +92,37 @@ function BoardBar({ board }) {
         <Tooltip title={board?.description}>
           <Chip
             sx={MENU_STYLES}
-            icon={<DashboardCustomizeIcon />} label={board?.title} clickable />
+            icon={<DashboardCustomizeIcon />} label={board?.title} clickable
+            id="basic-board-dropdown"
+            aria-controls={open ? 'basic-menu-board-dropdown' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick} />
         </Tooltip>
+        <Menu
+          sx={{ mt: 2 }}
+          id="basic-menu-board-dropdown"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          onClick={handleClose}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button'
+          }}
+        >
+          <MenuItem
+            onClick={handleDeleteBoard}
+            sx={{
+              '&:hover': {
+                color: 'warning.dark',
+                '& .delete-icon': { color: 'warning.dark' }
+              }
+            }}
+          >
+            <ListItemIcon><Delete className='delete-icon' fontSize="small" /></ListItemIcon>
+            <ListItemText>Remove this board</ListItemText>
+          </MenuItem>
+        </Menu>
         {/* <Chip
           sx={MENU_STYLES}
           icon={<VpnLockIcon />} label={capitalizeFirstLetter(board?.type)} clickable /> */}

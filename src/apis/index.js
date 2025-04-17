@@ -85,6 +85,11 @@ export const createNewBoardAPI = async (data) => {
   return response.data
 }
 
+export const deleteBoardAPI = async (boardId) => {
+  const response = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/boards/${boardId}`)
+  return response.data
+}
+
 export const updateCardDetailsAPI = async (cardId, updateData) => {
   const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/cards/${cardId}`, updateData)
   return response.data

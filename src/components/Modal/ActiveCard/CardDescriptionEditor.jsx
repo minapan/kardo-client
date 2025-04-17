@@ -94,17 +94,39 @@ function CardDescriptionEditor({ cardDescriptionProp, handleUpdateCardDescriptio
           </Box>
         </Box>
         : <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <Button
-            sx={{ alignSelf: 'flex-end', color: 'primary.main' }}
-            onClick={() => setEditMode(true)}
-            type="button"
-            color="info"
-            size="small"
-            startIcon={<EditNoteIcon />}>
-            Edit
-          </Button>
+          <Box sx={{ alignSelf: 'flex-end', color: 'primary.main' }}>
+            <Button
+              sx={{ mr: 1 }}
+              onClick={() => setEditMode(true)}
+              type="button"
+              color="info"
+              size="small"
+              startIcon={<EditNoteIcon />}>
+              Edit
+            </Button>
+            {!summary && (
+              <Tooltip title="AI Summarize">
+                <IconButton
+                  onClick={handleSummarize}
+                  disabled={loading}
+                  sx={{
+                    background: 'linear-gradient(45deg, #4285F4 30%, #34A853 50%, #FBBC05 70%, #EA4335 90%)',
+                    color: '#fff',
+                    '&:hover': {
+                      background: 'linear-gradient(45deg, #3B78E7 30%, #2E9B47 50%, #F4B400 70%, #D93025 90%)',
+                      boxShadow: '0 5px 10px 2px rgba(66, 133, 244, .4)',
+                      transform: 'translateY(-2px)'
+                    },
+                    transition: 'all 0.3s ease-in-out'
+                  }}
+                >
+                  {loading ? <CircularProgress size={20} /> : <AutoAwesome fontSize="small" />}
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
           {(cardDescription !== '<p><br></p>' && cardDescription) ? (
-            <Box sx={{ overflow: 'auto', maxHeight: 400, position: 'relative' }}>
+            <Box sx={{ overflow: 'auto', maxHeight: 400 }}>
               <Box
                 dangerouslySetInnerHTML={{ __html: cardDescription }}
                 sx={{
@@ -118,31 +140,6 @@ function CardDescriptionEditor({ cardDescriptionProp, handleUpdateCardDescriptio
                   '&::-webkit-scrollbar-thumb': { backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#e9f2ff' }
                 }}
               />
-              {!summary && (
-                <Tooltip title="AI Summarize">
-                  <IconButton
-                    onClick={handleSummarize}
-                    disabled={loading}
-                    sx={{
-                      position: 'absolute',
-                      top: 4,
-                      right: 4,
-                      background: 'linear-gradient(45deg, #4285F4 30%, #34A853 50%, #FBBC05 70%, #EA4335 90%)',
-                      color: '#fff',
-                      padding: '6px',
-                      opacity: 0.5,
-                      '&:hover': {
-                        background: 'linear-gradient(45deg, #3B78E7 30%, #2E9B47 50%, #F4B400 70%, #D93025 90%)',
-                        boxShadow: '0 5px 10px 2px rgba(66, 133, 244, .4)',
-                        transform: 'translateY(-2px)'
-                      },
-                      transition: 'all 0.3s ease-in-out'
-                    }}
-                  >
-                    {loading ? <CircularProgress size={20} /> : <AutoAwesome fontSize="small" />}
-                  </IconButton>
-                </Tooltip>
-              )}
               {error && (
                 <Typography color="error" sx={{ mt: 2 }}>
                   {error}

@@ -13,12 +13,15 @@ import LoadingSpinner from '~/components/Loading/LoadingSpinner'
 import ActiveCard from '~/components/Modal/ActiveCard/ActiveCard'
 import { socketIo } from '~/socketClient'
 import { updateCurrActiveCard } from '~/redux/activeCard/activeCardSlice'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 function Board() {
   const dispatch = useDispatch()
   // const [board, setBoard] = useState(null)
   const board = useSelector(selectCurrActiveBoard)
   const { boardId } = useParams()
+  const navigate = useNavigate()
   useEffect(() => {
     dispatch(fetchBoardDetailsAPI(boardId))
     socketIo.emit('FE_USER_JOINED_ROOM', boardId)
@@ -101,20 +104,28 @@ function Board() {
       }
     }
 
+    const onReceiveDeletedBoard = () => {
+      dispatch(updateCurrActiveBoard(null))
+      toast('ℹ️ This board has been deleted!')
+      navigate('/boards')
+    }
+
     socketIo.on('BE_USER_ACCEPTED_INVITATION', onReceiveNewMember)
     socketIo.on('BE_MOVED_COLUMNS', onReceiveNewOderedColumns)
     socketIo.on('BE_MOVED_CARDS_IN_SAME_COLUMN', onReceiveNewOderedCardsInSameCol)
     socketIo.on('BE_MOVED_CARD_TO_DIFF_COLUMN', onReceiveNewOderedCardsInDiffCol)
     socketIo.on('BE_UPDATED_BOARD_LABELS', onReceiveNewUpdatedBoardLabels)
     socketIo.on('BE_UPDATED_CARD', onReceiveNewUpdatedCard)
+    socketIo.on('BE_DELETED_BOARD', onReceiveDeletedBoard)
 
     return () => {
-      socketIo.off('BE_USER_JOINED_ROOM', onReceiveNewMember)
+      socketIo.off('BE_USER_ACCEPTED_INVITATION', onReceiveNewMember)
       socketIo.off('BE_MOVED_COLUMNS', onReceiveNewOderedColumns)
       socketIo.off('BE_MOVED_CARDS_IN_SAME_COLUMN', onReceiveNewOderedCardsInSameCol)
       socketIo.off('BE_MOVED_CARD_TO_DIFF_COLUMN', onReceiveNewOderedCardsInDiffCol)
       socketIo.off('BE_UPDATED_BOARD_LABELS', onReceiveNewUpdatedBoardLabels)
       socketIo.off('BE_UPDATED_CARD', onReceiveNewUpdatedCard)
+      socketIo.off('BE_DELETED_BOARD', onReceiveDeletedBoard)
     }
   }, [board, dispatch])
 
